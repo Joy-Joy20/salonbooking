@@ -1,13 +1,49 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
 
 app = Flask(__name__)
+app.secret_key = 'salon_secret_key'
 
 bookings = []
+users = {}
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username in users and users[username] == password:
+            session['user'] = username
+            return redirect(url_for('index'))
+        error = 'Invalid username or password.'
+    return render_template('login.html', error=error)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    error = None
+    success = False
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm = request.form.get('confirm')
+        if username in users:
+            error = 'Username already exists.'
+        elif password != confirm:
+            error = 'Passwords do not match.'
+        else:
+            users[username] = password
+            success = True
+    return render_template('signup.html', error=error, success=success)
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
 
 @app.route('/book', methods=['GET', 'POST'])
 def book():
