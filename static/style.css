@@ -191,6 +191,14 @@ tr:hover td {
     text-align: left;
 }
 
+.contact-info h3 {
+    text-align: left;
+}
+
+.contact-info p {
+    text-align: left;
+}
+
 .contact-info ul {
     text-align: left;
     margin-top: 10px;
