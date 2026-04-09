@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Book an Appointment</h2>
+<div style="max-width:400px;">
+<h2 style="text-align:left;">Book an Appointment</h2>
 
-<form method="POST">
+<form method="POST" style="align-items:flex-start;">
     <input type="text" name="name" placeholder="Your Name" required>
 
     <select name="service" required>
@@ -30,4 +31,5 @@
 
     <button type="submit">Book</button>
 </form>
+</div>
 {% endblock %}
