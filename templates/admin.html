@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="padding-top:30px;">
+    <h1>Admin Dashboard 🛠️</h1>
+
+    <!-- STATS -->
+    <div class="admin-stats">
+        <div class="stat-card">
+            <span class="stat-icon">📋</span>
+            <span class="stat-num">{{ bookings|length }}</span>
+            <span class="stat-label">Total Bookings</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">👥</span>
+            <span class="stat-num">{{ users|length }}</span>
+            <span class="stat-label">Total Users</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">✂️</span>
+            <span class="stat-num">{{ stylists|length }}</span>
+            <span class="stat-label">Total Stylists</span>
+        </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <h2 style="margin-top:30px; text-align:left;">All Bookings</h2>
+    {% if bookings %}
+    <table>
+        <tr><th>Name</th><th>Service</th><th>Stylist</th><th>Date</th><th>Action</th></tr>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.name }}</td>
+            <td>{{ b.service }}</td>
+            <td>{{ b.stylist }}</td>
+            <td>{{ b.date }}</td>
+            <td><a href="/admin/delete-booking/{{ loop.index0 }}" class="btn-delete">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="text-align:left;">No bookings yet.</p>
+    {% endif %}
+
+    <!-- USERS -->
+    <h2 style="margin-top:30px; text-align:left;">Manage Users</h2>
+    {% if users %}
+    <table>
+        <tr><th>Username</th><th>Action</th></tr>
+        {% for username in users %}
+        <tr>
+            <td>{{ username }}</td>
+            <td><a href="/admin/delete-user/{{ username }}" class="btn-delete">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="text-align:left;">No users yet.</p>
+    {% endif %}
+
+    <!-- STYLISTS -->
+    <h2 style="margin-top:30px; text-align:left;">Manage Stylists</h2>
+    <form method="POST" action="/admin/add-stylist" style="align-items:flex-start; flex-direction:row; gap:10px; display:flex;">
+        <input type="text" name="name" placeholder="Stylist Name" required style="margin:0;">
+        <input type="text" name="specialty" placeholder="Specialty" required style="margin:0;">
+        <button type="submit" style="margin:0;">Add</button>
+    </form>
+    {% if stylists %}
+    <table style="margin-top:16px;">
+        <tr><th>Name</th><th>Specialty</th><th>Action</th></tr>
+        {% for s in stylists %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.specialty }}</td>
+            <td><a href="/admin/delete-stylist/{{ loop.index0 }}" class="btn-delete">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="text-align:left;">No stylists yet.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

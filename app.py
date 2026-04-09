@@ -6,6 +6,16 @@ app.secret_key = 'salon_secret_key'
 
 bookings = []
 users = {}
+stylists = [
+    {"name": "Anna Cruz", "specialty": "Haircut & Styling"},
+    {"name": "Maria Santos", "specialty": "Makeup Artist"},
+    {"name": "Jose Reyes", "specialty": "Shaving & Grooming"},
+    {"name": "Liza Gomez", "specialty": "Hair Coloring"},
+    {"name": "Carlo Bautista", "specialty": "Hair Treatment"},
+    {"name": "Rosa Dela Cruz", "specialty": "Massage Therapist"},
+]
+ADMIN_USER = 'admin'
+ADMIN_PASS = 'admin123'
 
 @app.route('/')
 def index():
@@ -17,8 +27,13 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username in users and users[username] == password:
+        if username == ADMIN_USER and password == ADMIN_PASS:
             session['user'] = username
+            session['is_admin'] = True
+            return redirect(url_for('admin'))
+        elif username in users and users[username] == password:
+            session['user'] = username
+            session['is_admin'] = False
             return redirect(url_for('index'))
         error = 'Invalid username or password.'
     return render_template('login.html', error=error)
@@ -44,6 +59,44 @@ def signup():
 def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
+
+@app.route('/admin')
+def admin():
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    return render_template('admin.html', bookings=bookings, users=users, stylists=stylists)
+
+@app.route('/admin/delete-booking/<int:index>')
+def delete_booking(index):
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    if 0 <= index < len(bookings):
+        bookings.pop(index)
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete-user/<username>')
+def delete_user(username):
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    users.pop(username, None)
+    return redirect(url_for('admin'))
+
+@app.route('/admin/add-stylist', methods=['POST'])
+def add_stylist():
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    name = request.form.get('name')
+    specialty = request.form.get('specialty')
+    stylists.append({"name": name, "specialty": specialty})
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete-stylist/<int:index>')
+def delete_stylist(index):
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    if 0 <= index < len(stylists):
+        stylists.pop(index)
+    return redirect(url_for('admin'))
 
 @app.route('/book', methods=['GET', 'POST'])
 def book():
