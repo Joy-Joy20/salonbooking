@@ -67,6 +67,10 @@ def bookings_page():
     return render_template('bookings.html', bookings=bookings)
 
 
+@app.route('/stylist')
+def stylist():
+    return render_template('stylist.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')
