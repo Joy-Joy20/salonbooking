@@ -9,14 +9,22 @@ nav {
     color: white;
     padding: 15px;
     display: flex;
-    justify-content: center; /* CENTER ALL CONTENT */
+    justify-content: space-between;
     align-items: center;
-    gap: 30px; /* spacing between items */
+    position: relative;
 }
 
-/* Remove auto push */
 nav h2 {
     margin: 0;
+    font-size: 0.9rem;
+}
+
+.nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
 }
 
 /* Optional: make links inline nicely */
