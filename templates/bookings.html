@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div style="padding-top: 80px;">
 <h2>All Bookings</h2>
 
 {% if bookings %}
@@ -23,5 +24,5 @@
 {% else %}
 <p>No bookings yet. <a href="/book">Book now!</a></p>
 {% endif %}
-
+</div>
 {% endblock %}
