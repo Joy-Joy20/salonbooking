@@ -47,6 +47,8 @@ def logout():
 
 @app.route('/book', methods=['GET', 'POST'])
 def book():
+    if 'user' not in session:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         name = request.form.get('name')
         service = request.form.get('service')
