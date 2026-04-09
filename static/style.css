@@ -309,6 +309,7 @@ tr:hover td {
     gap: 40px;
     align-items: flex-start;
     margin-top: 20px;
+    padding: 30px;
 }
 
 .contact-info {
