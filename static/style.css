@@ -103,9 +103,6 @@ footer {
     color: white;
     text-align: center;
     padding: 20px;
-    margin-top: auto;
     font-size: 0.85rem;
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
