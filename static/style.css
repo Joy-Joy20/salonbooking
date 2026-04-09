@@ -38,6 +38,10 @@ nav a:hover {
     text-decoration: underline;
 }
 
+h1, h2, h3 {
+    text-align: center;
+}
+
 .container {
     padding: 20px;
 }
