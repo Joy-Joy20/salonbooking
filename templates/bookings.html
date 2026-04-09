@@ -8,12 +8,14 @@
     <tr>
         <th>Name</th>
         <th>Service</th>
+        <th>Stylist</th>
         <th>Date</th>
     </tr>
     {% for b in bookings %}
     <tr>
         <td>{{ b.name }}</td>
         <td>{{ b.service }}</td>
+        <td>{{ b.stylist }}</td>
         <td>{{ b.date }}</td>
     </tr>
     {% endfor %}

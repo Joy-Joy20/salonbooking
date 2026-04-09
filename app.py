@@ -50,11 +50,13 @@ def book():
     if request.method == 'POST':
         name = request.form.get('name')
         service = request.form.get('service')
+        stylist = request.form.get('stylist')
         date = request.form.get('date')
 
         bookings.append({
             "name": name,
             "service": service,
+            "stylist": stylist,
             "date": date
         })
 
