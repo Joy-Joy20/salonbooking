@@ -3,15 +3,18 @@ from supabase import create_client
 import os
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-app.secret_key = 'salon_secret_key'
+app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 
-# 🔐 Supabase Config (SAFE)
-SUPABASE_URL = "https://xaoylhyvbxwkyotljlwq.supabase.co"
-SUPABASE_KEY = "YOUR_KEY_HERE"
+# 🔐 Supabase Config via Environment Variables
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
 supabase = None
 try:
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    if SUPABASE_URL and SUPABASE_KEY:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    else:
+        print("⚠️ Supabase env vars not set.")
 except Exception as e:
     print("Supabase connection error:", e)
 
@@ -26,8 +29,8 @@ stylists = [
     {"name": "Rosa Dela Cruz", "specialty": "Massage Therapist"},
 ]
 
-ADMIN_USER = 'admin'
-ADMIN_PASS = 'admin123'
+ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "admin123")
 
 
 # 🏠 Home
