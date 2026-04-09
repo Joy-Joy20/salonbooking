@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>All Bookings</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Service</th>
+        <th>Date</th>
+    </tr>
+
+    {% for b in bookings %}
+    <tr>
+        <td>{{ b.name }}</td>
+        <td>{{ b.service }}</td>
+        <td>{{ b.date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

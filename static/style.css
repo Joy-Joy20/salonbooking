@@ -1,0 +1,58 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+nav {
+    background: #111;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+nav h2 {
+    margin-right: auto;
+}
+
+nav a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.container {
+    padding: 20px;
+}
+
+form input, form select {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 300px;
+}
+
+button, .btn {
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}

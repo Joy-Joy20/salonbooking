@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Book an Appointment</h2>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Your Name" required>
+
+    <select name="service" required>
+        <option value="Haircut">Haircut</option>
+        <option value="Makeup">Makeup</option>
+        <option value="Shaving">Shaving</option>
+        <option value="Hair Color">Hair Color</option>
+    </select>
+
+    <input type="date" name="date" required>
+
+    <button type="submit">Book</button>
+</form>
+{% endblock %}
