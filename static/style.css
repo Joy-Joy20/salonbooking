@@ -349,8 +349,8 @@ tr:hover td {
 
 /* FOOTER */
 footer {
-    background: #111;
-    color: #ccc;
+    background: rgba(236, 72, 153, 0.85);
+    color: white;
     text-align: center;
     padding: 18px;
     font-size: 0.82rem;
