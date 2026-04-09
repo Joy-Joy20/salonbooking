@@ -1,35 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width:400px;">
-<h2 style="text-align:left;">Book an Appointment</h2>
+<div style="display:flex; gap:60px; align-items:flex-start;">
 
-<form method="POST" style="align-items:flex-start;">
-    <input type="text" name="name" placeholder="Your Name" required>
+    <div style="max-width:400px;">
+        <h2 style="text-align:left;">Book an Appointment</h2>
+        <form method="POST" style="align-items:flex-start;">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <select name="service" required>
+                <option value="">-- Select Service --</option>
+                <option value="Haircut">✂️ Haircut</option>
+                <option value="Makeup">💄 Makeup</option>
+                <option value="Shaving">🪒 Shaving</option>
+                <option value="Hair Color">🎨 Hair Color</option>
+                <option value="Hair Treatment">🍼 Hair Treatment</option>
+                <option value="Massage">💆 Massage</option>
+            </select>
+            <select name="stylist" required>
+                <option value="">-- Select Stylist --</option>
+                <option value="Anna Cruz">Anna Cruz — Haircut & Styling</option>
+                <option value="Maria Santos">Maria Santos — Makeup Artist</option>
+                <option value="Jose Reyes">Jose Reyes — Shaving & Grooming</option>
+                <option value="Liza Gomez">Liza Gomez — Hair Coloring</option>
+                <option value="Carlo Bautista">Carlo Bautista — Hair Treatment</option>
+                <option value="Rosa Dela Cruz">Rosa Dela Cruz — Massage Therapist</option>
+            </select>
+            <input type="date" name="date" required>
+            <button type="submit">Book</button>
+        </form>
+    </div>
 
-    <select name="service" required>
-        <option value="">-- Select Service --</option>
-        <option value="Haircut">✂️ Haircut</option>
-        <option value="Makeup">💄 Makeup</option>
-        <option value="Shaving">🪒 Shaving</option>
-        <option value="Hair Color">🎨 Hair Color</option>
-        <option value="Hair Treatment">🍼 Hair Treatment</option>
-        <option value="Massage">💆 Massage</option>
-    </select>
+    <div>
+        <h2 style="text-align:left;">Our Services</h2>
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:10px;">
+            <div class="service-icon-card">✂️<span>Haircut</span></div>
+            <div class="service-icon-card">💄<span>Makeup</span></div>
+            <div class="service-icon-card">🪒<span>Shaving</span></div>
+            <div class="service-icon-card">🎨<span>Hair Color</span></div>
+            <div class="service-icon-card">🍼<span>Hair Treatment</span></div>
+            <div class="service-icon-card">💆<span>Massage</span></div>
+        </div>
+    </div>
 
-    <select name="stylist" required>
-        <option value="">-- Select Stylist --</option>
-        <option value="Anna Cruz">Anna Cruz — Haircut & Styling</option>
-        <option value="Maria Santos">Maria Santos — Makeup Artist</option>
-        <option value="Jose Reyes">Jose Reyes — Shaving & Grooming</option>
-        <option value="Liza Gomez">Liza Gomez — Hair Coloring</option>
-        <option value="Carlo Bautista">Carlo Bautista — Hair Treatment</option>
-        <option value="Rosa Dela Cruz">Rosa Dela Cruz — Massage Therapist</option>
-    </select>
-
-    <input type="date" name="date" required>
-
-    <button type="submit">Book</button>
-</form>
 </div>
 {% endblock %}
