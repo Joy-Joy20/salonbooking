@@ -1,5 +1,5 @@
 from app import app
 
-# Vercel expects this
-def handler(request, context):
-    return app
+# ✅ correct handler for Flask in Vercel
+def handler(environ, start_response):
+    return app(environ, start_response)
