@@ -178,6 +178,37 @@ tr:hover td {
     background: #fdf2f8;
 }
 
+/* CONTACT LAYOUT */
+.contact-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.contact-info {
+    flex: 1;
+    text-align: left;
+}
+
+.contact-info ul {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.contact-info ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.contact-form {
+    flex: 1;
+}
+
+.contact-form form {
+    align-items: flex-start;
+}
+
 /* FOOTER */
 footer {
     background: #111;
