@@ -44,10 +44,13 @@ nav a {
     font-weight: 500;
     font-size: 0.9rem;
     transition: color 0.2s;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
 }
 
 nav a:hover {
     color: #f9a8d4;
+    border-bottom: 2px solid #f9a8d4;
 }
 
 /* CONTAINER */
