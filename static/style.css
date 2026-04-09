@@ -14,12 +14,17 @@ nav {
 
 nav h2 {
     margin-right: auto;
+    margin: 0 auto 0 0;
 }
 
 nav a {
     color: white;
     margin-left: 15px;
     text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
 }
 
 .container {
@@ -31,15 +36,24 @@ form input, form select {
     margin: 10px 0;
     padding: 10px;
     width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 button, .btn {
+    display: inline-block;
     padding: 10px 20px;
     background: black;
     color: white;
     border: none;
     cursor: pointer;
     text-decoration: none;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+button:hover, .btn:hover {
+    background: #333;
 }
 
 table {
@@ -55,4 +69,13 @@ table, th, td {
 th, td {
     padding: 10px;
     text-align: left;
+}
+
+th {
+    background: #111;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
 }
