@@ -356,6 +356,7 @@ footer {
     font-size: 0.82rem;
     line-height: 1.8;
     width: 100%;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 footer a {
