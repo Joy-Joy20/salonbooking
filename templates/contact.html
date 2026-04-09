@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Contact Us 📞</h1>
+<p>We'd love to hear from you! Reach us through any of the following:</p>
+
+<ul>
+    <li>📍 Address: 123 Salon Street, Cebu City</li>
+    <li>📞 Phone: +63 912 345 6789</li>
+    <li>📧 Email: salonbooking@email.com</li>
+    <li>🕐 Hours: Mon-Sat, 8:00 AM - 7:00 PM</li>
+</ul>
+
+<h3>Send us a Message</h3>
+<form method="POST" action="/contact">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <textarea name="message" placeholder="Your Message" style="width:300px; height:100px; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:4px;"></textarea>
+    <button type="submit">Send</button>
+</form>
+{% endblock %}

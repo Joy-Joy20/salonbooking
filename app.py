@@ -31,6 +31,18 @@ def bookings_page():
     return render_template('bookings.html', bookings=bookings)
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    message_sent = False
+    if request.method == 'POST':
+        message_sent = True
+    return render_template('contact.html', message_sent=message_sent)
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
