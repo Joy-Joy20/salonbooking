@@ -2,16 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from supabase import create_client
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = 'salon_secret_key'
 
-# 🔐 Supabase Config
+# 🔐 Supabase Config (SAFE)
 SUPABASE_URL = "https://xaoylhyvbxwkyotljlwq.supabase.co"
 SUPABASE_KEY = "YOUR_KEY_HERE"
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = None
+try:
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+except Exception as e:
+    print("Supabase connection error:", e)
 
-# Local data (temporary for users & stylists)
+# Local fallback data
 users = {}
 stylists = [
     {"name": "Anna Cruz", "specialty": "Haircut & Styling"},
@@ -36,6 +40,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -90,24 +95,34 @@ def admin():
     if not session.get('is_admin'):
         return redirect(url_for('login'))
 
-    # 🔥 Get bookings from Supabase
-    response = supabase.table("bookings").select("*").execute()
-    bookings = response.data
+    bookings = []
+
+    try:
+        if supabase:
+            response = supabase.table("bookings").select("*").execute()
+            bookings = response.data or []
+    except Exception as e:
+        print("Fetch error:", e)
 
     return render_template('admin.html', bookings=bookings, users=users, stylists=stylists)
 
 
-# ❌ Delete Booking (Supabase)
+# ❌ Delete Booking
 @app.route('/admin/delete-booking/<int:id>')
 def delete_booking(id):
     if not session.get('is_admin'):
         return redirect(url_for('login'))
 
-    supabase.table("bookings").delete().eq("id", id).execute()
+    try:
+        if supabase:
+            supabase.table("bookings").delete().eq("id", id).execute()
+    except Exception as e:
+        print("Delete error:", e)
+
     return redirect(url_for('admin'))
 
 
-# ❌ Delete User (local)
+# ❌ Delete User
 @app.route('/admin/delete-user/<username>')
 def delete_user(username):
     if not session.get('is_admin'):
@@ -154,13 +169,16 @@ def book():
         stylist = request.form.get('stylist')
         date = request.form.get('date')
 
-        # 🔥 Save to Supabase
-        supabase.table("bookings").insert({
-            "name": name,
-            "service": service,
-            "stylist": stylist,
-            "date": date
-        }).execute()
+        try:
+            if supabase:
+                supabase.table("bookings").insert({
+                    "name": name,
+                    "service": service,
+                    "stylist": stylist,
+                    "date": date
+                }).execute()
+        except Exception as e:
+            print("Insert error:", e)
 
         return redirect(url_for('bookings_page'))
 
@@ -170,9 +188,14 @@ def book():
 # 📋 View Bookings
 @app.route('/bookings')
 def bookings_page():
-    # 🔥 Fetch from Supabase
-    response = supabase.table("bookings").select("*").execute()
-    bookings = response.data
+    bookings = []
+
+    try:
+        if supabase:
+            response = supabase.table("bookings").select("*").execute()
+            bookings = response.data or []
+    except Exception as e:
+        print("Fetch error:", e)
 
     return render_template('bookings.html', bookings=bookings)
 
@@ -200,7 +223,6 @@ def contact():
     return render_template('contact.html', message_sent=message_sent)
 
 
-# 🚀 Run App
+# 🚀 Local Run ONLY
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(debug=True)
