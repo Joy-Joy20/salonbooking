@@ -14,7 +14,7 @@ body {
 
 /* NAV */
 nav {
-    background: url('/static/images/bg.jpg') center/cover no-repeat;
+    background: #111;
     color: white;
     padding: 15px 25px;
     display: flex;
