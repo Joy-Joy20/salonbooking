@@ -90,3 +90,12 @@ th {
 tr:nth-child(even) {
     background: #f9f9f9;
 }
+
+footer {
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    font-size: 0.85rem;
+}
