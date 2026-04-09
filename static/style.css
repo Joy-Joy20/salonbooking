@@ -44,11 +44,12 @@ h1, h2, h3 {
 
 .container {
     padding: 20px;
+    text-align: center;
 }
 
 form input, form select {
     display: block;
-    margin: 10px 0;
+    margin: 10px auto;
     padding: 10px;
     width: 300px;
     border: 1px solid #ccc;
