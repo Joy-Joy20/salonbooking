@@ -5,7 +5,7 @@
     <h2>Book Appointment</h2>
     <p>Service: <strong>{{ service }}</strong></p>
     <p>Stylist: <strong>{{ stylist }}</strong></p>
-    <form method="POST">
+    <form method="POST" id="bookingForm">
       <div class="field">
         <label>Date</label>
         <input type="date" name="date" required>
@@ -20,4 +20,33 @@
     </form>
   </div>
 </div>
+
+<!-- CONFIRMATION MODAL -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="check">✅</div>
+    <h2>Booking Confirmed!</h2>
+    <p>Thank you, <strong>{{ user.name }}</strong>!</p>
+    <p>Your <strong>{{ service }}</strong> appointment with <strong>{{ stylist }}</strong> has been booked.</p>
+    <a href="/" class="btn" style="margin-top: 20px;">Back to Home</a>
+  </div>
+</div>
+
+<style>
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal.hidden { display: none; }
+.modal-box { background: white; padding: 40px 32px; border-radius: 16px; text-align: center; max-width: 360px; width: 90%; }
+.modal-box h2 { color: #ec4899; margin: 12px 0; }
+.modal-box p { color: #555; margin-bottom: 6px; }
+.check { font-size: 4rem; }
+</style>
+
+<script>
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  fetch('', { method: 'POST', body: formData })
+    .then(res => { if (res.ok) document.getElementById('modal').classList.remove('hidden'); });
+});
+</script>
 {% endblock %}

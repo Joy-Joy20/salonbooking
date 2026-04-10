@@ -109,7 +109,7 @@ def booking():
             "date": request.form.get("date"),
             "time": request.form.get("time"),
         }).execute()
-        return redirect(url_for("confirmation"))
+        return "", 200
     return render_template("booking.html",
         service=session.get("selected_service"),
         stylist=session.get("selected_stylist"),
