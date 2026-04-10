@@ -138,6 +138,13 @@ def my_bookings():
     res = supabase.table("bookings").select("*").eq("email", session["user"]["email"]).execute()
     return render_template("my_bookings.html", bookings=res.data)
 
+@app.route("/cancel-booking/<booking_id>", methods=["POST"])
+def cancel_booking(booking_id):
+    if "user" not in session:
+        return redirect(url_for("login"))
+    supabase.table("bookings").delete().eq("id", booking_id).execute()
+    return redirect(url_for("my_bookings"))
+
 @app.route("/logout")
 def logout():
     session.clear()

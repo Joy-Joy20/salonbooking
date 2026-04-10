@@ -26,6 +26,9 @@
           <span class="value">{{ booking.time }}</span>
         </div>
       </div>
+      <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking?')">
+        <button type="submit" class="cancel-btn">✕ Cancel</button>
+      </form>
     </div>
     {% endfor %}
   </div>
@@ -48,6 +51,8 @@
 .detail-row:last-child { border-bottom: none; }
 .label { color: #888; font-size: 13px; }
 .value { font-weight: 600; color: #374151; font-size: 13px; }
+.cancel-btn { background: #fee2e2; color: #ef4444; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.cancel-btn:hover { background: #fecaca; }
 .no-bookings { text-align: center; padding: 60px 20px; }
 .no-bookings p { color: #888; font-size: 1.1rem; margin-bottom: 20px; }
 </style>
