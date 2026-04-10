@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="confirmation">
+  <div class="confirm-box">
+    <div class="check">✅</div>
+    <h2>Booking Confirmed!</h2>
+    <p>Thank you, <strong>{{ user.name }}</strong>!</p>
+    <p>Your <strong>{{ service }}</strong> appointment with <strong>{{ stylist }}</strong> has been booked.</p>
+    <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

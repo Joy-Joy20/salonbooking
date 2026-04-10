@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="services-page">
+  <h2>Choose a Stylist</h2>
+  <p>Select your preferred stylist</p>
+  <form method="POST">
+    <div class="services-grid">
+      {% for stylist in stylists %}
+      <label class="service-item">
+        <input type="radio" name="stylist" value="{{ stylist.name }}" required>
+        <div class="service-circle">
+          <img src="{{ url_for('static', filename='images/' + stylist.photo) }}" alt="{{ stylist.name }}">
+        </div>
+        <p>{{ stylist.name }}</p>
+        <small>{{ stylist.role }}</small>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="btn-wrap">
+      <button type="submit" class="btn">NEXT</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

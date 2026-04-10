@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="services-page">
+  <h2>Choose a Service</h2>
+  <p>Select your preferred service</p>
+  <form method="POST">
+    <div class="services-grid">
+      {% for service in services %}
+      <label class="service-item">
+        <input type="radio" name="service" value="{{ service.name }}" required>
+        <div class="service-circle">
+          <span>{{ service.icon }}</span>
+        </div>
+        <p>{{ service.name }}</p>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="btn-wrap">
+      <button type="submit" class="btn">NEXT</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

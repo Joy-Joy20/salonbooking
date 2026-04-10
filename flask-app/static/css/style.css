@@ -1,0 +1,93 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+
+body { background-color: #fce7f3; min-height: 100vh; }
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 12px 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.nav-logo { width: 60px; height: 60px; object-fit: contain; }
+.nav-links { display: flex; gap: 40px; }
+.nav-links a, .nav-right a { text-decoration: none; color: #555; font-weight: 600; font-size: 14px; }
+.nav-links a:hover, .nav-right a:hover { color: #ec4899; }
+.nav-right { display: flex; align-items: center; gap: 16px; font-size: 14px; color: #555; }
+
+/* CONTAINER */
+.container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+/* HOME */
+.home { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 60px 20px; }
+.home-logo { width: 250px; height: 250px; object-fit: contain; }
+.home h1 { font-size: 2rem; color: #ec4899; margin-top: 16px; }
+.home p { color: #888; margin-top: 8px; margin-bottom: 24px; }
+
+/* BUTTON */
+.btn {
+  display: inline-block;
+  background-color: #f87171;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 0;
+  width: 100%;
+  max-width: 286px;
+  border-radius: 999px;
+  border: none;
+  box-shadow: 0 4px 0 #b91c1c;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn:hover { background-color: #f472b6; }
+.btn:active { box-shadow: none; transform: translateY(4px); background-color: #f472b6; }
+
+/* FORM PAGE */
+.form-page { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+.profile-img { width: 150px; height: 150px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.form-box { background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); width: 100%; max-width: 380px; margin-top: 24px; }
+.form-box h2 { text-align: center; color: #ec4899; font-size: 1.4rem; margin-bottom: 20px; }
+.field { margin-bottom: 20px; }
+.field label { font-size: 14px; font-weight: 500; display: block; margin-bottom: 6px; }
+.field input { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 999px; font-size: 14px; outline: none; }
+.field input:focus { border-color: #f9a8d4; box-shadow: 0 0 0 2px #fce7f3; }
+.btn-wrap { display: flex; justify-content: center; margin-top: 32px; }
+.error { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 12px; }
+.switch { text-align: center; font-size: 13px; color: #888; margin-top: 16px; }
+.switch a { color: #ec4899; font-weight: 600; text-decoration: none; }
+
+/* SERVICES / STYLIST */
+.services-page { text-align: center; padding: 40px 20px; }
+.services-page h2 { font-size: 1.6rem; color: #374151; }
+.services-page p { color: #888; margin-top: 4px; margin-bottom: 32px; }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 500px; margin: 0 auto; }
+.service-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.service-item input[type="radio"] { display: none; }
+.service-circle {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  border: 2px solid #d1d5db;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.service-circle img { width: 100%; height: 100%; object-fit: cover; }
+.service-item input[type="radio"]:checked ~ .service-circle { background: #f9a8d4; border-color: #ec4899; }
+.service-item input[type="radio"]:checked ~ p { color: #ec4899; }
+.service-item p { font-size: 12px; font-weight: 600; margin-top: 8px; color: #555; }
+.service-item small { font-size: 11px; color: #888; }
+
+/* CONFIRMATION */
+.confirmation { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
+.confirm-box { background: white; padding: 48px 32px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); text-align: center; max-width: 380px; width: 100%; }
+.check { font-size: 4rem; margin-bottom: 16px; }
+.confirm-box h2 { color: #ec4899; font-size: 1.6rem; margin-bottom: 12px; }
+.confirm-box p { color: #555; margin-bottom: 8px; }
+.confirm-box .btn { margin-top: 24px; }

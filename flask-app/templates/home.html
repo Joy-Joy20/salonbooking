@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="home">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="home-logo">
+  <h1>Your beauty, our passion</h1>
+  <p>Book your salon service anytime</p>
+  <a href="{{ url_for('login') }}" class="btn">Explore Services</a>
+</div>
+{% endblock %}
