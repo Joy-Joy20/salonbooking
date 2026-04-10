@@ -4,9 +4,41 @@
   <div class="confirm-box">
     <div class="check">✅</div>
     <h2>Booking Confirmed!</h2>
-    <p>Thank you, <strong>{{ user.name }}</strong>!</p>
-    <p>Your <strong>{{ service }}</strong> appointment with <strong>{{ stylist }}</strong> has been booked.</p>
-    <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    <p class="thank-you">Thank you, <strong>{{ user.name }}</strong>!</p>
+
+    <div class="confirm-details">
+      <div class="detail-row">
+        <span class="label">Service</span>
+        <span class="value">{{ service }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Stylist</span>
+        <span class="value">{{ stylist }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Date</span>
+        <span class="value">{{ date }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Time</span>
+        <span class="value">{{ time }}</span>
+      </div>
+    </div>
+
+    <a href="{{ url_for('home') }}" class="btn" style="margin-top: 24px;">Back to Home</a>
   </div>
 </div>
+
+<style>
+.confirmation { display: flex; justify-content: center; align-items: center; min-height: 60vh; padding: 40px 20px; }
+.confirm-box { background: white; padding: 48px 32px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+.check { font-size: 4rem; margin-bottom: 12px; }
+.confirm-box h2 { color: #ec4899; font-size: 1.8rem; margin-bottom: 8px; }
+.thank-you { color: #555; margin-bottom: 24px; }
+.confirm-details { background: #fce7f3; border-radius: 12px; padding: 16px 24px; text-align: left; }
+.detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9a8d4; }
+.detail-row:last-child { border-bottom: none; }
+.label { color: #888; font-size: 14px; }
+.value { font-weight: 600; color: #374151; font-size: 14px; }
+</style>
 {% endblock %}

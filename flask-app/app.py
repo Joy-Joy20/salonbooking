@@ -109,6 +109,8 @@ def booking():
             "date": request.form.get("date"),
             "time": request.form.get("time"),
         }).execute()
+        session["booking_date"] = request.form.get("date")
+        session["booking_time"] = request.form.get("time")
         return "", 200
     return render_template("booking.html",
         service=session.get("selected_service"),
@@ -123,6 +125,8 @@ def confirmation():
     return render_template("confirmation.html",
         service=session.get("selected_service"),
         stylist=session.get("selected_stylist"),
+        date=session.get("booking_date"),
+        time=session.get("booking_time"),
         user=session["user"]
     )
 

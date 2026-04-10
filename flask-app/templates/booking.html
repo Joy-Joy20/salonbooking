@@ -48,7 +48,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
   fetch(window.location.href, { method: 'POST', body: formData })
     .then(res => {
       if (res.ok) {
-        document.getElementById('modal').classList.remove('hidden');
+        window.location.href = '/confirmation';
       }
     })
     .catch(err => console.error(err));
