@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bookings-page">
+  <h2>My Bookings</h2>
+
+  {% if bookings %}
+  <div class="bookings-list">
+    {% for booking in bookings %}
+    <div class="booking-card">
+      <div class="booking-icon">📅</div>
+      <div class="booking-info">
+        <div class="detail-row">
+          <span class="label">Service</span>
+          <span class="value">{{ booking.service }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Stylist</span>
+          <span class="value">{{ booking.stylist }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Date</span>
+          <span class="value">{{ booking.date }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Time</span>
+          <span class="value">{{ booking.time }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="no-bookings">
+    <p>😔 No bookings yet.</p>
+    <a href="{{ url_for('services') }}" class="btn">Book Now</a>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+.bookings-page { padding: 40px 20px; max-width: 500px; margin: 0 auto; }
+.bookings-page h2 { font-size: 1.6rem; color: #ec4899; margin-bottom: 24px; text-align: center; }
+.bookings-list { display: flex; flex-direction: column; gap: 16px; }
+.booking-card { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; gap: 16px; align-items: flex-start; }
+.booking-icon { font-size: 2rem; }
+.booking-info { flex: 1; }
+.detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #fce7f3; }
+.detail-row:last-child { border-bottom: none; }
+.label { color: #888; font-size: 13px; }
+.value { font-weight: 600; color: #374151; font-size: 13px; }
+.no-bookings { text-align: center; padding: 60px 20px; }
+.no-bookings p { color: #888; font-size: 1.1rem; margin-bottom: 20px; }
+</style>
+{% endblock %}

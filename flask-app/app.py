@@ -104,6 +104,7 @@ def booking():
         supabase.table("bookings").insert({
             "name": session["user"]["name"],
             "phone": session["user"]["phone"],
+            "email": session["user"]["email"],
             "service": session["selected_service"],
             "stylist": session["selected_stylist"],
             "date": request.form.get("date"),
@@ -129,6 +130,13 @@ def confirmation():
         time=session.get("booking_time"),
         user=session["user"]
     )
+
+@app.route("/my-bookings")
+def my_bookings():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    res = supabase.table("bookings").select("*").eq("email", session["user"]["email"]).execute()
+    return render_template("my_bookings.html", bookings=res.data)
 
 @app.route("/logout")
 def logout():
