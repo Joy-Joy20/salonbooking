@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bookings-page">
+  <h2>My Bookings</h2>
+
+  {% if bookings %}
+  <div class="bookings-list">
+    {% for booking in bookings %}
+    <div class="booking-card">
+      <div class="booking-icon">📅</div>
+      <div class="booking-info">
+        <div class="detail-row">
+          <span class="label">Service</span>
+          <span class="value">{{ booking.service }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Stylist</span>
+          <span class="value">{{ booking.stylist }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Date</span>
+          <span class="value">{{ booking.date }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Time</span>
+          <span class="value">{{ booking.time }}</span>
+        </div>
+      </div>
+      <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking?')">
+        <button type="submit" class="cancel-btn">✕ Cancel</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="no-bookings">
+    <p>😔 No bookings yet.</p>
+    <a href="{{ url_for('services') }}" class="btn">Book Now</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -5,8 +5,8 @@ import os
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 
-SUPABASE_URL = os.environ.get("https://hwioziwrdfmcaszzjwuf.supabase.co")
-SUPABASE_KEY = os.environ.get("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3aW96aXdyZGZtY2Fzenpqd3VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MzUwNDYsImV4cCI6MjA5MTMxMTA0Nn0.nzyewOx7vx-QFpULO3-2yp2X8Kqe0VR2mub3x_MoWrQ")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
 supabase = None
 try:
@@ -136,7 +136,8 @@ def book():
                     "name": name,
                     "service": service,
                     "stylist": stylist,
-                    "date": date
+                    "date": date,
+                    "booked_by": session.get('user')
                 }).execute()
         except Exception as e:
             print("Insert error:", e)

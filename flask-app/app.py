@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from supabase import create_client
-import os
+from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = "salon_secret_key"
+app.secret_key = "salon_secret_key_2024"
+app.permanent_session_lifetime = timedelta(days=7)
 
 SUPABASE_URL = "https://hwioziwrdfmcaszzjwuf.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3aW96aXdyZGZtY2Fzenpqd3VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MzUwNDYsImV4cCI6MjA5MTMxMTA0Nn0.nzyewOx7vx-QFpULO3-2yp2X8Kqe0VR2mub3x_MoWrQ"
@@ -39,6 +40,7 @@ def login():
         password = request.form.get("password")
         res = supabase.table("users").select("*").eq("email", email).eq("password", password).execute()
         if res.data:
+            session.permanent = True
             session["user"] = res.data[0]
             return redirect(url_for("services"))
         error = "Invalid email or password."
