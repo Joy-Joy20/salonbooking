@@ -3,38 +3,35 @@
 <head>
     <title>Salon Booking</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Icon (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<nav>
-    <h2>💇 Salon Booking</h2>
+<nav style="position: sticky; top: 0; z-index: 1000;">
 
+    <!-- CENTER LINKS -->
     <div class="nav-links">
         <a href="/">Home</a>
         <a href="/book">Book</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/stylist">Stylists</a>
+        <a href="/bookings">My Bookings</a>  <!-- ✅ added -->
     </div>
 
-    {% if session.user %}
-    <div style="display:flex; align-items:center; gap:12px; color:white; font-size:0.9rem;">
-        <span>👤 {{ session.user }}</span>
-        <a href="/logout" style="color:white; text-decoration:none; font-weight:600;">Logout</a>
+    <!-- RIGHT LOGIN ICON -->
+    <div class="nav-right">
+        {% if session.get('user') %}
+            <span style="font-size:13px; font-weight:bold;">👤 {{ session['user'] }}</span>
+            <a href="/logout" style="margin-left:10px; font-size:13px;">Logout</a>
+        {% else %}
+            <a href="/login"><i class="fa fa-user"></i></a>
+        {% endif %}
     </div>
-    {% else %}
-    <a href="/login" style="color:white; text-decoration:none; font-size:0.9rem;">👤 Login</a>
-    {% endif %}
+
 </nav>
 
 <div class="container">
     {% block content %}{% endblock %}
 </div>
-
-<footer>
-    <p>© 2025 Salon Booking. All rights reserved.</p>
-    <p>📍 123 Salon Street, Cebu City &nbsp;|&nbsp; 📞 +63 912 345 6789 &nbsp;|&nbsp; 📧 salonbooking@email.com</p>
-</footer>
 
 </body>
 </html>
