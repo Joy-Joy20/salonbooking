@@ -1,9 +1,12 @@
-from dotenv import load_dotenv
-load_dotenv()
+import os
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from supabase import create_client
-import os
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
@@ -36,14 +39,12 @@ ADMIN_PASS = os.environ.get("ADMIN_PASS", "admin123")
 def index():
     return render_template('index.html')
 
-# ✅ TEST ROUTE
 @app.route('/test-supabase')
 def test_supabase():
     if supabase:
         return "✅ Supabase connected!"
     return "❌ Supabase NOT connected!"
 
-# ✅ LOGIN — now using Supabase users table
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -68,7 +69,6 @@ def login():
                 print("Login error:", e)
     return render_template('login.html', error=error)
 
-# ✅ SIGNUP — now saving to Supabase users table
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = None
