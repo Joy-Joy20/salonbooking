@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from supabase import create_client
 import os
@@ -17,7 +20,6 @@ try:
 except Exception as e:
     print("Supabase connection error:", e)
 
-users = {}
 stylists = [
     {"name": "Anna Cruz", "specialty": "Haircut & Styling"},
     {"name": "Maria Santos", "specialty": "Makeup Artist"},
@@ -34,6 +36,14 @@ ADMIN_PASS = os.environ.get("ADMIN_PASS", "admin123")
 def index():
     return render_template('index.html')
 
+# ✅ TEST ROUTE
+@app.route('/test-supabase')
+def test_supabase():
+    if supabase:
+        return "✅ Supabase connected!"
+    return "❌ Supabase NOT connected!"
+
+# ✅ LOGIN — now using Supabase users table
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -44,13 +54,21 @@ def login():
             session['user'] = username
             session['is_admin'] = True
             return redirect(url_for('admin'))
-        elif username in users and users[username] == password:
-            session['user'] = username
-            session['is_admin'] = False
-            return redirect(url_for('index'))
-        error = 'Invalid username or password.'
+        else:
+            try:
+                result = supabase.table("users").select("*").eq("username", username).eq("password", password).execute()
+                if result.data:
+                    session['user'] = username
+                    session['is_admin'] = False
+                    return redirect(url_for('index'))
+                else:
+                    error = 'Invalid username or password.'
+            except Exception as e:
+                error = 'Login failed. Try again.'
+                print("Login error:", e)
     return render_template('login.html', error=error)
 
+# ✅ SIGNUP — now saving to Supabase users table
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = None
@@ -59,13 +77,22 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
         confirm = request.form.get('confirm')
-        if username in users:
-            error = 'Username already exists.'
-        elif password != confirm:
+        if password != confirm:
             error = 'Passwords do not match.'
         else:
-            users[username] = password
-            success = True
+            try:
+                existing = supabase.table("users").select("*").eq("username", username).execute()
+                if existing.data:
+                    error = 'Username already exists.'
+                else:
+                    supabase.table("users").insert({
+                        "username": username,
+                        "password": password
+                    }).execute()
+                    success = True
+            except Exception as e:
+                error = 'Signup failed. Try again.'
+                print("Signup error:", e)
     return render_template('signup.html', error=error, success=success)
 
 @app.route('/logout')
@@ -78,10 +105,11 @@ def admin():
     if not session.get('is_admin'):
         return redirect(url_for('login'))
     bookings = []
+    users = []
     try:
         if supabase:
-            response = supabase.table("bookings").select("*").execute()
-            bookings = response.data or []
+            bookings = supabase.table("bookings").select("*").execute().data or []
+            users = supabase.table("users").select("*").execute().data or []
     except Exception as e:
         print("Fetch error:", e)
     return render_template('admin.html', bookings=bookings, users=users, stylists=stylists)
@@ -101,7 +129,11 @@ def delete_booking(id):
 def delete_user(username):
     if not session.get('is_admin'):
         return redirect(url_for('login'))
-    users.pop(username, None)
+    try:
+        if supabase:
+            supabase.table("users").delete().eq("username", username).execute()
+    except Exception as e:
+        print("Delete user error:", e)
     return redirect(url_for('admin'))
 
 @app.route('/admin/add-stylist', methods=['POST'])
@@ -130,6 +162,7 @@ def book():
         service = request.form.get('service')
         stylist = request.form.get('stylist')
         date = request.form.get('date')
+        time = request.form.get('time')
         try:
             if supabase:
                 supabase.table("bookings").insert({
@@ -137,6 +170,7 @@ def book():
                     "service": service,
                     "stylist": stylist,
                     "date": date,
+                    "time": time,
                     "booked_by": session.get('user')
                 }).execute()
         except Exception as e:
@@ -149,11 +183,26 @@ def bookings_page():
     bookings = []
     try:
         if supabase:
-            response = supabase.table("bookings").select("*").execute()
+            response = supabase.table("bookings").select("*").eq("booked_by", session.get('user')).execute()
             bookings = response.data or []
     except Exception as e:
         print("Fetch error:", e)
     return render_template('bookings.html', bookings=bookings)
+
+@app.route('/cancel-booking/<int:booking_id>', methods=['POST'])
+def cancel_booking(booking_id):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    try:
+        if supabase:
+            supabase.table("bookings").delete().eq("id", booking_id).execute()
+    except Exception as e:
+        print("Cancel error:", e)
+    return redirect(url_for('bookings_page'))
+
+@app.route('/services')
+def services():
+    return render_template('services.html')
 
 @app.route('/stylist')
 def stylist():
