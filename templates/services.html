@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Our Services 💇</h1>
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;">
+    <div class="service-icon-card">✂️<span>Haircut</span></div>
+    <div class="service-icon-card">💄<span>Makeup</span></div>
+    <div class="service-icon-card">🪒<span>Shaving</span></div>
+    <div class="service-icon-card">🎨<span>Hair Color</span></div>
+    <div class="service-icon-card">🍼<span>Hair Treatment</span></div>
+    <div class="service-icon-card">💆<span>Massage</span></div>
+</div>
+<div style="text-align:center; margin-top:30px;">
+    <a href="/book" class="btn">Book Now</a>
+</div>
+{% endblock %}
