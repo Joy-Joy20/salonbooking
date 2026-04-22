@@ -1,9 +1,315 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="home">
-  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="home-logo">
-  <h1>Your beauty, our passion</h1>
-  <p>Book your salon service anytime</p>
-  <a href="{{ url_for('login') }}" class="btn">Explore Services</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luxe Salon</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Lato',sans-serif;background:#fff;color:#333;overflow-x:hidden;}
+
+/* NAVBAR */
+nav{position:fixed;top:0;width:100%;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);z-index:1000;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(255,20,147,0.1);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:#FF1493;font-weight:700;}
+.nav-links{display:flex;gap:32px;}
+.nav-links a{text-decoration:none;color:#555;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;}
+.nav-links a:hover{color:#FF1493;}
+.nav-btn{background:#FF1493;color:white;padding:10px 24px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:1px;transition:all 0.3s;}
+.nav-btn:hover{background:#B76E79;transform:translateY(-2px);}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(135deg,#1a0010 0%,#3d0025 40%,#6b0040 70%,#FF1493 100%);display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:100px 20px 60px;}
+.hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,20,147,0.15) 0%,transparent 70%);}
+.particles{position:absolute;inset:0;pointer-events:none;}
+.particle{position:absolute;width:4px;height:4px;background:#FF1493;border-radius:50%;animation:float linear infinite;opacity:0;}
+@keyframes float{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-100px) rotate(720deg);opacity:0;}}
+.hero-content{position:relative;z-index:2;}
+.hero-badge{display:inline-block;background:rgba(255,20,147,0.2);border:1px solid rgba(255,20,147,0.5);color:#ffb3d9;padding:8px 20px;border-radius:999px;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,5rem);color:white;line-height:1.2;margin-bottom:20px;text-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.hero h1 span{color:#FF1493;}
+.hero-subtitle{font-size:1.1rem;color:rgba(255,255,255,0.8);margin-bottom:40px;min-height:30px;letter-spacing:1px;}
+.cursor{display:inline-block;width:2px;height:1.1em;background:#FF1493;animation:blink 0.7s infinite;vertical-align:text-bottom;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:#FF1493;color:white;padding:16px 40px;border-radius:999px;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:1px;transition:all 0.3s;box-shadow:0 8px 30px rgba(255,20,147,0.4);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(255,20,147,0.6);}
+.btn-outline{background:transparent;color:white;padding:16px 40px;border-radius:999px;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:1px;border:2px solid rgba(255,255,255,0.5);transition:all 0.3s;}
+.btn-outline:hover{background:rgba(255,255,255,0.1);border-color:white;}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px;flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;color:#FF1493;font-weight:700;}
+.stat-label{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:2px;text-transform:uppercase;}
+
+/* SECTIONS */
+section{padding:80px 40px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);text-align:center;margin-bottom:12px;color:#1a0010;}
+.section-sub{text-align:center;color:#888;margin-bottom:60px;font-size:15px;letter-spacing:1px;}
+.section-title span{color:#FF1493;}
+
+/* SERVICES */
+.services{background:#FFF0F5;}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;max-width:1100px;margin:0 auto;}
+.card-wrap{perspective:1000px;height:320px;}
+.card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s;}
+.card-wrap:hover .card{transform:rotateY(180deg);}
+.card-front,.card-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+.card-front{background:white;box-shadow:0 8px 30px rgba(255,20,147,0.1);}
+.card-icon{font-size:3.5rem;margin-bottom:16px;}
+.card-front h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:#1a0010;}
+.card-back{background:linear-gradient(135deg,#FF1493,#B76E79);transform:rotateY(180deg);text-align:center;}
+.card-back p{color:rgba(255,255,255,0.9);font-size:14px;margin-bottom:12px;line-height:1.6;}
+.card-price{font-family:'Playfair Display',serif;font-size:1.8rem;color:white;font-weight:700;margin-bottom:20px;}
+.book-btn{background:white;color:#FF1493;padding:10px 28px;border-radius:999px;text-decoration:none;font-weight:700;font-size:13px;transition:all 0.3s;}
+.book-btn:hover{background:#FFF0F5;}
+
+/* TESTIMONIALS */
+.testimonials{background:white;overflow:hidden;}
+.carousel-track{display:flex;gap:24px;animation:scroll 30s linear infinite;width:max-content;}
+.carousel-track:hover{animation-play-state:paused;}
+@keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.testi-card{background:#FFF0F5;border-radius:20px;padding:32px;width:320px;flex-shrink:0;box-shadow:0 4px 20px rgba(255,20,147,0.08);}
+.stars{color:#FF1493;font-size:1.2rem;margin-bottom:12px;}
+.testi-text{font-size:14px;color:#555;line-height:1.7;margin-bottom:20px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF1493,#B76E79);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1.1rem;}
+.testi-name{font-weight:700;color:#1a0010;font-size:14px;}
+.testi-date{font-size:12px;color:#aaa;}
+
+/* STYLISTS */
+.stylists{background:#FFF0F5;}
+.stylists-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;max-width:1000px;margin:0 auto;}
+.stylist-card{background:white;border-radius:24px;padding:40px 32px;text-align:center;box-shadow:0 8px 30px rgba(255,20,147,0.1);transition:transform 0.3s;}
+.stylist-card:hover{transform:translateY(-8px);}
+.stylist-photo{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#FF1493,#B76E79);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:3rem;border:4px solid #FFF0F5;box-shadow:0 4px 20px rgba(255,20,147,0.3);}
+.stylist-name{font-family:'Playfair Display',serif;font-size:1.3rem;color:#1a0010;margin-bottom:6px;}
+.stylist-role{color:#B76E79;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.stylist-stars{color:#FF1493;font-size:1rem;margin-bottom:16px;}
+.stylist-tag{display:inline-block;background:#FFF0F5;color:#FF1493;padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,#FF1493,#B76E79);padding:100px 40px;text-align:center;}
+.cta h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:white;margin-bottom:16px;}
+.cta p{color:rgba(255,255,255,0.85);font-size:1.1rem;margin-bottom:40px;}
+.pulse-btn{background:white;color:#FF1493;padding:18px 48px;border-radius:999px;text-decoration:none;font-weight:700;font-size:16px;letter-spacing:1px;display:inline-block;animation:pulse 2s infinite;box-shadow:0 8px 30px rgba(0,0,0,0.2);}
+@keyframes pulse{0%,100%{box-shadow:0 8px 30px rgba(0,0,0,0.2),0 0 0 0 rgba(255,255,255,0.4);}50%{box-shadow:0 8px 30px rgba(0,0,0,0.2),0 0 0 20px rgba(255,255,255,0);}}
+
+/* FOOTER */
+footer{background:#1a0010;color:rgba(255,255,255,0.6);text-align:center;padding:32px;font-size:13px;}
+footer span{color:#FF1493;}
+
+/* FLOATING */
+.whatsapp{position:fixed;bottom:32px;right:32px;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,0.4);z-index:999;animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.counter-badge{position:fixed;bottom:100px;right:24px;background:#1a0010;color:white;padding:10px 16px;border-radius:12px;font-size:12px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.counter-badge span{color:#FF1493;font-weight:700;font-size:1.1rem;}
+
+/* FADE IN */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:12px 20px;}
+  .nav-links{display:none;}
+  section{padding:60px 20px;}
+  .hero-stats{gap:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">✨ Luxe Salon</div>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#stylists">Stylists</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="#cta">Contact</a>
+  </div>
+  <a href="#cta" class="nav-btn">Book Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Premium Salon Experience ✦</div>
+    <h1>Where Beauty<br>Meets <span>Elegance</span></h1>
+    <p class="hero-subtitle"><span id="typed"></span><span class="cursor"></span></p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-primary">Book Appointment</a>
+      <a href="#services" class="btn-outline">Our Services</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Clients</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Expert Stylists</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <h2 class="section-title fade-in">Our <span>Services</span></h2>
+  <p class="section-sub fade-in">Hover to discover more</p>
+  <div class="services-grid">
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">✂️</div><h3>Haircut</h3></div>
+        <div class="card-back"><p>Precision cuts tailored to your face shape and style preferences.</p><div class="card-price">₱350+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">🎨</div><h3>Hair Color</h3></div>
+        <div class="card-back"><p>Vibrant, long-lasting color treatments from highlights to full color.</p><div class="card-price">₱800+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">💅</div><h3>Manicure</h3></div>
+        <div class="card-back"><p>Luxurious nail care with premium polish and hand massage.</p><div class="card-price">₱250+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">🦶</div><h3>Pedicure</h3></div>
+        <div class="card-back"><p>Relaxing foot treatment with exfoliation and moisturizing.</p><div class="card-price">₱300+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">🧖</div><h3>Facial</h3></div>
+        <div class="card-back"><p>Deep cleansing facial treatments for glowing, healthy skin.</p><div class="card-price">₱600+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+    <div class="card-wrap fade-in">
+      <div class="card">
+        <div class="card-front"><div class="card-icon">💄</div><h3>Makeup</h3></div>
+        <div class="card-back"><p>Professional makeup for events, weddings, and special occasions.</p><div class="card-price">₱1,200+</div><a href="#cta" class="book-btn">Book Now</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <h2 class="section-title fade-in">What Clients <span>Say</span></h2>
+  <p class="section-sub fade-in">Real reviews from real clients</p>
+  <div style="overflow:hidden;">
+    <div class="carousel-track">
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"Absolutely amazing experience! My hair has never looked this good. The stylists are so talented and professional."</p><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Andrea Santos</div><div class="testi-date">2 days ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"I got my makeup done here for my wedding and I looked stunning! Highly recommend Luxe Salon to everyone."</p><div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Maria Cruz</div><div class="testi-date">1 week ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★☆</div><p class="testi-text">"The facial treatment was so relaxing. My skin feels so soft and glowing. Will definitely come back!"</p><div class="testi-author"><div class="testi-avatar">J</div><div><div class="testi-name">Jenny Reyes</div><div class="testi-date">2 weeks ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"Best salon in town! The staff is so friendly and the place is so clean and beautiful. Love it here!"</p><div class="testi-author"><div class="testi-avatar">C</div><div><div class="testi-name">Charis Lim</div><div class="testi-date">3 weeks ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"My hair color turned out exactly how I wanted it. The colorist really listened to what I wanted. 10/10!"</p><div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rose Dela Cruz</div><div class="testi-date">1 month ago</div></div></div></div>
+      <!-- Duplicate for infinite scroll -->
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"Absolutely amazing experience! My hair has never looked this good. The stylists are so talented and professional."</p><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Andrea Santos</div><div class="testi-date">2 days ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"I got my makeup done here for my wedding and I looked stunning! Highly recommend Luxe Salon to everyone."</p><div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Maria Cruz</div><div class="testi-date">1 week ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★☆</div><p class="testi-text">"The facial treatment was so relaxing. My skin feels so soft and glowing. Will definitely come back!"</p><div class="testi-author"><div class="testi-avatar">J</div><div><div class="testi-name">Jenny Reyes</div><div class="testi-date">2 weeks ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"Best salon in town! The staff is so friendly and the place is so clean and beautiful. Love it here!"</p><div class="testi-author"><div class="testi-avatar">C</div><div><div class="testi-name">Charis Lim</div><div class="testi-date">3 weeks ago</div></div></div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text">"My hair color turned out exactly how I wanted it. The colorist really listened to what I wanted. 10/10!"</p><div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rose Dela Cruz</div><div class="testi-date">1 month ago</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STYLISTS -->
+<section class="stylists" id="stylists">
+  <h2 class="section-title fade-in">Meet Our <span>Stylists</span></h2>
+  <p class="section-sub fade-in">Expert hands, beautiful results</p>
+  <div class="stylists-grid">
+    <div class="stylist-card fade-in">
+      <div class="stylist-photo">👩</div>
+      <div class="stylist-name">Joy Mendoza</div>
+      <div class="stylist-role">Senior Hair Stylist</div>
+      <div class="stylist-stars">★★★★★ 4.9</div>
+      <div class="stylist-tag">Hair Color Specialist</div>
+    </div>
+    <div class="stylist-card fade-in">
+      <div class="stylist-photo">👩‍🦱</div>
+      <div class="stylist-name">Mae Pearl Garcia</div>
+      <div class="stylist-role">Makeup Artist</div>
+      <div class="stylist-stars">★★★★★ 5.0</div>
+      <div class="stylist-tag">Bridal Makeup Expert</div>
+    </div>
+    <div class="stylist-card fade-in">
+      <div class="stylist-photo">👩‍🦰</div>
+      <div class="stylist-name">Charis Villanueva</div>
+      <div class="stylist-role">Nail & Skin Specialist</div>
+      <div class="stylist-stars">★★★★☆ 4.8</div>
+      <div class="stylist-tag">Facial & Nail Expert</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <h2 class="fade-in">Book Your Appointment Today</h2>
+  <p class="fade-in">Experience luxury beauty services tailored just for you.</p>
+  <a href="/booking" class="pulse-btn">✨ Book Now</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 <span>Luxe Salon</span>. All rights reserved. Made with ♥</p>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/639487560250" class="whatsapp" target="_blank">💬</a>
+
+<!-- COUNTER BADGE -->
+<div class="counter-badge">🔥 <span id="counter">24</span> people booked today</div>
+
+<script>
+// PARTICLES
+const container = document.getElementById('particles');
+for(let i = 0; i < 50; i++){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random()*100+'%';
+  p.style.width = p.style.height = (Math.random()*4+2)+'px';
+  p.style.animationDuration = (Math.random()*10+8)+'s';
+  p.style.animationDelay = (Math.random()*10)+'s';
+  const colors = ['#FF1493','#ffb3d9','#B76E79','#fff','#ff69b4'];
+  p.style.background = colors[Math.floor(Math.random()*colors.length)];
+  container.appendChild(p);
+}
+
+// TYPING ANIMATION
+const texts = ['Your beauty is our passion.','Premium salon experience.','Where elegance meets style.','Book your appointment today.'];
+let ti = 0, ci = 0, deleting = false;
+const typed = document.getElementById('typed');
+function type(){
+  const current = texts[ti];
+  if(!deleting){
+    typed.textContent = current.slice(0, ++ci);
+    if(ci === current.length){ deleting = true; setTimeout(type, 2000); return; }
+  } else {
+    typed.textContent = current.slice(0, --ci);
+    if(ci === 0){ deleting = false; ti = (ti+1)%texts.length; }
+  }
+  setTimeout(type, deleting ? 50 : 80);
+}
+type();
+
+// FADE IN ON SCROLL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// COUNTER ANIMATION
+let count = 24;
+setInterval(() => {
+  if(Math.random() > 0.7){
+    count += Math.floor(Math.random()*2)+1;
+    document.getElementById('counter').textContent = count;
+  }
+}, 5000);
+</script>
+</body>
+</html>
