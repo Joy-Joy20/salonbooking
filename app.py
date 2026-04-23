@@ -140,6 +140,21 @@ def book():
         time = request.form.get('time') or None
         payment_method = request.form.get('payment_method', 'Cash')
         gcash_ref = request.form.get('gcash_ref') or None
+        gcash_screenshot = None
+
+        # Upload screenshot to Supabase Storage
+        screenshot_file = request.files.get('gcash_screenshot')
+        if screenshot_file and screenshot_file.filename:
+            try:
+                file_bytes = screenshot_file.read()
+                file_name = f"gcash_{session.get('user')}_{screenshot_file.filename}"
+                supabase.storage.from_('gcash-screenshots').upload(
+                    file_name, file_bytes,
+                    {'content-type': screenshot_file.content_type, 'upsert': 'true'}
+                )
+                gcash_screenshot = supabase.storage.from_('gcash-screenshots').get_public_url(file_name)
+            except Exception as upload_err:
+                print("Screenshot upload error:", upload_err)
 
         try:
             result = supabase.table("bookings").insert({
@@ -151,6 +166,7 @@ def book():
                 "status": "Pending",
                 "payment_method": payment_method,
                 "gcash_ref": gcash_ref,
+                "gcash_screenshot": gcash_screenshot,
                 "booked_by": session.get('user')
             }).execute()
             print("Insert result:", result)

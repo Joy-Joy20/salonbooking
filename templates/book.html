@@ -6,7 +6,7 @@
     <!-- FORM COLUMN -->
     <div class="booking-form">
         <h2>Book an Appointment</h2>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data" id="book-form">
             <input type="text" name="name" placeholder="Your Name" required>
             <select name="service" required>
                 <option value="">-- Select Service --</option>
@@ -77,14 +77,29 @@
                         1. Open your GCash app<br>
                         2. Tap <strong>Pay QR</strong> and scan the code above<br>
                         3. Enter the exact amount for your service<br>
-                        4. Send screenshot to our Facebook page<br>
-                        5. Click <strong>Book Now</strong> to confirm
+                        4. Take a <strong>screenshot</strong> of the success screen<br>
+                        5. Upload the screenshot below<br>
+                        6. Click <strong>Book Now</strong> to confirm
                     </div>
                     <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="gcash-ref-input">
+
+                    <!-- SCREENSHOT UPLOAD -->
+                    <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer;" onclick="document.getElementById('gcash-upload').click()">
+                        <div id="upload-prompt">
+                            <p style="font-size:24px; margin-bottom:4px;">📤</p>
+                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
+                            <p style="font-size:11px; color:#888;">Tap here to upload your payment screenshot</p>
+                        </div>
+                        <div id="upload-preview" style="display:none;">
+                            <img id="preview-img" src="" alt="Screenshot preview" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
+                            <p style="font-size:11px; color:#007bff; font-weight:600;">✅ Screenshot selected! Click to change.</p>
+                        </div>
+                        <input id="gcash-upload" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewScreenshot(this)">
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="book-btn">Book Now</button>
+            <button type="submit" class="book-btn" id="book-btn">Book Now</button>
         </form>
     </div>
 
@@ -147,4 +162,31 @@ function updatePayment(el) {
         gcashInfo.style.display = 'block';
     }
 }
+
+function previewScreenshot(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+            document.getElementById('upload-prompt').style.display = 'none';
+            document.getElementById('upload-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.getElementById('book-form').addEventListener('submit', function(e) {
+    var payment = document.querySelector('input[name="payment_method"]:checked').value;
+    if (payment === 'GCash') {
+        var file = document.getElementById('gcash-upload').files[0];
+        if (!file) {
+            e.preventDefault();
+            alert('Please upload your GCash payment screenshot.');
+            return;
+        }
+    }
+    var btn = document.getElementById('book-btn');
+    btn.textContent = '⏳ Uploading...';
+    btn.disabled = true;
+});
 </script>
