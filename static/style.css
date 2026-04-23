@@ -392,6 +392,70 @@ tr:hover {
     color: #999;
 }
 
+/* FEATURED SERVICES */
+.featured-section {
+    padding: 60px 10%;
+    background: #fff;
+    text-align: center;
+}
+
+.featured-section h2 {
+    font-size: 2rem;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+.featured-section > p {
+    color: #888;
+    margin-bottom: 40px;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.featured-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.featured-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 30px rgba(255, 20, 147, 0.2);
+}
+
+.featured-icon {
+    font-size: 3rem;
+    color: #FF1493;
+}
+
+.featured-card h3 {
+    font-size: 1.2rem;
+    color: #111;
+    margin: 0;
+}
+
+.featured-card p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* FOOTER */
 footer {
     background: linear-gradient(135deg, #ff69b4, #ff1493);

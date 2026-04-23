@@ -1,9 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="min-height: 100vh; background: url('/static/images/bg.jpg') center/cover no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:center; margin: -30px -30px 0 -30px; padding: 80px 20px;">
-<h1>Welcome to Salon Booking 💇♀️</h1>
-<p>Book your appointment easily.</p>
-<a class="btn" href="{% if session.user %}/book{% else %}/login{% endif %}" style="display:block; width:fit-content; margin:0 auto;">Book Now</a>
+
+<!-- HERO -->
+<div style="min-height: 100vh; background: url('/static/images/bg.jpg') center/cover no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 0 -30px; padding: 80px 20px;">
+    <h1 style="color:white; text-shadow: 0 2px 8px rgba(0,0,0,0.4);">Welcome to Salon Booking 💇♀️</h1>
+    <p style="color:white; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">Book your appointment easily.</p>
+    <a class="btn" href="{% if session.user %}/book{% else %}/login{% endif %}" style="display:block; width:fit-content; margin:0 auto;">Book Now</a>
 </div>
+
+<!-- FEATURED SERVICES -->
+<div class="featured-section">
+    <h2>Our Featured Services</h2>
+    <p>Treat yourself to the best beauty and wellness experience</p>
+
+    <div class="featured-grid">
+
+        <div class="featured-card">
+            <div class="featured-icon">✂️</div>
+            <h3>Hair Services</h3>
+            <p>Haircut, Hair Color, Rebonding, Keratin Treatment, Hot Oil & more</p>
+            <a href="/book?service=hair" class="btn">Book Now</a>
+        </div>
+
+        <div class="featured-card">
+            <div class="featured-icon">💅</div>
+            <h3>Nail Services</h3>
+            <p>Manicure, Pedicure, Nail Art, Gel Polish, Nail Extension & more</p>
+            <a href="/book?service=nails" class="btn">Book Now</a>
+        </div>
+
+        <div class="featured-card">
+            <div class="featured-icon">🌸</div>
+            <h3>Spa & Wellness</h3>
+            <p>Swedish Massage, Deep Tissue, Foot Massage, Facial, Body Scrub & more</p>
+            <a href="/book?service=spa" class="btn">Book Now</a>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
