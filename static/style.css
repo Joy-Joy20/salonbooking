@@ -355,6 +355,111 @@ tr:hover {
     color: #555;
 }
 
+/* BOOK PAGE */
+.book-heading {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.book-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.book-form input,
+.book-form select {
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    border: 1.5px solid #f0b8d8;
+    width: 300px;
+    margin: 8px 0;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.book-form input:focus,
+.book-form select:focus {
+    border-color: #e91e8c;
+    box-shadow: 0 0 0 3px rgba(233,30,140,0.1);
+}
+
+.book-btn {
+    padding: 14px 40px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 999px;
+    background: #e91e8c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(233,30,140,0.3);
+}
+
+.book-btn:hover {
+    background: #c2177a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(233,30,140,0.4);
+}
+
+.svc-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.8rem 1.4rem;
+    box-shadow: 0 4px 16px rgba(233,30,140,0.1);
+    border: 1px solid #fce4f0;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.svc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(233,30,140,0.18);
+}
+
+.svc-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e91e8c;
+    margin: 12px 0 16px;
+    text-align: center;
+}
+
+.svc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.svc-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid #fce4f0;
+    color: #444;
+}
+
+.svc-list li:last-child {
+    border-bottom: none;
+}
+
+.svc-price {
+    font-weight: 600;
+    color: #e91e8c;
+    margin-left: 12px;
+}
+
 /* SERVICE CATEGORY CARD */
 .service-cat-card {
     background: white;
