@@ -331,6 +331,49 @@ tr:hover {
     color: #555;
 }
 
+/* SERVICE CATEGORY CARD */
+.service-cat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 16px rgba(233, 30, 140, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+.service-cat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(233, 30, 140, 0.2);
+}
+
+.service-cat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.service-cat-card h3 {
+    color: #e91e8c;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.service-cat-card ul {
+    list-style: disc;
+    text-align: left;
+    padding-left: 18px;
+}
+
+.service-cat-card ul li {
+    font-size: 0.82rem;
+    color: #555;
+    padding: 3px 0;
+    border-bottom: none;
+}
+
 /* SERVICE ICON CARD */
 .service-icon-card {
     background: white;
