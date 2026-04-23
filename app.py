@@ -8,9 +8,21 @@ except ImportError:
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from supabase import create_client
 from functools import wraps
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME', '')
+
+mail = Mail(app)
+s = URLSafeTimedSerializer(app.secret_key)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
@@ -352,6 +364,61 @@ def admin_delete_user(username):
     except Exception as e:
         print("Delete user error:", e)
     return redirect(url_for('admin_users'))
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        try:
+            result = supabase.table('users').select('*').eq('email', email).execute()
+            if not result.data:
+                flash('No account found with that email.', 'error')
+                return redirect(url_for('forgot_password'))
+            token = s.dumps(email, salt='password-reset')
+            reset_link = url_for('reset_password', token=token, _external=True)
+            msg = Message(subject='🔐 House of Joy Salon & Spa — Password Reset', recipients=[email])
+            msg.html = f'''
+            <div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
+              <h2 style="color:#e91e8c;text-align:center;">🎀 House of Joy Salon & Spa</h2>
+              <p style="color:#333;font-size:14px;">Hi! We received a request to reset your password.</p>
+              <p style="color:#333;font-size:14px;">Click the button below. This link expires in <strong>1 hour</strong>.</p>
+              <div style="text-align:center;margin:1.5rem 0;">
+                <a href="{reset_link}" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;">Reset Password 🔑</a>
+              </div>
+              <p style="color:#888;font-size:12px;">If you didn't request this, ignore this email.</p>
+            </div>'''
+            mail.send(msg)
+            flash('Password reset link sent to your email! Check your inbox. 📧', 'success')
+        except Exception as e:
+            print('Forgot password error:', e)
+            flash('Failed to send email. Please try again.', 'error')
+        return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        email = s.loads(token, salt='password-reset', max_age=3600)
+    except Exception:
+        flash('Reset link is invalid or has expired.', 'error')
+        return redirect(url_for('forgot_password'))
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        confirm = request.form.get('confirm_password', '')
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'error')
+            return render_template('reset_password.html', token=token)
+        if password != confirm:
+            flash('Passwords do not match.', 'error')
+            return render_template('reset_password.html', token=token)
+        try:
+            supabase.table('users').update({'password': password}).eq('email', email).execute()
+            flash('Password reset successful! You can now log in. ✅', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            print('Reset error:', e)
+            flash('Failed to reset password. Try again.', 'error')
+    return render_template('reset_password.html', token=token)
 
 if __name__ == "__main__":
     app.run(debug=True)
