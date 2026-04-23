@@ -1,42 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="bookings-page">
-  <h2>My Bookings</h2>
+<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
+    <h1 style="color:#e91e8c; text-align:center;">My Bookings 📅</h1>
 
-  {% if bookings %}
-  <div class="bookings-list">
-    {% for booking in bookings %}
-    <div class="booking-card">
-      <div class="booking-icon">📅</div>
-      <div class="booking-info">
-        <div class="detail-row">
-          <span class="label">Service</span>
-          <span class="value">{{ booking.service }}</span>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div style="background:{% if category == 'success' %}#d1fae5{% else %}#fee2e2{% endif %}; color:{% if category == 'success' %}#065f46{% else %}#991b1b{% endif %}; padding:12px 20px; border-radius:10px; margin-bottom:20px; text-align:center; font-weight:600;">
+            {{ message }}
         </div>
-        <div class="detail-row">
-          <span class="label">Stylist</span>
-          <span class="value">{{ booking.stylist }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Date</span>
-          <span class="value">{{ booking.date }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Time</span>
-          <span class="value">{{ booking.time }}</span>
-        </div>
-      </div>
-      <form method="POST" action="/cancel-booking/{{ booking.id }}" onsubmit="return confirm('Cancel this booking?')">
-        <button type="submit" class="cancel-btn">✕ Cancel</button>
-      </form>
+        {% endfor %}
+    {% endwith %}
+
+    {% if bookings %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service</th>
+                <th>Stylist</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in bookings %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ b.service }}</td>
+                <td>{{ b.stylist }}</td>
+                <td>{{ b.date }}</td>
+                <td>{{ b.time or '-' }}</td>
+                <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
+                <td>
+                    {% if b.status == 'Pending' %}
+                    <form method="POST" action="/cancel-booking/{{ b.id }}" onsubmit="return confirm('Cancel this booking?')">
+                        <button type="submit" class="cancel-btn" style="margin:0;">Cancel</button>
+                    </form>
+                    {% else %}
+                    <span style="color:#aaa; font-size:13px;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center; margin-top:60px;">
+        <p style="font-size:18px; color:#999;">No bookings yet 😔</p>
+        <a href="/book" class="btn" style="margin-top:16px; display:inline-block;">Book Now</a>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="no-bookings" style="text-align:center; margin-top:40px;">
-    <p>😔 No bookings yet.</p>
-    <a href="/book" class="btn" style="display:inline-block; margin-top:10px;">Book Now</a>
-  </div>
-  {% endif %}
+    {% endif %}
 </div>
 {% endblock %}

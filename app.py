@@ -5,7 +5,7 @@ try:
 except ImportError:
     pass
 
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from supabase import create_client
 from functools import wraps
 
@@ -143,8 +143,10 @@ def book():
                 "status": "Pending",
                 "booked_by": session.get('user')
             }).execute()
+            flash('Booking submitted successfully!', 'success')
         except Exception as e:
             print("Insert error:", e)
+            flash('Booking failed. Try again.', 'error')
         return redirect(url_for('bookings_page'))
     return render_template('book.html', stylists=stylists)
 
@@ -163,7 +165,7 @@ def bookings_page():
 @login_required
 def cancel_booking(booking_id):
     try:
-        supabase.table("bookings").delete().eq("id", booking_id).execute()
+        supabase.table("bookings").update({"status": "Cancelled"}).eq("id", booking_id).eq("booked_by", session.get('user')).execute()
     except Exception as e:
         print("Cancel error:", e)
     return redirect(url_for('bookings_page'))
