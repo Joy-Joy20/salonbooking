@@ -5,17 +5,19 @@
 
     <div class="card" style="margin:30px auto 30px; max-width:800px;">
         <h3 style="text-align:left; margin-bottom:16px;">Add New Service</h3>
-        <form method="POST" action="/admin/services/add" style="flex-direction:row; flex-wrap:wrap; gap:10px; align-items:flex-end; justify-content:flex-start;">
-            <input type="text" name="name" placeholder="Service Name" required style="width:180px; margin:0;">
-            <select name="category" required style="width:160px; margin:0;">
+        <form method="POST" action="/admin/services/add" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <input type="text" name="name" placeholder="Service Name" required style="margin:0; width:100%;">
+            <select name="category" required style="margin:0; width:100%;">
                 <option value="">-- Category --</option>
                 <option value="Hair">✂️ Hair</option>
                 <option value="Nail">💅 Nail</option>
                 <option value="Spa">🌸 Spa</option>
             </select>
-            <input type="text" name="description" placeholder="Description" style="width:220px; margin:0;">
-            <input type="number" name="price" placeholder="Price (₱)" style="width:120px; margin:0;">
-            <button type="submit" style="margin:0;">Add Service</button>
+            <input type="text" name="description" placeholder="Description" style="margin:0; width:100%;">
+            <input type="number" name="price" placeholder="Price (₱)" style="margin:0; width:100%;">
+            <div style="grid-column:span 2; display:flex; justify-content:flex-start;">
+                <button type="submit" style="margin:0;">Add Service</button>
+            </div>
         </form>
     </div>
 
