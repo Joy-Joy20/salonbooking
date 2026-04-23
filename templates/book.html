@@ -29,8 +29,8 @@
 
             <!-- STEP 1: DETAILS -->
             <div id="step-1">
-                <input type="text" name="name" id="f-name" placeholder="Your Name" required>
-                <select name="service" id="f-service" required>
+                <input type="text" name="name" id="f-name" placeholder="Your Name">
+                <select name="service" id="f-service">
                     <option value="">-- Select Service --</option>
                     <optgroup label="✂️ Hair Services">
                         <option value="Haircut">Haircut — ₱150</option>
@@ -54,14 +54,14 @@
                         <option value="Body Scrub">Body Scrub — ₱550</option>
                     </optgroup>
                 </select>
-                <select name="stylist" id="f-stylist" required>
+                <select name="stylist" id="f-stylist">
                     <option value="">-- Select Stylist --</option>
                     {% for s in stylists %}
                     <option value="{{ s.name }}">{{ s.name }} — {{ s.specialty }}</option>
                     {% endfor %}
                 </select>
-                <input type="date" name="date" id="f-date" required>
-                <input type="time" name="time" id="f-time" required>
+                <input type="date" name="date" id="f-date">
+                <input type="time" name="time" id="f-time">
                 <button type="button" class="book-btn" onclick="goToStep2()">Next: Choose Payment →</button>
             </div>
 
