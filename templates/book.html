@@ -213,14 +213,14 @@ function goToStep(n) {
 }
 
 function goToStep2() {
-    var name = document.getElementById('f-name').value;
+    var name = document.getElementById('f-name').value.trim();
     var service = document.getElementById('f-service').value;
     var stylist = document.getElementById('f-stylist').value;
     var date = document.getElementById('f-date').value;
-    if (!name || !service || !stylist || !date) {
-        alert('Please fill in all required fields.');
-        return;
-    }
+    if (!name) { alert('Please enter your name.'); return; }
+    if (!service) { alert('Please select a service.'); return; }
+    if (!stylist) { alert('Please select a stylist.'); return; }
+    if (!date) { alert('Please select a date.'); return; }
     goToStep(2);
 }
 
