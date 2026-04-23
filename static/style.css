@@ -361,108 +361,241 @@ tr:hover {
 }
 
 /* BOOK PAGE */
-.book-heading {
-    font-size: 26px;
+.book-page-container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+.booking-form {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(233,30,140,0.08);
+    border: 1px solid #fce4f0;
+}
+
+.booking-form h2 {
+    font-size: 22px;
     font-weight: 700;
-    color: #111;
-    margin-bottom: 16px;
-    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 1.4rem;
+    text-align: left;
 }
 
-.book-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.booking-form input,
+.booking-form select {
     width: 100%;
-}
-
-.book-form input,
-.book-form select {
+    padding: 12px 16px;
     border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 14px;
     border: 1.5px solid #f0b8d8;
-    width: 300px;
-    margin: 8px 0;
+    font-size: 13px;
     font-family: 'Poppins', sans-serif;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #333;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
+    max-width: 100%;
 }
 
-.book-form input:focus,
-.book-form select:focus {
+.booking-form input:focus,
+.booking-form select:focus {
     border-color: #e91e8c;
-    box-shadow: 0 0 0 3px rgba(233,30,140,0.1);
+    box-shadow: 0 0 0 3px rgba(233,30,140,0.08);
+}
+
+.payment-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.payment-opt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 2px solid #f0b8d8;
+    cursor: pointer;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.payment-opt.cash-active {
+    border-color: #e91e8c;
+    background: #fce4f0;
+    color: #e91e8c;
+}
+
+.payment-opt.gcash-active {
+    border-color: #007bff;
+    background: #e8f0fe;
+    color: #007bff;
+}
+
+.cash-info {
+    background: #fff9fb;
+    border: 1.5px solid #f0b8d8;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.7;
+}
+
+.gcash-info {
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 16px;
+    padding: 1.2rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.gcash-qr {
+    width: 160px;
+    height: 160px;
+    border-radius: 12px;
+    margin: 10px auto;
+    border: 1px solid #dce8ff;
+    padding: 6px;
+    object-fit: contain;
+    display: block;
+}
+
+.gcash-number {
+    font-size: 17px;
+    font-weight: 700;
+    color: #007bff;
+    letter-spacing: 1px;
+    margin: 6px 0 2px;
+}
+
+.gcash-steps {
+    background: #f0f7ff;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: #444;
+    text-align: left;
+    line-height: 1.9;
+    margin-top: 10px;
+}
+
+.gcash-ref-input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #b3d1ff;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 .book-btn {
-    padding: 14px 40px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 999px;
-    background: #e91e8c;
-    color: white;
-    border: none;
-    cursor: pointer;
+    width: 100%;
+    padding: 14px;
     margin-top: 14px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 14px rgba(233,30,140,0.3);
+    background: linear-gradient(135deg, #e91e8c, #ff6eb4);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(233,30,140,0.3);
+    font-family: 'Poppins', sans-serif;
 }
 
 .book-btn:hover {
-    background: #c2177a;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(233,30,140,0.4);
+    box-shadow: 0 8px 24px rgba(233,30,140,0.4);
 }
 
-.svc-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.8rem 1.4rem;
-    box-shadow: 0 4px 16px rgba(233,30,140,0.1);
+.services-col h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.service-card {
+    background: #fff;
     border: 1px solid #fce4f0;
-    transition: all 0.3s ease;
-    align-self: flex-start;
+    border-radius: 16px;
+    padding: 1.4rem 1.2rem;
+    box-shadow: 0 2px 12px rgba(233,30,140,0.07);
+    transition: all 0.3s;
 }
 
-.svc-card:hover {
+.service-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(233,30,140,0.18);
+    box-shadow: 0 8px 24px rgba(233,30,140,0.15);
+    border-color: #e91e8c;
 }
 
-.svc-title {
-    font-size: 18px;
+.service-card-icon {
+    font-size: 36px;
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.service-card-title {
+    font-size: 15px;
     font-weight: 700;
     color: #e91e8c;
-    margin: 12px 0 16px;
     text-align: center;
+    margin-bottom: 14px;
 }
 
-.svc-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    width: 100%;
-}
-
-.svc-list li {
+.price-row {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    padding: 6px 0;
+    align-items: center;
+    font-size: 12px;
+    padding: 5px 0;
     border-bottom: 1px solid #fce4f0;
-    color: #444;
+    color: #555;
 }
 
-.svc-list li:last-child {
-    border-bottom: none;
-}
+.price-row:last-child { border-bottom: none; }
 
-.svc-price {
-    font-weight: 600;
+.price-amount {
+    font-weight: 700;
     color: #e91e8c;
-    margin-left: 12px;
+    font-size: 12px;
 }
 
 /* SERVICE CATEGORY CARD */
