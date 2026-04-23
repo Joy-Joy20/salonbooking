@@ -3,10 +3,12 @@
 {% block content %}
 
 <!-- HERO -->
-<div style="min-height: 100vh; background: url('/static/images/bg.jpg') center/cover no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 0 -30px; padding: 80px 20px;">
-    <h1 style="color:white; text-shadow: 0 2px 8px rgba(0,0,0,0.4);">Welcome to Salon Booking 💇♀️</h1>
-    <p style="color:white; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">Book your appointment easily.</p>
-    <a class="btn" href="{% if session.user %}/book{% else %}/login{% endif %}" style="display:block; width:fit-content; margin:0 auto;">Book Now</a>
+<div style="min-height:85vh; background:url('/static/images/bg.jpg') center/cover no-repeat; display:flex; align-items:center; justify-content:center; margin:0 -30px;">
+    <div style="background:rgba(0,0,0,0.15); width:100%; min-height:85vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center;">
+        <h1 style="color:white; font-size:3rem; font-weight:700; text-shadow:0 3px 12px rgba(0,0,0,0.4); margin-bottom:16px;">Welcome to Salon Booking 💇♀️</h1>
+        <p style="color:white; font-size:18px; text-shadow:0 1px 6px rgba(0,0,0,0.4); margin-bottom:32px;">Book your appointment easily and treat yourself to the best.</p>
+        <a class="btn hero-btn" href="{% if session.user %}/book{% else %}/login{% endif %}">Book Now</a>
+    </div>
 </div>
 
 <!-- FEATURED SERVICES -->
