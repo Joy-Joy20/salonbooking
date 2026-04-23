@@ -44,15 +44,47 @@
             <!-- PAYMENT METHOD -->
             <div style="width:300px; text-align:left; margin:8px 0;">
                 <label style="font-size:14px; font-weight:600; color:#444; display:block; margin-bottom:8px;">Payment Method</label>
-                <div style="display:flex; gap:12px;">
-                    <label style="flex:1; display:flex; align-items:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer;" id="cash-label">
+                <div style="display:flex; gap:12px; margin-bottom:12px;">
+                    <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer; transition:all 0.2s;" id="cash-label">
                         <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="updatePayment(this)">
-                        <span>💵</span><span style="font-size:14px; font-weight:500;">Cash</span>
+                        <span>💵</span><span style="font-size:14px; font-weight:600; color:#333;">Cash</span>
                     </label>
-                    <label style="flex:1; display:flex; align-items:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer;" id="gcash-label">
+                    <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer; transition:all 0.2s;" id="gcash-label">
                         <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="updatePayment(this)">
-                        <span>📱</span><span style="font-size:14px; font-weight:500; color:#007bff;">GCash</span>
+                        <span>📱</span><span style="font-size:14px; font-weight:600; color:#007bff;">GCash</span>
                     </label>
+                </div>
+
+                <!-- CASH INFO -->
+                <div id="cash-info" style="background:#fce4f0; border:1.5px solid #f0b8d8; border-radius:12px; padding:12px 16px; font-size:13px; color:#555; line-height:1.7;">
+                    💵 <strong>Pay in cash</strong> upon arrival at the salon.<br>
+                    Please be on time for your appointment. 😊
+                </div>
+
+                <!-- GCASH INFO -->
+                <div id="gcash-info" style="display:none; background:#fff; border:2px solid #007bff; border-radius:16px; padding:1.2rem; text-align:center; animation:fadeIn 0.3s ease;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px;">
+                        <span style="font-size:20px;">📱</span>
+                        <span style="font-size:15px; font-weight:700; color:#007bff;">GCash Payment</span>
+                    </div>
+                    <img src="/static/images/gcash-qr.png" alt="GCash QR Code"
+                        style="width:160px; height:160px; object-fit:contain; border:1px solid #e0e0e0; border-radius:12px; padding:8px;"
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=GCash+09123456789'">
+                    <div style="margin-top:10px;">
+                        <p style="font-size:13px; color:#555; margin-bottom:2px;">GCash Number:</p>
+                        <p style="font-size:16px; font-weight:700; color:#007bff; letter-spacing:1px;">0912 345 6789</p>
+                        <p style="font-size:13px; color:#555; margin-top:4px;">Account Name: <strong>Salon Booking</strong></p>
+                    </div>
+                    <div style="margin-top:10px; background:#f0f7ff; border-radius:10px; padding:10px 14px; font-size:12px; color:#444; text-align:left; line-height:1.8;">
+                        📌 <strong>Instructions:</strong><br>
+                        1. Open your GCash app<br>
+                        2. Tap <strong>Pay QR</strong> and scan the code above<br>
+                        3. Enter the exact amount for your service<br>
+                        4. Send screenshot to our Facebook page<br>
+                        5. Click <strong>Book Now</strong> to confirm
+                    </div>
+                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)"
+                        style="width:100%; margin-top:10px; padding:10px 14px; border-radius:10px; border:1.5px solid #b3d1ff; font-size:13px; outline:none; box-sizing:border-box;">
                 </div>
             </div>
 
@@ -109,19 +141,27 @@
 
 <script>
 function updatePayment(el) {
-    document.getElementById('cash-label').style.borderColor = '#f0b8d8';
-    document.getElementById('cash-label').style.background = '#fff';
-    document.getElementById('gcash-label').style.borderColor = '#f0b8d8';
-    document.getElementById('gcash-label').style.background = '#fff';
+    var cashLabel = document.getElementById('cash-label');
+    var gcashLabel = document.getElementById('gcash-label');
+    var cashInfo = document.getElementById('cash-info');
+    var gcashInfo = document.getElementById('gcash-info');
+
     if (el.value === 'Cash') {
-        document.getElementById('cash-label').style.borderColor = '#e91e8c';
-        document.getElementById('cash-label').style.background = '#fce4f0';
+        cashLabel.style.borderColor = '#e91e8c';
+        cashLabel.style.background = '#fce4f0';
+        gcashLabel.style.borderColor = '#f0b8d8';
+        gcashLabel.style.background = '#fff';
+        cashInfo.style.display = 'block';
+        gcashInfo.style.display = 'none';
     } else {
-        document.getElementById('gcash-label').style.borderColor = '#007bff';
-        document.getElementById('gcash-label').style.background = '#e8f0fe';
+        gcashLabel.style.borderColor = '#007bff';
+        gcashLabel.style.background = '#e8f0fe';
+        cashLabel.style.borderColor = '#f0b8d8';
+        cashLabel.style.background = '#fff';
+        cashInfo.style.display = 'none';
+        gcashInfo.style.display = 'block';
     }
 }
-// Set default highlight
 document.getElementById('cash-label').style.borderColor = '#e91e8c';
 document.getElementById('cash-label').style.background = '#fce4f0';
 </script>

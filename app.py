@@ -139,6 +139,7 @@ def book():
         date = request.form.get('date')
         time = request.form.get('time') or None
         payment_method = request.form.get('payment_method', 'Cash')
+        gcash_ref = request.form.get('gcash_ref') or None
 
         try:
             result = supabase.table("bookings").insert({
@@ -149,6 +150,7 @@ def book():
                 "time": time,
                 "status": "Pending",
                 "payment_method": payment_method,
+                "gcash_ref": gcash_ref,
                 "booked_by": session.get('user')
             }).execute()
             print("Insert result:", result)
