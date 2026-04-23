@@ -113,21 +113,48 @@ def signup():
     success = False
     if request.method == 'POST':
         username = request.form.get('username')
+        email = request.form.get('email', '').strip().lower()
         password = request.form.get('password')
         confirm = request.form.get('confirm')
+
         if password != confirm:
             error = 'Passwords do not match.'
+        elif '@' not in email or '.' not in email.split('@')[-1]:
+            error = 'Please enter a valid email address.'
         else:
             try:
-                existing = supabase.table("users").select("*").eq("username", username).execute()
-                if existing.data:
+                existing_user = supabase.table("users").select("*").eq("username", username).execute()
+                existing_email = supabase.table("users").select("*").eq("email", email).execute()
+                if existing_user.data:
                     error = 'Username already exists.'
+                elif existing_email.data:
+                    error = 'Email already registered.'
                 else:
                     supabase.table("users").insert({
                         "username": username,
+                        "email": email,
                         "password": password,
                         "role": "user"
                     }).execute()
+                    # Send welcome email
+                    try:
+                        msg = Message(
+                            subject='Welcome to Salon Booking! 🎀',
+                            recipients=[email]
+                        )
+                        msg.html = f'''
+                        <div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
+                          <h2 style="color:#e91e8c;text-align:center;">🎀 Salon Booking</h2>
+                          <p style="color:#333;font-size:14px;">Hi <strong>{username}</strong>! Welcome to Salon Booking.</p>
+                          <p style="color:#333;font-size:14px;">Your account has been created successfully. You can now book your salon appointments online!</p>
+                          <div style="text-align:center;margin:1.5rem 0;">
+                            <a href="/book" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;">Book Now ✂️</a>
+                          </div>
+                          <p style="color:#aaa;font-size:11px;text-align:center;">© 2025 Salon Booking</p>
+                        </div>'''
+                        mail.send(msg)
+                    except Exception as mail_err:
+                        print('Welcome email error:', mail_err)
                     success = True
             except Exception as e:
                 error = 'Signup failed. Try again.'
