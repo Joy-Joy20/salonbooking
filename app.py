@@ -138,6 +138,7 @@ def book():
         stylist = request.form.get('stylist')
         date = request.form.get('date')
         time = request.form.get('time') or None
+        payment_method = request.form.get('payment_method', 'Cash')
 
         try:
             result = supabase.table("bookings").insert({
@@ -147,6 +148,7 @@ def book():
                 "date": date,
                 "time": time,
                 "status": "Pending",
+                "payment_method": payment_method,
                 "booked_by": session.get('user')
             }).execute()
             print("Insert result:", result)

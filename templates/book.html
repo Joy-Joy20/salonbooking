@@ -40,6 +40,22 @@
             </select>
             <input type="date" name="date" required>
             <input type="time" name="time" required>
+
+            <!-- PAYMENT METHOD -->
+            <div style="width:300px; text-align:left; margin:8px 0;">
+                <label style="font-size:14px; font-weight:600; color:#444; display:block; margin-bottom:8px;">Payment Method</label>
+                <div style="display:flex; gap:12px;">
+                    <label style="flex:1; display:flex; align-items:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer;" id="cash-label">
+                        <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="updatePayment(this)">
+                        <span>💵</span><span style="font-size:14px; font-weight:500;">Cash</span>
+                    </label>
+                    <label style="flex:1; display:flex; align-items:center; gap:8px; padding:12px; border:2px solid #f0b8d8; border-radius:12px; cursor:pointer;" id="gcash-label">
+                        <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="updatePayment(this)">
+                        <span>📱</span><span style="font-size:14px; font-weight:500; color:#007bff;">GCash</span>
+                    </label>
+                </div>
+            </div>
+
             <button type="submit" class="book-btn">Book Now</button>
         </form>
     </div>
@@ -90,3 +106,22 @@
 
 </div>
 {% endblock %}
+
+<script>
+function updatePayment(el) {
+    document.getElementById('cash-label').style.borderColor = '#f0b8d8';
+    document.getElementById('cash-label').style.background = '#fff';
+    document.getElementById('gcash-label').style.borderColor = '#f0b8d8';
+    document.getElementById('gcash-label').style.background = '#fff';
+    if (el.value === 'Cash') {
+        document.getElementById('cash-label').style.borderColor = '#e91e8c';
+        document.getElementById('cash-label').style.background = '#fce4f0';
+    } else {
+        document.getElementById('gcash-label').style.borderColor = '#007bff';
+        document.getElementById('gcash-label').style.background = '#e8f0fe';
+    }
+}
+// Set default highlight
+document.getElementById('cash-label').style.borderColor = '#e91e8c';
+document.getElementById('cash-label').style.background = '#fce4f0';
+</script>

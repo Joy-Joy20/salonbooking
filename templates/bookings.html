@@ -20,6 +20,7 @@
                 <th>Stylist</th>
                 <th>Date</th>
                 <th>Time</th>
+                <th>Payment</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -32,6 +33,7 @@
                 <td>{{ b.stylist }}</td>
                 <td>{{ b.date }}</td>
                 <td>{{ b.time or '-' }}</td>
+                <td>{% if b.payment_method == 'GCash' %}<span style="color:#007bff; font-weight:600;">📱 GCash</span>{% else %}<span style="font-weight:600;">💵 Cash</span>{% endif %}</td>
                 <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
                 <td>
                     {% if b.status == 'Pending' %}

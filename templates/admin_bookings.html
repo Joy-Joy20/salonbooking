@@ -4,7 +4,7 @@
     <h1 style="color:#e91e8c; text-align:center;">Manage Bookings 📋</h1>
     {% if bookings %}
     <table>
-        <tr><th>ID</th><th>Customer</th><th>Service</th><th>Stylist</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>ID</th><th>Customer</th><th>Service</th><th>Stylist</th><th>Date</th><th>Time</th><th>Payment</th><th>Status</th><th>Actions</th></tr>
         {% for b in bookings %}
         <tr>
             <td>{{ b.id }}</td>
@@ -13,6 +13,7 @@
             <td>{{ b.stylist }}</td>
             <td>{{ b.date }}</td>
             <td>{{ b.time or '-' }}</td>
+            <td>{% if b.payment_method == 'GCash' %}<span style="color:#007bff; font-weight:600;">📱 GCash</span>{% else %}<span style="font-weight:600;">💵 Cash</span>{% endif %}</td>
             <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
             <td style="display:flex; gap:6px; align-items:center;">
                 <form method="POST" action="/admin/bookings/status/{{ b.id }}" style="display:flex; flex-direction:row; gap:4px; align-items:center;">
