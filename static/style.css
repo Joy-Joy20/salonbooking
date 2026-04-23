@@ -309,6 +309,7 @@ tr:hover {
     gap: 40px;
     flex-wrap: wrap;
     margin-top: 20px;
+    justify-content: center;
 }
 
 .contact-info, .contact-form {
