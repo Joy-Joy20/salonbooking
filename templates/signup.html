@@ -1,21 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <h1>Sign Up ✍️</h1>
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
-    {% if success %}
-    <p style="color:green;">Account created! <a href="/login">Login here</a></p>
-    {% else %}
-    <form method="POST" action="/signup">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="password" name="confirm" placeholder="Confirm Password" required>
-        <button type="submit">Sign Up</button>
-    </form>
-    <p style="margin-top:15px;">Already have an account? <a href="/login">Login</a></p>
-    {% endif %}
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center;">
+    <div class="card" style="width:100%; max-width:400px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+
+        <h1 style="margin-bottom:20px;">Sign Up ✍️</h1>
+
+        {% if error %}
+        <p style="color:#e91e8c; font-size:13px; margin-bottom:12px;">{{ error }}</p>
+        {% endif %}
+
+        {% if success %}
+        <p style="color:green; font-size:13px;">Account created! <a href="/login" style="color:#e91e8c; font-weight:600;">Login here</a></p>
+        {% else %}
+        <form method="POST" action="/signup" style="width:100%; display:flex; flex-direction:column; align-items:center; gap:12px;">
+            <input type="text" name="username" placeholder="Username" required style="width:100%;">
+            <input type="password" name="password" placeholder="Password" required style="width:100%;">
+            <input type="password" name="confirm" placeholder="Confirm Password" required style="width:100%;">
+            <button type="submit" style="width:100%; margin-top:4px;">Sign Up</button>
+        </form>
+
+        <p style="margin-top:16px; font-size:13px;">Already have an account? <a href="/login" style="color:#e91e8c; font-weight:600;">Login</a></p>
+        {% endif %}
+
+    </div>
 </div>
 {% endblock %}
