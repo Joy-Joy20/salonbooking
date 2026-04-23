@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <h1>Login 👤</h1>
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
-    <form method="POST" action="/login">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <div style="text-align:center; margin-top:6px; margin-bottom:14px;">
-            <a href="/forgot-password" style="font-size:12px; color:#e91e8c; text-decoration:none; font-weight:500;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Forgot Password?</a>
-        </div>
-        <button type="submit">Login</button>
-    </form>
-    <p style="margin-top:15px;">Don't have an account? <a href="/signup">Sign Up</a></p>
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center;">
+    <div class="card" style="width:100%; max-width:400px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+
+        <h1 style="margin-bottom:20px;">Login 👤</h1>
+
+        {% if error %}
+        <p style="color:#e91e8c; font-size:13px; margin-bottom:12px;">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/login" style="width:100%; display:flex; flex-direction:column; align-items:center; gap:12px;">
+            <input type="text" name="username" placeholder="Username" required style="width:100%;">
+            <input type="password" name="password" placeholder="Password" required style="width:100%;">
+            <a href="/forgot-password" style="font-size:12px; color:#e91e8c; text-decoration:none; font-weight:500; align-self:center;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Forgot Password?</a>
+            <button type="submit" style="width:100%; margin-top:4px;">Login</button>
+        </form>
+
+        <p style="margin-top:16px; font-size:13px;">Don't have an account? <a href="/signup" style="color:#e91e8c; font-weight:600;">Sign Up</a></p>
+
+    </div>
 </div>
 {% endblock %}
