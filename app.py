@@ -133,20 +133,27 @@ def logout():
 def book():
     stylists = _get_stylists()
     if request.method == 'POST':
+        name = request.form.get('name')
+        service = request.form.get('service')
+        stylist = request.form.get('stylist')
+        date = request.form.get('date')
+        time = request.form.get('time') or None
+
         try:
-            supabase.table("bookings").insert({
-                "name": request.form.get('name'),
-                "service": request.form.get('service'),
-                "stylist": request.form.get('stylist'),
-                "date": request.form.get('date'),
-                "time": request.form.get('time'),
+            result = supabase.table("bookings").insert({
+                "name": name,
+                "service": service,
+                "stylist": stylist,
+                "date": date,
+                "time": time,
                 "status": "Pending",
                 "booked_by": session.get('user')
             }).execute()
+            print("Insert result:", result)
             flash('Booking submitted successfully!', 'success')
         except Exception as e:
-            print("Insert error:", e)
-            flash('Booking failed. Try again.', 'error')
+            print("Insert error details:", str(e))
+            flash(f'Booking failed: {str(e)}', 'error')
         return redirect(url_for('bookings_page'))
     return render_template('book.html', stylists=stylists)
 
