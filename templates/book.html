@@ -8,6 +8,24 @@
         <h2>Book an Appointment</h2>
         <form method="POST" enctype="multipart/form-data" id="book-form">
             <input type="text" name="name" placeholder="Your Name" required>
+
+            <!-- SERVICE TYPE -->
+            <div style="margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:600; color:#444; display:block; margin-bottom:8px;">Service Type</span>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <label class="payment-opt cash-active" id="salon-label">
+                        <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
+                        <span>🏠</span> Salon Visit
+                    </label>
+                    <label class="payment-opt" id="home-label">
+                        <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
+                        <span>🚗</span> Home Service
+                    </label>
+                </div>
+            </div>
+            <div id="home-address-wrap" style="display:none;">
+                <input type="text" name="address" placeholder="Enter your full address">
+            </div>
             <select name="service" required>
                 <option value="">-- Select Service --</option>
                 <optgroup label="✂️ Hair Services">
@@ -145,6 +163,21 @@
 {% endblock %}
 
 <script>
+function updateServiceType(el) {
+    var salonLabel = document.getElementById('salon-label');
+    var homeLabel = document.getElementById('home-label');
+    var addressWrap = document.getElementById('home-address-wrap');
+    salonLabel.className = 'payment-opt';
+    homeLabel.className = 'payment-opt';
+    if (el.value === 'Salon Visit') {
+        salonLabel.className = 'payment-opt cash-active';
+        addressWrap.style.display = 'none';
+    } else {
+        homeLabel.className = 'payment-opt cash-active';
+        addressWrap.style.display = 'block';
+    }
+}
+
 function updatePayment(el) {
     var cashLabel = document.getElementById('cash-label');
     var gcashLabel = document.getElementById('gcash-label');

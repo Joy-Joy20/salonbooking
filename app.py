@@ -140,6 +140,8 @@ def book():
         time = request.form.get('time') or None
         payment_method = request.form.get('payment_method', 'Cash')
         gcash_ref = request.form.get('gcash_ref') or None
+        service_type = request.form.get('service_type', 'Salon Visit')
+        address = request.form.get('address') or None
         gcash_screenshot = None
 
         # Upload screenshot to Supabase Storage
@@ -167,6 +169,8 @@ def book():
                 "payment_method": payment_method,
                 "gcash_ref": gcash_ref,
                 "gcash_screenshot": gcash_screenshot,
+                "service_type": service_type,
+                "address": address,
                 "booked_by": session.get('user')
             }).execute()
             print("Insert result:", result)
