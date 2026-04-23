@@ -31,7 +31,7 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ b.service }}</td>
-                <td>{% if b.service_type == 'Home Service' %}<span style="color:#e91e8c; font-weight:600;">🚗 Home Service</span>{% else %}<span style="font-weight:600;">🏠 Salon Visit</span>{% endif %}</td>
+                <td>{% if b.service_type == 'Home Service' %}<span style="color:#e91e8c; font-weight:600;">🚗 Home Service</span>{% if b.address %}<br><span style="font-size:11px; color:#666;">📍 {{ b.address }}</span>{% endif %}{% else %}<span style="font-weight:600;">🏠 Salon Visit</span>{% endif %}</td>
                 <td>{{ b.stylist }}</td>
                 <td>{{ b.date }}</td>
                 <td>{{ b.time or '-' }}</td>
