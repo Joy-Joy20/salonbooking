@@ -1,20 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="display:flex; gap:60px; align-items:flex-start; justify-content:space-between; padding-top:20px; padding-left:5%; padding-right:5%;">
+<div style="display:flex; gap:60px; align-items:flex-start; justify-content:center; padding-top:20px; padding-left:5%; padding-right:5%;">
 
-    <div style="max-width:400px;">
-        <h2 style="text-align:left;">Book an Appointment</h2>
-        <form method="POST" style="align-items:flex-start;">
+    <!-- FORM -->
+    <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+        <h2>Book an Appointment</h2>
+        <form method="POST" style="align-items:center;">
             <input type="text" name="name" placeholder="Your Name" required>
             <select name="service" required>
                 <option value="">-- Select Service --</option>
-                <option value="Haircut">✂️ Haircut</option>
-                <option value="Makeup">💄 Makeup</option>
-                <option value="Shaving">🪒 Shaving</option>
-                <option value="Hair Color">🎨 Hair Color</option>
-                <option value="Hair Treatment">🍼 Hair Treatment</option>
-                <option value="Massage">💆 Massage</option>
+                <optgroup label="✂️ Hair Services">
+                    <option value="Haircut">Haircut</option>
+                    <option value="Hair Color">Hair Color</option>
+                    <option value="Rebonding">Rebonding</option>
+                    <option value="Keratin Treatment">Keratin Treatment</option>
+                    <option value="Hot Oil">Hot Oil</option>
+                </optgroup>
+                <optgroup label="💅 Nail Services">
+                    <option value="Manicure">Manicure</option>
+                    <option value="Pedicure">Pedicure</option>
+                    <option value="Nail Art">Nail Art</option>
+                    <option value="Gel Polish">Gel Polish</option>
+                    <option value="Nail Extension">Nail Extension</option>
+                </optgroup>
+                <optgroup label="🌸 Spa & Wellness">
+                    <option value="Swedish Massage">Swedish Massage</option>
+                    <option value="Deep Tissue">Deep Tissue</option>
+                    <option value="Foot Massage">Foot Massage</option>
+                    <option value="Facial">Facial</option>
+                    <option value="Body Scrub">Body Scrub</option>
+                </optgroup>
             </select>
             <select name="stylist" required>
                 <option value="">-- Select Stylist --</option>
@@ -26,14 +42,15 @@
                 <option value="Rosa Dela Cruz">Rosa Dela Cruz — Massage Therapist</option>
             </select>
             <input type="date" name="date" required>
-            <input type="time" name="time" required>  <!-- ✅ added -->
+            <input type="time" name="time" required>
             <button type="submit">Book</button>
         </form>
     </div>
 
-    <div>
-        <h2 style="text-align:left;">Our Services</h2>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:10px; align-items:flex-start;">
+    <!-- SERVICES -->
+    <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+        <h2>Our Services</h2>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:10px; align-items:flex-start; justify-items:center;">
 
             <div class="service-cat-card">
                 <div class="service-cat-icon">✂️</div>
@@ -43,7 +60,7 @@
                     <li>Hair Color</li>
                     <li>Rebonding</li>
                     <li>Keratin Treatment</li>
-                    <li>Hot Oil & more</li>
+                    <li>Hot Oil</li>
                 </ul>
             </div>
 
@@ -55,7 +72,7 @@
                     <li>Pedicure</li>
                     <li>Nail Art</li>
                     <li>Gel Polish</li>
-                    <li>Nail Extension & more</li>
+                    <li>Nail Extension</li>
                 </ul>
             </div>
 
@@ -67,7 +84,7 @@
                     <li>Deep Tissue</li>
                     <li>Foot Massage</li>
                     <li>Facial</li>
-                    <li>Body Scrub & more</li>
+                    <li>Body Scrub</li>
                 </ul>
             </div>
 
