@@ -88,6 +88,17 @@ nav {
     font-weight: 600;
 }
 
+.role-badge {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* CONTAINER */
 .container {
     padding: 30px;
@@ -412,6 +423,17 @@ tr:hover {
     font-weight: 600;
     color: #ff1493;
 }
+
+/* STATUS BADGE */
+.status-badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.status-pending { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #d1fae5; color: #065f46; }
+.status-cancelled { background: #fee2e2; color: #991b1b; }
 
 /* ADMIN STATS */
 .admin-stats {

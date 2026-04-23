@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;">
+    <h1 style="color:#e91e8c;">Manage Bookings 📋</h1>
+    {% if bookings %}
+    <table>
+        <tr><th>ID</th><th>Customer</th><th>Service</th><th>Stylist</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.name }}</td>
+            <td>{{ b.service }}</td>
+            <td>{{ b.stylist }}</td>
+            <td>{{ b.date }}</td>
+            <td>{{ b.time or '-' }}</td>
+            <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
+            <td style="display:flex; gap:6px; align-items:center;">
+                <form method="POST" action="/admin/bookings/status/{{ b.id }}" style="display:flex; flex-direction:row; gap:4px; align-items:center;">
+                    <select name="status" style="padding:4px 8px; border-radius:6px; border:1px solid #ffb6d9; font-size:12px; width:auto; margin:0;">
+                        <option {% if b.status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option {% if b.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option {% if b.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                    <button type="submit" style="margin:0; padding:4px 10px; font-size:12px;">Save</button>
+                </form>
+                <a href="/admin/bookings/delete/{{ b.id }}" class="btn-delete" onclick="return confirm('Delete this booking?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="color:#999;">No bookings yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

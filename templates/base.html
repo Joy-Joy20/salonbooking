@@ -9,26 +9,29 @@
 <body>
 
 <nav>
-    <!-- LEFT LOGO -->
-    <div class="nav-logo">
-        🧖 Salon Booking
-    </div>
+    <div class="nav-logo">🧖 Salon Booking</div>
 
-    <!-- CENTER LINKS -->
     <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/book">Book</a>
-        <a href="/bookings">My Bookings</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/stylist">Stylists</a>
+        {% if session.get('is_admin') %}
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/bookings">Bookings</a>
+            <a href="/admin/services">Services</a>
+            <a href="/admin/stylists">Stylists</a>
+            <a href="/admin/users">Users</a>
+        {% else %}
+            <a href="/">Home</a>
+            <a href="/book">Book</a>
+            <a href="/bookings">My Bookings</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/stylist">Stylists</a>
+        {% endif %}
     </div>
 
-    <!-- RIGHT LOGIN/USER -->
     <div class="nav-right">
         {% if session.get('user') %}
-            <i class="fa fa-user"></i>
             <span>{{ session['user'] }}</span>
+            <span class="role-badge">{{ session.get('role', 'user') }}</span>
             <a href="/logout">Logout</a>
         {% else %}
             <a href="/login"><i class="fa fa-user"></i> Login</a>

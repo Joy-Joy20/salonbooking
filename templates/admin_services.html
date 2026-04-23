@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;">
+    <h1 style="color:#e91e8c;">Manage Services 💅</h1>
+
+    <div class="card" style="margin-bottom:30px;">
+        <h3 style="text-align:left; margin-bottom:16px;">Add New Service</h3>
+        <form method="POST" action="/admin/services/add" style="flex-direction:row; flex-wrap:wrap; gap:10px; align-items:flex-end; justify-content:flex-start;">
+            <input type="text" name="name" placeholder="Service Name" required style="width:180px; margin:0;">
+            <select name="category" required style="width:160px; margin:0;">
+                <option value="">-- Category --</option>
+                <option value="Hair">✂️ Hair</option>
+                <option value="Nail">💅 Nail</option>
+                <option value="Spa">🌸 Spa</option>
+            </select>
+            <input type="text" name="description" placeholder="Description" style="width:220px; margin:0;">
+            <input type="number" name="price" placeholder="Price (₱)" style="width:120px; margin:0;">
+            <button type="submit" style="margin:0;">Add Service</button>
+        </form>
+    </div>
+
+    {% if services %}
+    <table>
+        <tr><th>Name</th><th>Category</th><th>Description</th><th>Price</th><th>Action</th></tr>
+        {% for s in services %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.category }}</td>
+            <td>{{ s.description or '-' }}</td>
+            <td>₱{{ s.price or '0' }}</td>
+            <td><a href="/admin/services/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this service?')">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="color:#999;">No services yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

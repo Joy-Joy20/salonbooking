@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;">
+    <h1 style="color:#e91e8c;">Manage Stylists ✂️</h1>
+
+    <div class="card" style="margin-bottom:30px;">
+        <h3 style="text-align:left; margin-bottom:16px;">Add New Stylist</h3>
+        <form method="POST" action="/admin/stylists/add" style="flex-direction:row; flex-wrap:wrap; gap:10px; align-items:flex-end; justify-content:flex-start;">
+            <input type="text" name="name" placeholder="Full Name" required style="width:180px; margin:0;">
+            <input type="text" name="specialty" placeholder="Specialty" required style="width:200px; margin:0;">
+            <input type="text" name="photo" placeholder="Photo URL (optional)" style="width:220px; margin:0;">
+            <button type="submit" style="margin:0;">Add Stylist</button>
+        </form>
+    </div>
+
+    <div class="stylist-grid">
+        {% for s in stylists %}
+        <div class="stylist-card">
+            <img src="{{ s.photo or 'https://i.pravatar.cc/150?u=' + s.name }}" alt="{{ s.name }}">
+            <h3>{{ s.name }}</h3>
+            <p class="specialty">{{ s.specialty }}</p>
+            <a href="/admin/stylists/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this stylist?')" style="margin-top:10px;">Delete</a>
+        </div>
+        {% else %}
+        <p style="color:#999;">No stylists yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

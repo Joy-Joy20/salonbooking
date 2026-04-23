@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;">
+    <h1 style="color:#e91e8c;">Admin Dashboard 🛠️</h1>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-num">{{ total_bookings }}</div>
+            <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-num">{{ pending_bookings }}</div>
+            <div class="stat-label">Pending Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-num">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✂️</div>
+            <div class="stat-num">{{ total_stylists }}</div>
+            <div class="stat-label">Total Stylists</div>
+        </div>
+    </div>
+
+    <h2 style="margin-top:30px; text-align:left; color:#333;">Recent Bookings</h2>
+    {% if recent_bookings %}
+    <table>
+        <tr><th>Customer</th><th>Service</th><th>Stylist</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr>
+        {% for b in recent_bookings %}
+        <tr>
+            <td>{{ b.name }}</td>
+            <td>{{ b.service }}</td>
+            <td>{{ b.stylist }}</td>
+            <td>{{ b.date }}</td>
+            <td>{{ b.time or '-' }}</td>
+            <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
+            <td>
+                <form method="POST" action="/admin/bookings/status/{{ b.id }}" style="display:inline; flex-direction:row; align-items:center; gap:6px;">
+                    <select name="status" style="padding:4px 8px; border-radius:6px; border:1px solid #ffb6d9; font-size:12px; width:auto; margin:0;">
+                        <option {% if b.status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option {% if b.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option {% if b.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                    <button type="submit" style="margin:0; padding:4px 10px; font-size:12px;">Save</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="text-align:left; color:#999;">No bookings yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

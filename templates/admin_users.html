@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;">
+    <h1 style="color:#e91e8c;">Manage Users 👥</h1>
+    {% if users %}
+    <table>
+        <tr><th>Username</th><th>Role</th><th>Actions</th></tr>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.username }}</td>
+            <td><span class="role-badge" style="background:{% if u.role == 'admin' %}#e91e8c{% else %}#aaa{% endif %};">{{ u.role or 'user' }}</span></td>
+            <td style="display:flex; gap:8px; align-items:center;">
+                <form method="POST" action="/admin/users/role/{{ u.username }}" style="flex-direction:row; gap:4px; align-items:center; display:flex;">
+                    <select name="role" style="padding:4px 8px; border-radius:6px; border:1px solid #ffb6d9; font-size:12px; width:auto; margin:0;">
+                        <option {% if u.role == 'user' %}selected{% endif %} value="user">User</option>
+                        <option {% if u.role == 'admin' %}selected{% endif %} value="admin">Admin</option>
+                    </select>
+                    <button type="submit" style="margin:0; padding:4px 10px; font-size:12px;">Save</button>
+                </form>
+                <a href="/admin/users/delete/{{ u.username }}" class="btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="color:#999;">No users yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
