@@ -6,68 +6,44 @@
     <!-- FORM COLUMN -->
     <div class="booking-form">
         <h2>Book an Appointment</h2>
-
-        <!-- STEP INDICATOR -->
-        <div style="display:flex; align-items:center; justify-content:center; margin-bottom:1.5rem;">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                <div class="step-circle active" id="step-circle-1">1</div>
-                <span class="step-label active" id="step-label-1">Details</span>
-            </div>
-            <div class="step-line" id="step-line-1"></div>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                <div class="step-circle" id="step-circle-2">2</div>
-                <span class="step-label" id="step-label-2">Payment</span>
-            </div>
-            <div class="step-line" id="step-line-2"></div>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                <div class="step-circle" id="step-circle-3">3</div>
-                <span class="step-label" id="step-label-3">Confirm</span>
-            </div>
-        </div>
-
         <form method="POST" enctype="multipart/form-data" id="book-form">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <select name="service" required>
+                <option value="">-- Select Service --</option>
+                <optgroup label="✂️ Hair Services">
+                    <option value="Haircut">Haircut — ₱150</option>
+                    <option value="Hair Color">Hair Color — ₱500</option>
+                    <option value="Rebonding">Rebonding — ₱1,200</option>
+                    <option value="Keratin Treatment">Keratin Treatment — ₱1,500</option>
+                    <option value="Hot Oil">Hot Oil — ₱200</option>
+                </optgroup>
+                <optgroup label="💅 Nail Services">
+                    <option value="Manicure">Manicure — ₱80</option>
+                    <option value="Pedicure">Pedicure — ₱100</option>
+                    <option value="Nail Art">Nail Art — ₱250</option>
+                    <option value="Gel Polish">Gel Polish — ₱350</option>
+                    <option value="Nail Extension">Nail Extension — ₱600</option>
+                </optgroup>
+                <optgroup label="🌿 Spa & Wellness">
+                    <option value="Swedish Massage">Swedish Massage — ₱500</option>
+                    <option value="Deep Tissue">Deep Tissue — ₱600</option>
+                    <option value="Foot Massage">Foot Massage — ₱300</option>
+                    <option value="Facial">Facial — ₱400</option>
+                    <option value="Body Scrub">Body Scrub — ₱550</option>
+                </optgroup>
+            </select>
+            <select name="stylist" required>
+                <option value="">-- Select Stylist --</option>
+                {% for s in stylists %}
+                <option value="{{ s.name }}">{{ s.name }} — {{ s.specialty }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
 
-            <!-- STEP 1: DETAILS -->
-            <div id="step-1">
-                <input type="text" name="name" id="f-name" placeholder="Your Name">
-                <select name="service" id="f-service">
-                    <option value="">-- Select Service --</option>
-                    <optgroup label="✂️ Hair Services">
-                        <option value="Haircut">Haircut — ₱150</option>
-                        <option value="Hair Color">Hair Color — ₱500</option>
-                        <option value="Rebonding">Rebonding — ₱1,200</option>
-                        <option value="Keratin Treatment">Keratin Treatment — ₱1,500</option>
-                        <option value="Hot Oil">Hot Oil — ₱200</option>
-                    </optgroup>
-                    <optgroup label="💅 Nail Services">
-                        <option value="Manicure">Manicure — ₱80</option>
-                        <option value="Pedicure">Pedicure — ₱100</option>
-                        <option value="Nail Art">Nail Art — ₱250</option>
-                        <option value="Gel Polish">Gel Polish — ₱350</option>
-                        <option value="Nail Extension">Nail Extension — ₱600</option>
-                    </optgroup>
-                    <optgroup label="🌿 Spa & Wellness">
-                        <option value="Swedish Massage">Swedish Massage — ₱500</option>
-                        <option value="Deep Tissue">Deep Tissue — ₱600</option>
-                        <option value="Foot Massage">Foot Massage — ₱300</option>
-                        <option value="Facial">Facial — ₱400</option>
-                        <option value="Body Scrub">Body Scrub — ₱550</option>
-                    </optgroup>
-                </select>
-                <select name="stylist" id="f-stylist">
-                    <option value="">-- Select Stylist --</option>
-                    {% for s in stylists %}
-                    <option value="{{ s.name }}">{{ s.name }} — {{ s.specialty }}</option>
-                    {% endfor %}
-                </select>
-                <input type="date" name="date" id="f-date">
-                <input type="time" name="time" id="f-time">
-                <button type="button" class="book-btn" onclick="goToStep2()">Next: Choose Payment →</button>
-            </div>
-
-            <!-- STEP 2: PAYMENT -->
-            <div id="step-2" style="display:none;">
-                <p style="font-size:13px; font-weight:600; color:#444; margin-bottom:12px;">Choose your payment method:</p>
+            <!-- PAYMENT METHOD -->
+            <div style="margin-bottom:12px;">
+                <span class="payment-label">Payment Method</span>
                 <div class="payment-options">
                     <label class="payment-opt cash-active" id="cash-label">
                         <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="updatePayment(this)">
@@ -79,78 +55,51 @@
                     </label>
                 </div>
 
-                <!-- CASH STEPS -->
-                <div id="cash-info" class="cash-info">
-                    <p style="font-size:13px; font-weight:700; color:#e91e8c; margin-bottom:10px;">💵 Cash Payment Steps:</p>
-                    <div class="step-item"><div class="step-num pink">1</div><span>Complete your booking details in Step 1</span></div>
-                    <div class="step-item"><div class="step-num pink">2</div><span>Select Cash as your payment method</span></div>
-                    <div class="step-item"><div class="step-num pink">3</div><span>Click Confirm Booking</span></div>
-                    <div class="step-item"><div class="step-num pink">4</div><span>Arrive at the salon on your scheduled date & time</span></div>
-                    <div class="step-item"><div class="step-num pink">5</div><span>Pay the exact amount in cash to the cashier</span></div>
-                    <div class="step-item"><div class="step-num pink">6</div><span>Enjoy your service! 😊</span></div>
+                <!-- CASH INFO -->
+                <div class="cash-info" id="cash-info">
+                    💵 <strong>Pay in cash</strong> upon arrival at the salon.<br>
+                    Please be on time for your appointment. 😊
                 </div>
 
-                <!-- GCASH STEPS -->
-                <div id="gcash-info" class="gcash-info" style="display:none;">
-                    <p style="font-size:13px; font-weight:700; color:#007bff; margin-bottom:10px;">📱 GCash Payment Steps:</p>
-                    <div style="text-align:center; margin-bottom:12px;">
-                        <img src="/static/images/gcash-qr.png" alt="GCash QR Code" class="gcash-qr"
-                            onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GCash+09123456789'">
-                        <p class="gcash-number">0912 345 6789</p>
-                        <p style="font-size:11px; color:#555;">Account: <strong>Salon Booking</strong></p>
+                <!-- GCASH INFO -->
+                <div class="gcash-info" id="gcash-info" style="display:none;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:18px;">📱</span>
+                        <span style="font-size:15px; font-weight:700; color:#007bff;">GCash Payment</span>
                     </div>
-                    <div class="step-item"><div class="step-num blue">1</div><span>Open your GCash app</span></div>
-                    <div class="step-item"><div class="step-num blue">2</div><span>Tap <strong>Pay QR</strong> and scan the QR code above</span></div>
-                    <div class="step-item"><div class="step-num blue">3</div><span>Enter the exact amount for your chosen service</span></div>
-                    <div class="step-item"><div class="step-num blue">4</div><span>Complete the GCash payment</span></div>
-                    <div class="step-item"><div class="step-num blue">5</div><span>Take a <strong>screenshot</strong> of the success screen</span></div>
-                    <div class="step-item"><div class="step-num blue">6</div><span>Upload the screenshot below as proof of payment</span></div>
-                    <div class="step-item"><div class="step-num blue">7</div><span>Click <strong>Confirm Booking</strong> to finish</span></div>
-
-                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="gcash-ref-input" style="margin-top:10px;">
+                    <img src="/static/images/gcash-qr.png" alt="GCash QR Code" class="gcash-qr"
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=GCash+09123456789'">
+                    <p style="font-size:13px; color:#555; margin:6px 0 2px;">GCash Number:</p>
+                    <p class="gcash-number">0912 345 6789</p>
+                    <p style="font-size:13px; color:#555;">Account Name: <strong>Salon Booking</strong></p>
+                    <div class="gcash-steps">
+                        📌 <strong>Instructions:</strong><br>
+                        1. Open your GCash app<br>
+                        2. Tap <strong>Pay QR</strong> and scan the code above<br>
+                        3. Enter the exact amount for your service<br>
+                        4. Take a <strong>screenshot</strong> of the success screen<br>
+                        5. Upload the screenshot below<br>
+                        6. Click <strong>Book Now</strong> to confirm
+                    </div>
+                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="gcash-ref-input">
 
                     <!-- SCREENSHOT UPLOAD -->
-                    <div style="margin-top:10px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer; text-align:center;" onclick="document.getElementById('gcash-upload').click()">
+                    <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer;" onclick="document.getElementById('gcash-upload').click()">
                         <div id="upload-prompt">
                             <p style="font-size:24px; margin-bottom:4px;">📤</p>
-                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload Payment Screenshot</p>
-                            <p style="font-size:11px; color:#888;">Tap here to upload your GCash screenshot</p>
+                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
+                            <p style="font-size:11px; color:#888;">Tap here to upload your payment screenshot</p>
                         </div>
                         <div id="upload-preview" style="display:none;">
-                            <img id="preview-img" src="" alt="preview" style="width:100%; max-height:180px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
+                            <img id="preview-img" src="" alt="Screenshot preview" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
                             <p style="font-size:11px; color:#007bff; font-weight:600;">✅ Screenshot selected! Click to change.</p>
                         </div>
                         <input id="gcash-upload" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewScreenshot(this)">
                     </div>
                 </div>
-
-                <div style="display:flex; gap:10px; margin-top:14px;">
-                    <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button>
-                    <button type="button" class="book-btn" style="flex:2;" onclick="goToStep3()">Next: Review Booking →</button>
-                </div>
             </div>
 
-            <!-- STEP 3: CONFIRM -->
-            <div id="step-3" style="display:none;">
-                <p style="font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:14px;">📋 Review your booking:</p>
-                <div class="review-row"><span class="review-label">Name</span><span class="review-val" id="r-name"></span></div>
-                <div class="review-row"><span class="review-label">Service</span><span class="review-val" id="r-service"></span></div>
-                <div class="review-row"><span class="review-label">Stylist</span><span class="review-val" id="r-stylist"></span></div>
-                <div class="review-row"><span class="review-label">Date</span><span class="review-val" id="r-date"></span></div>
-                <div class="review-row"><span class="review-label">Time</span><span class="review-val" id="r-time"></span></div>
-                <div class="review-row"><span class="review-label">Payment</span><span class="review-val" id="r-payment"></span></div>
-
-                <div id="r-screenshot-wrap" style="display:none; margin-top:12px; text-align:center;">
-                    <p style="font-size:12px; color:#007bff; font-weight:600; margin-bottom:6px;">📱 GCash Payment Screenshot:</p>
-                    <img id="r-screenshot" src="" alt="proof" style="width:100%; max-height:160px; object-fit:contain; border-radius:10px; border:1px solid #dce8ff;">
-                </div>
-
-                <div style="display:flex; gap:10px; margin-top:16px;">
-                    <button type="button" class="btn-back" onclick="goToStep(2)">← Back</button>
-                    <button type="submit" class="book-btn" style="flex:2;" id="book-btn">✅ Confirm Booking</button>
-                </div>
-            </div>
-
+            <button type="submit" class="book-btn" id="book-btn">Book Now</button>
         </form>
     </div>
 
@@ -158,6 +107,7 @@
     <div class="services-col">
         <h2>Our Services</h2>
         <div class="services-grid">
+
             <div class="service-card">
                 <span class="service-card-icon">✂️</span>
                 <p class="service-card-title">Hair Services</p>
@@ -167,6 +117,7 @@
                 <div class="price-row"><span>Keratin Treatment</span><span class="price-amount">₱1,500</span></div>
                 <div class="price-row"><span>Hot Oil</span><span class="price-amount">₱200</span></div>
             </div>
+
             <div class="service-card">
                 <span class="service-card-icon">💅</span>
                 <p class="service-card-title">Nail Services</p>
@@ -176,6 +127,7 @@
                 <div class="price-row"><span>Gel Polish</span><span class="price-amount">₱350</span></div>
                 <div class="price-row"><span>Nail Extension</span><span class="price-amount">₱600</span></div>
             </div>
+
             <div class="service-card">
                 <span class="service-card-icon">🌿</span>
                 <p class="service-card-title">Spa & Wellness</p>
@@ -185,6 +137,7 @@
                 <div class="price-row"><span>Facial</span><span class="price-amount">₱400</span></div>
                 <div class="price-row"><span>Body Scrub</span><span class="price-amount">₱550</span></div>
             </div>
+
         </div>
     </div>
 
@@ -192,73 +145,21 @@
 {% endblock %}
 
 <script>
-function goToStep(n) {
-    document.getElementById('step-1').style.display = n === 1 ? 'block' : 'none';
-    document.getElementById('step-2').style.display = n === 2 ? 'block' : 'none';
-    document.getElementById('step-3').style.display = n === 3 ? 'block' : 'none';
-    for (var i = 1; i <= 3; i++) {
-        var circle = document.getElementById('step-circle-' + i);
-        var label = document.getElementById('step-label-' + i);
-        var line = document.getElementById('step-line-' + i);
-        if (i <= n) {
-            circle.classList.add('active');
-            label.classList.add('active');
-        } else {
-            circle.classList.remove('active');
-            label.classList.remove('active');
-        }
-        if (line && i < n) line.classList.add('active');
-        else if (line) line.classList.remove('active');
-    }
-}
-
-function goToStep2() {
-    var name = document.getElementById('f-name').value.trim();
-    var service = document.getElementById('f-service').value;
-    var stylist = document.getElementById('f-stylist').value;
-    var date = document.getElementById('f-date').value;
-    if (!name) { alert('Please enter your name.'); return; }
-    if (!service) { alert('Please select a service.'); return; }
-    if (!stylist) { alert('Please select a stylist.'); return; }
-    if (!date) { alert('Please select a date.'); return; }
-    goToStep(2);
-}
-
-function goToStep3() {
-    var payment = document.querySelector('input[name="payment_method"]:checked').value;
-    if (payment === 'GCash') {
-        var file = document.getElementById('gcash-upload').files[0];
-        if (!file) { alert('Please upload your GCash payment screenshot.'); return; }
-    }
-    document.getElementById('r-name').textContent = document.getElementById('f-name').value;
-    document.getElementById('r-service').textContent = document.getElementById('f-service').value;
-    document.getElementById('r-stylist').textContent = document.getElementById('f-stylist').value;
-    document.getElementById('r-date').textContent = document.getElementById('f-date').value;
-    document.getElementById('r-time').textContent = document.getElementById('f-time').value || '—';
-    document.getElementById('r-payment').textContent = payment;
-    var previewSrc = document.getElementById('preview-img').src;
-    if (payment === 'GCash' && previewSrc) {
-        document.getElementById('r-screenshot').src = previewSrc;
-        document.getElementById('r-screenshot-wrap').style.display = 'block';
-    } else {
-        document.getElementById('r-screenshot-wrap').style.display = 'none';
-    }
-    goToStep(3);
-}
-
 function updatePayment(el) {
     var cashLabel = document.getElementById('cash-label');
     var gcashLabel = document.getElementById('gcash-label');
+    var cashInfo = document.getElementById('cash-info');
+    var gcashInfo = document.getElementById('gcash-info');
     cashLabel.className = 'payment-opt';
     gcashLabel.className = 'payment-opt';
     if (el.value === 'Cash') {
         cashLabel.className = 'payment-opt cash-active';
-        document.getElementById('cash-info').style.display = 'block';
-        document.getElementById('gcash-info').style.display = 'none';
+        cashInfo.style.display = 'block';
+        gcashInfo.style.display = 'none';
     } else {
         gcashLabel.className = 'payment-opt gcash-active';
-        document.getElementById('cash-info').style.display = 'none';
-        document.getElementById('gcash-info').style.display = 'block';
+        cashInfo.style.display = 'none';
+        gcashInfo.style.display = 'block';
     }
 }
 
@@ -274,9 +175,18 @@ function previewScreenshot(input) {
     }
 }
 
-document.getElementById('book-form').addEventListener('submit', function() {
+document.getElementById('book-form').addEventListener('submit', function(e) {
+    var payment = document.querySelector('input[name="payment_method"]:checked').value;
+    if (payment === 'GCash') {
+        var file = document.getElementById('gcash-upload').files[0];
+        if (!file) {
+            e.preventDefault();
+            alert('Please upload your GCash payment screenshot.');
+            return;
+        }
+    }
     var btn = document.getElementById('book-btn');
-    btn.textContent = '⏳ Submitting...';
+    btn.textContent = '⏳ Uploading...';
     btn.disabled = true;
 });
 </script>
