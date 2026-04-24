@@ -1,28 +1,76 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width:900px; margin:0 auto; padding:30px 20px;">
-    <h1 style="text-align:center;">Contact Us 📞</h1>
-    <div class="contact-layout">
-        <div class="contact-info">
-            <h3>Get in Touch</h3>
-            <p>We'd love to hear from you!</p>
-            <ul>
-                <li>📍 123 Salon Street, Cebu City</li>
-                <li>📞 +63 912 345 6789</li>
-                <li>📧 salonbooking@email.com</li>
-                <li>🕐 Mon-Sat, 8:00 AM - 7:00 PM</li>
-            </ul>
+<section class="contact-page">
+    <div class="contact-shell">
+        <div class="contact-hero">
+            <span class="contact-eyebrow">We'd Love To Hear From You</span>
+            <h1>Contact Us</h1>
+            <p>Questions, booking concerns, or special requests? Reach out and we’ll help you plan the right salon experience.</p>
         </div>
-        <div class="contact-form">
-            <h3>Send us a Message</h3>
-            <form method="POST" action="/contact">
-                <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <textarea name="message" placeholder="Your Message"></textarea>
-                <button type="submit">Send</button>
-            </form>
+
+        <div class="contact-layout contact-layout-polished">
+            <div class="contact-info contact-panel">
+                <div class="contact-panel-top">
+                    <span class="contact-badge">Salon Support</span>
+                    <h3>Get in Touch</h3>
+                    <p>Connect with our team for appointments, service questions, and personalized assistance.</p>
+                </div>
+
+                <div class="contact-detail-list">
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">&#128205;</div>
+                        <div>
+                            <strong>Visit Us</strong>
+                            <span>123 Salon Street, Cebu City</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">&#128222;</div>
+                        <div>
+                            <strong>Call Us</strong>
+                            <span>+63 912 345 6789</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">&#128231;</div>
+                        <div>
+                            <strong>Email Us</strong>
+                            <span>salonbooking@email.com</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">&#128338;</div>
+                        <div>
+                            <strong>Opening Hours</strong>
+                            <span>Mon-Sat, 8:00 AM - 7:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form contact-panel">
+                <div class="contact-panel-top">
+                    <span class="contact-badge">Quick Message</span>
+                    <h3>Send Us a Message</h3>
+                    <p>Share your concern and we’ll get back to you as soon as possible.</p>
+                </div>
+
+                {% if message_sent %}
+                <div class="contact-success">Your message has been sent successfully.</div>
+                {% endif %}
+
+                <form method="POST" action="/contact" class="contact-form-fields">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Tell us how we can help" rows="5"></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
