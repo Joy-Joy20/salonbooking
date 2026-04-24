@@ -275,11 +275,12 @@ button:hover, .btn:hover {
 .hero-actions {
     display: flex;
     gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 24px;
     width: 100%;
-    max-width: 520px;
+    max-width: 760px;
 }
 
 .hero-btn-secondary {
@@ -294,7 +295,7 @@ button:hover, .btn:hover {
 }
 
 .hero-actions .hero-btn {
-    min-width: 220px;
+    min-width: 240px;
 }
 
 .hero-control {
