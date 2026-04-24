@@ -7,25 +7,30 @@
     <div class="booking-form">
         <h2>Book an Appointment</h2>
         <form method="POST" enctype="multipart/form-data" id="book-form">
-            <input type="text" name="name" placeholder="Your Name" required>
+
+            <span class="form-label">Your Name</span>
+            <input type="text" name="name" placeholder="Enter your full name" required>
 
             <!-- SERVICE TYPE -->
             <div style="margin-bottom:12px;">
-                <span style="font-size:13px; font-weight:600; color:#444; display:block; margin-bottom:8px;">Service Type</span>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <label class="payment-opt cash-active" id="salon-label">
+                <span class="form-label">Service Type</span>
+                <div class="service-type-group">
+                    <label class="service-type-opt active" id="salon-label">
                         <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
                         <span>🏠</span> Salon Visit
                     </label>
-                    <label class="payment-opt" id="home-label">
+                    <label class="service-type-opt" id="home-label">
                         <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
                         <span>🚗</span> Home Service
                     </label>
                 </div>
             </div>
             <div id="home-address-wrap" style="display:none;">
+                <span class="form-label">📍 Your Address</span>
                 <input type="text" name="address" placeholder="Enter your full address">
             </div>
+
+            <span class="form-label">Select Service</span>
             <select name="service" required>
                 <option value="">-- Select Service --</option>
                 <optgroup label="✂️ Hair Services">
@@ -50,13 +55,16 @@
                     <option value="Body Scrub">Body Scrub — ₱550</option>
                 </optgroup>
             </select>
+            <span class="form-label">Select Stylist</span>
             <select name="stylist" required>
                 <option value="">-- Select Stylist --</option>
                 {% for s in stylists %}
                 <option value="{{ s.name }}">{{ s.name }} — {{ s.specialty }}</option>
                 {% endfor %}
             </select>
+            <span class="form-label">Appointment Date</span>
             <input type="date" name="date" required>
+            <span class="form-label">Appointment Time</span>
             <input type="time" name="time" required>
 
             <!-- PAYMENT METHOD -->
