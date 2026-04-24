@@ -1552,8 +1552,6 @@ tr:hover {
     text-align: left;
     width: 100%;
     display: block;
-    margin-top: 0;
-    cursor: pointer;
 }
 
 .landing-service-card:hover {
