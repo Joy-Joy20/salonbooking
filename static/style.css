@@ -1695,31 +1695,31 @@ footer {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding: 3rem 4rem 1.5rem;
-    gap: 16px;
+    padding: 2rem 3rem 1rem;
+    gap: 12px;
 }
 
 .footer-section h3 {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.5px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
     color: white;
     border-bottom: 1px solid rgba(255,255,255,0.3);
-    padding-bottom: 6px;
+    padding-bottom: 4px;
 }
 
 .footer-section:first-child h3 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     border-bottom: none;
 }
 
 .footer-section p {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.85;
-    line-height: 1.6;
-    margin: 4px 0;
+    line-height: 1.45;
+    margin: 2px 0;
     color: white;
 }
 
@@ -1730,13 +1730,13 @@ footer {
 }
 
 .footer-section ul li {
-    line-height: 2;
+    line-height: 1.7;
 }
 
 .footer-section ul li a {
     color: rgba(255,255,255,0.85);
     text-decoration: none;
-    font-size: 13px;
+    font-size: 12px;
     transition: all 0.3s ease;
 }
 
@@ -1747,9 +1747,9 @@ footer {
 
 .footer-bottom {
     text-align: center;
-    padding-top: 1.5rem;
-    padding-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 0.8rem;
     border-top: 1px solid rgba(255,255,255,0.2);
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255,255,255,0.7);
 }
