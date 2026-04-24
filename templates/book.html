@@ -3,7 +3,6 @@
 {% block content %}
 <div class="book-page-container">
 
-    <!-- FORM COLUMN -->
     <div class="booking-form">
         <h2>Book an Appointment</h2>
         <form method="POST" enctype="multipart/form-data" id="book-form">
@@ -11,86 +10,86 @@
             <span class="form-label">Your Name</span>
             <input type="text" name="name" placeholder="Enter your full name" required>
 
-            <!-- SERVICE TYPE -->
             <div style="margin-bottom:12px;">
                 <span class="form-label">Service Type</span>
                 <div class="service-type-group">
                     <label class="service-type-opt active" id="salon-label">
                         <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
-                        <span>🏠</span> Salon Visit
+                        <span>&#127960;</span> Salon Visit
                     </label>
                     <label class="service-type-opt" id="home-label">
                         <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
-                        <span>🚗</span> Home Service
+                        <span>&#128663;</span> Home Service
                     </label>
                 </div>
             </div>
+
             <div id="home-address-wrap" style="display:none;">
-                <span class="form-label">📍 Your Address</span>
+                <span class="form-label">&#128205; Your Address</span>
                 <input type="text" name="address" placeholder="Enter your full address">
             </div>
 
             <span class="form-label">Select Service</span>
-            <select name="service" required>
+            <select name="service" id="f-service" required>
                 <option value="">-- Select Service --</option>
-                <optgroup label="✂️ Hair Services">
-                    <option value="Haircut">Haircut — ₱150</option>
-                    <option value="Hair Color">Hair Color — ₱500</option>
-                    <option value="Rebonding">Rebonding — ₱1,200</option>
-                    <option value="Keratin Treatment">Keratin Treatment — ₱1,500</option>
-                    <option value="Hot Oil">Hot Oil — ₱200</option>
+                <optgroup label="&#9986;&#65039; Hair Services">
+                    <option value="Haircut">Haircut - &#8369;150</option>
+                    <option value="Hair Color">Hair Color - &#8369;500</option>
+                    <option value="Rebonding">Rebonding - &#8369;1,200</option>
+                    <option value="Keratin Treatment">Keratin Treatment - &#8369;1,500</option>
+                    <option value="Hot Oil">Hot Oil - &#8369;200</option>
                 </optgroup>
-                <optgroup label="💅 Nail Services">
-                    <option value="Manicure">Manicure — ₱80</option>
-                    <option value="Pedicure">Pedicure — ₱100</option>
-                    <option value="Nail Art">Nail Art — ₱250</option>
-                    <option value="Gel Polish">Gel Polish — ₱350</option>
-                    <option value="Nail Extension">Nail Extension — ₱600</option>
+                <optgroup label="&#128133; Nail Services">
+                    <option value="Manicure">Manicure - &#8369;80</option>
+                    <option value="Pedicure">Pedicure - &#8369;100</option>
+                    <option value="Nail Art">Nail Art - &#8369;250</option>
+                    <option value="Gel Polish">Gel Polish - &#8369;350</option>
+                    <option value="Nail Extension">Nail Extension - &#8369;600</option>
                 </optgroup>
-                <optgroup label="🌿 Spa & Wellness">
-                    <option value="Swedish Massage">Swedish Massage — ₱500</option>
-                    <option value="Deep Tissue">Deep Tissue — ₱600</option>
-                    <option value="Foot Massage">Foot Massage — ₱300</option>
-                    <option value="Facial">Facial — ₱400</option>
-                    <option value="Body Scrub">Body Scrub — ₱550</option>
+                <optgroup label="&#127807; Spa &amp; Wellness">
+                    <option value="Swedish Massage">Swedish Massage - &#8369;500</option>
+                    <option value="Deep Tissue">Deep Tissue - &#8369;600</option>
+                    <option value="Foot Massage">Foot Massage - &#8369;300</option>
+                    <option value="Facial">Facial - &#8369;400</option>
+                    <option value="Body Scrub">Body Scrub - &#8369;550</option>
                 </optgroup>
             </select>
+
             <span class="form-label">Select Stylist</span>
             <select name="stylist" required>
                 <option value="">-- Select Stylist --</option>
                 {% for s in stylists %}
-                <option value="{{ s.name }}">{{ s.name }} — {{ s.specialty }}</option>
+                <option value="{{ s.name }}">{{ s.name }} - {{ s.specialty }}</option>
                 {% endfor %}
             </select>
+
             <span class="form-label">Appointment Date</span>
             <input type="date" name="date" required>
+
             <span class="form-label">Appointment Time</span>
             <input type="time" name="time" required>
 
-            <!-- PAYMENT METHOD -->
             <div style="margin-bottom:12px;">
                 <span class="payment-label">Payment Method</span>
                 <div class="payment-options">
                     <label class="payment-opt cash-active" id="cash-label">
                         <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="updatePayment(this)">
-                        <span>💵</span> Cash
+                        <span>&#128176;</span> Cash
                     </label>
                     <label class="payment-opt" id="gcash-label">
                         <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="updatePayment(this)">
-                        <span>📱</span> GCash
+                        <span>&#128241;</span> GCash
                     </label>
                 </div>
 
-                <!-- CASH INFO -->
                 <div class="cash-info" id="cash-info">
-                    💵 <strong>Pay in cash</strong> upon arrival at the salon.<br>
-                    Please be on time for your appointment. 😊
+                    &#128176; <strong>Pay in cash</strong> upon arrival at the salon.<br>
+                    Please be on time for your appointment. &#128522;
                 </div>
 
-                <!-- GCASH INFO -->
                 <div class="gcash-info" id="gcash-info" style="display:none;">
                     <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
-                        <span style="font-size:18px;">📱</span>
+                        <span style="font-size:18px;">&#128241;</span>
                         <span style="font-size:15px; font-weight:700; color:#007bff;">GCash Payment</span>
                     </div>
                     <img src="/static/images/gcash-qr.png" alt="GCash QR Code" class="gcash-qr"
@@ -99,7 +98,7 @@
                     <p class="gcash-number">0912 345 6789</p>
                     <p style="font-size:13px; color:#555;">Account Name: <strong>Salon Booking</strong></p>
                     <div class="gcash-steps">
-                        📌 <strong>Instructions:</strong><br>
+                        &#128204; <strong>Instructions:</strong><br>
                         1. Open your GCash app<br>
                         2. Tap <strong>Pay QR</strong> and scan the code above<br>
                         3. Enter the exact amount for your service<br>
@@ -109,16 +108,15 @@
                     </div>
                     <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="gcash-ref-input">
 
-                    <!-- SCREENSHOT UPLOAD -->
                     <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer;" onclick="document.getElementById('gcash-upload').click()">
                         <div id="upload-prompt">
-                            <p style="font-size:24px; margin-bottom:4px;">📤</p>
+                            <p style="font-size:24px; margin-bottom:4px;">&#128228;</p>
                             <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
                             <p style="font-size:11px; color:#888;">Tap here to upload your payment screenshot</p>
                         </div>
                         <div id="upload-preview" style="display:none;">
                             <img id="preview-img" src="" alt="Screenshot preview" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
-                            <p style="font-size:11px; color:#007bff; font-weight:600;">✅ Screenshot selected! Click to change.</p>
+                            <p style="font-size:11px; color:#007bff; font-weight:600;">&#9989; Screenshot selected! Click to change.</p>
                         </div>
                         <input id="gcash-upload" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewScreenshot(this)">
                     </div>
@@ -129,41 +127,232 @@
         </form>
     </div>
 
-    <!-- SERVICES COLUMN -->
     <div class="services-col">
         <h2>Our Services</h2>
-        <div class="services-grid">
 
-            <div class="service-card">
-                <span class="service-card-icon">✂️</span>
-                <p class="service-card-title">Hair Services</p>
-                <div class="price-row"><span>Haircut</span><span class="price-amount">₱150</span></div>
-                <div class="price-row"><span>Hair Color</span><span class="price-amount">₱500</span></div>
-                <div class="price-row"><span>Rebonding</span><span class="price-amount">₱1,200</span></div>
-                <div class="price-row"><span>Keratin Treatment</span><span class="price-amount">₱1,500</span></div>
-                <div class="price-row"><span>Hot Oil</span><span class="price-amount">₱200</span></div>
+        <div class="service-category">
+            <h3 class="category-heading">&#9986;&#65039; Hair Services</h3>
+            <div class="service-items-grid">
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/haircut.jpg" alt="Haircut" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Haircut'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Haircut</h4>
+                            <span class="service-item-price">&#8369;150</span>
+                        </div>
+                        <p class="service-item-desc">Professional haircut and styling for all hair types.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Haircut')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/hair-color.jpg" alt="Hair Color" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Hair+Color'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Hair Color</h4>
+                            <span class="service-item-price">&#8369;500</span>
+                        </div>
+                        <p class="service-item-desc">Vibrant hair coloring with premium color products.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Hair Color')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/rebonding.jpg" alt="Rebonding" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Rebonding'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Rebonding</h4>
+                            <span class="service-item-price">&#8369;1,200</span>
+                        </div>
+                        <p class="service-item-desc">Smooth and straighten your hair with long-lasting rebonding treatment.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Rebonding')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/keratin.jpg" alt="Keratin Treatment" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Keratin+Treatment'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Keratin Treatment</h4>
+                            <span class="service-item-price">&#8369;1,500</span>
+                        </div>
+                        <p class="service-item-desc">Restore shine and eliminate frizz with keratin treatment.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Keratin Treatment')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/hot-oil.jpg" alt="Hot Oil" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Hot+Oil'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Hot Oil</h4>
+                            <span class="service-item-price">&#8369;200</span>
+                        </div>
+                        <p class="service-item-desc">Deep conditioning hot oil treatment for healthy, shiny hair.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Hot Oil')">Book Now</button>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="service-card">
-                <span class="service-card-icon">💅</span>
-                <p class="service-card-title">Nail Services</p>
-                <div class="price-row"><span>Manicure</span><span class="price-amount">₱80</span></div>
-                <div class="price-row"><span>Pedicure</span><span class="price-amount">₱100</span></div>
-                <div class="price-row"><span>Nail Art</span><span class="price-amount">₱250</span></div>
-                <div class="price-row"><span>Gel Polish</span><span class="price-amount">₱350</span></div>
-                <div class="price-row"><span>Nail Extension</span><span class="price-amount">₱600</span></div>
+        <div class="service-category">
+            <h3 class="category-heading">&#128133; Nail Services</h3>
+            <div class="service-items-grid">
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/manicure.jpg" alt="Manicure" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Manicure'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Manicure</h4>
+                            <span class="service-item-price">&#8369;80</span>
+                        </div>
+                        <p class="service-item-desc">Classic manicure with nail shaping, cuticle care, and polish.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Manicure')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/pedicure.jpg" alt="Pedicure" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Pedicure'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Pedicure</h4>
+                            <span class="service-item-price">&#8369;100</span>
+                        </div>
+                        <p class="service-item-desc">Relaxing pedicure with foot soak, nail care, and polish.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Pedicure')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/nail-art.jpg" alt="Nail Art" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Nail+Art'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Nail Art</h4>
+                            <span class="service-item-price">&#8369;250</span>
+                        </div>
+                        <p class="service-item-desc">Creative nail art designs customized to your style.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Nail Art')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/gel-polish.jpg" alt="Gel Polish" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Gel+Polish'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Gel Polish</h4>
+                            <span class="service-item-price">&#8369;350</span>
+                        </div>
+                        <p class="service-item-desc">Long-lasting gel polish that stays chip-free for weeks.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Gel Polish')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/nail-extension.jpg" alt="Nail Extension" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Nail+Extension'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Nail Extension</h4>
+                            <span class="service-item-price">&#8369;600</span>
+                        </div>
+                        <p class="service-item-desc">Beautiful nail extensions for your desired length and shape.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Nail Extension')">Book Now</button>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="service-card">
-                <span class="service-card-icon">🌿</span>
-                <p class="service-card-title">Spa & Wellness</p>
-                <div class="price-row"><span>Swedish Massage</span><span class="price-amount">₱500</span></div>
-                <div class="price-row"><span>Deep Tissue</span><span class="price-amount">₱600</span></div>
-                <div class="price-row"><span>Foot Massage</span><span class="price-amount">₱300</span></div>
-                <div class="price-row"><span>Facial</span><span class="price-amount">₱400</span></div>
-                <div class="price-row"><span>Body Scrub</span><span class="price-amount">₱550</span></div>
+        <div class="service-category">
+            <h3 class="category-heading">&#127807; Spa &amp; Wellness</h3>
+            <div class="service-items-grid">
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/swedish.jpg" alt="Swedish Massage" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Swedish+Massage'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Swedish Massage</h4>
+                            <span class="service-item-price">&#8369;500</span>
+                        </div>
+                        <p class="service-item-desc">Full body relaxation massage using gentle Swedish techniques.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Swedish Massage')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/deep-tissue.jpg" alt="Deep Tissue" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Deep+Tissue'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Deep Tissue</h4>
+                            <span class="service-item-price">&#8369;600</span>
+                        </div>
+                        <p class="service-item-desc">Targets deep muscle tension and chronic pain relief.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Deep Tissue')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/foot-massage.jpg" alt="Foot Massage" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Foot+Massage'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Foot Massage</h4>
+                            <span class="service-item-price">&#8369;300</span>
+                        </div>
+                        <p class="service-item-desc">Soothing foot massage to relieve tiredness and stress.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Foot Massage')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/facial.jpg" alt="Facial" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Facial'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Facial</h4>
+                            <span class="service-item-price">&#8369;400</span>
+                        </div>
+                        <p class="service-item-desc">Deep cleansing facial for glowing, healthy skin.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Facial')">Book Now</button>
+                    </div>
+                </div>
+
+                <div class="service-item-card">
+                    <div class="service-img-wrap">
+                        <img src="/static/images/body-scrub.jpg" alt="Body Scrub" onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text=Body+Scrub'">
+                    </div>
+                    <div class="service-item-body">
+                        <div class="service-item-header">
+                            <h4 class="service-item-name">Body Scrub</h4>
+                            <span class="service-item-price">&#8369;550</span>
+                        </div>
+                        <p class="service-item-desc">Exfoliating body scrub for smooth, refreshed skin.</p>
+                        <button class="service-book-btn" type="button" onclick="selectService('Body Scrub')">Book Now</button>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 
@@ -171,6 +360,25 @@
 {% endblock %}
 
 <script>
+function selectService(serviceName) {
+    var select = document.getElementById('f-service');
+    if (!select) {
+        return;
+    }
+
+    for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === serviceName) {
+            select.selectedIndex = i;
+            break;
+        }
+    }
+
+    document.querySelector('.booking-form').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
 function updateServiceType(el) {
     var salonLabel = document.getElementById('salon-label');
     var homeLabel = document.getElementById('home-label');
@@ -227,7 +435,7 @@ document.getElementById('book-form').addEventListener('submit', function(e) {
         }
     }
     var btn = document.getElementById('book-btn');
-    btn.textContent = '⏳ Uploading...';
+    btn.textContent = 'Uploading...';
     btn.disabled = true;
 });
 </script>
