@@ -24,6 +24,8 @@ app.config['MAIL_USERNAME'] = MAIL_USER
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
 app.config['MAIL_DEFAULT_SENDER'] = ('Salon Booking', MAIL_USER)
 
+print(f"=== MAIL CONFIG: MAIL_USER={MAIL_USER or 'NOT SET'} ===")
+
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.secret_key)
 
