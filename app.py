@@ -110,7 +110,12 @@ def admin_required(f):
 # ─── PUBLIC ROUTES ────────────────────────────────────────
 @app.route('/')
 def index():
-    return render_template('index.html', stylists=_get_stylists(), services=SERVICE_CATALOG, current_user=_get_current_user())
+    try:
+        return render_template('index.html', stylists=_get_stylists(), services=SERVICE_CATALOG, current_user=_get_current_user())
+    except Exception as e:
+        print("Index render error:", e)
+        flash('We could not load the landing page completely. Please try again.', 'error')
+        return render_template('index.html', stylists=[], services=SERVICE_CATALOG, current_user=None)
 
 @app.route('/about')
 def about():
@@ -296,9 +301,8 @@ def create_booking():
         flash('Address is required for Home Service bookings.', 'error')
         return redirect(redirect_target)
 
-    booking_payload = {
-        "user_id": current_user.get('id'),
-        "name": current_user.get('name'),
+    base_booking_payload = {
+        "name": current_user.get('name') or session.get('user'),
         "service": service,
         "stylist": stylist,
         "date": date,
@@ -310,13 +314,16 @@ def create_booking():
         "booked_by": session.get('user')
     }
 
+    booking_payload = dict(base_booking_payload)
+    if current_user.get('id'):
+        booking_payload["user_id"] = current_user.get('id')
+
     try:
         supabase.table("bookings").insert(booking_payload).execute()
         flash('Booking submitted successfully!', 'success')
     except Exception as e:
         print("Create booking error:", e)
-        fallback_payload = dict(booking_payload)
-        fallback_payload.pop("user_id", None)
+        fallback_payload = dict(base_booking_payload)
         try:
             supabase.table("bookings").insert(fallback_payload).execute()
             flash('Booking submitted successfully!', 'success')
@@ -374,19 +381,19 @@ def profile():
             flash('Name and email are required.', 'error')
             return render_template('profile.html', current_user=current_user)
 
-        payload = {"username": name, "email": email, "phone": phone}
-
         try:
-            supabase.table("users").update(payload).eq("id", current_user.get('id')).execute()
-        except Exception as e:
-            print("Profile update with phone failed:", e)
-            fallback_payload = {"username": name, "email": email}
-            try:
-                supabase.table("users").update(fallback_payload).eq("id", current_user.get('id')).execute()
-            except Exception as inner_err:
-                print("Profile update fallback failed:", inner_err)
-                flash('Failed to update profile.', 'error')
-                return render_template('profile.html', current_user=current_user)
+            if current_user.get('id'):
+                try:
+                    supabase.table("users").update({"username": name, "email": email, "phone": phone}).eq("id", current_user.get('id')).execute()
+                except Exception as phone_err:
+                    print("Profile update with phone failed:", phone_err)
+                    supabase.table("users").update({"username": name, "email": email}).eq("id", current_user.get('id')).execute()
+            else:
+                supabase.table("users").update({"username": name, "email": email}).eq("username", session.get('user')).execute()
+        except Exception as inner_err:
+            print("Profile update fallback failed:", inner_err)
+            flash('Failed to update profile.', 'error')
+            return render_template('profile.html', current_user=current_user)
 
         if name != session.get('user'):
             try:
@@ -453,6 +460,14 @@ def _get_current_user():
         print("Current user fetch error:", e)
 
     return current_user
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    print("Unhandled 500 error:", error)
+    try:
+        return render_template('error.html'), 500
+    except Exception:
+        return "Something went wrong on the server.", 500
 
 @app.route('/admin')
 @app.route('/admin/dashboard')
