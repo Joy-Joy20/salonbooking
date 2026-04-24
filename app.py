@@ -15,6 +15,16 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 
 MAIL_USER = os.environ.get('MAIL_USERNAME', '')
+if not MAIL_USER:
+    print("=== WARNING: MAIL_USERNAME not found in env, checking .env file ===")
+    try:
+        from dotenv import dotenv_values
+        env_vals = dotenv_values(os.path.join(os.path.dirname(__file__), '.env'))
+        MAIL_USER = env_vals.get('MAIL_USERNAME', '')
+        os.environ['MAIL_PASSWORD'] = env_vals.get('MAIL_PASSWORD', '')
+        print(f"=== Loaded from .env directly: MAIL_USER={MAIL_USER or 'STILL NOT SET'} ===")
+    except Exception as env_err:
+        print(f"=== .env load error: {env_err} ===")
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
