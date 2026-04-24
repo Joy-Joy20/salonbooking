@@ -1,72 +1,89 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="contact-page">
-    <div class="contact-shell">
-        <div class="contact-hero">
-            <span class="contact-eyebrow">We'd Love To Hear From You</span>
-            <h1>Contact Us</h1>
-            <p>Questions, booking concerns, or special requests? Reach out and we’ll help you plan the right salon experience.</p>
+<section class="contact-page contact-page-redesign">
+    <div class="contact-shell contact-shell-redesign">
+        <div class="contact-hero contact-hero-redesign">
+            <span class="contact-eyebrow">Let’s Talk Beauty</span>
+            <h1>Contact Our Salon Team</h1>
+            <p>Whether you’re planning your next appointment, checking service details, or asking for personalized help, we’re here to make it easy.</p>
         </div>
 
-        <div class="contact-layout contact-layout-polished">
-            <div class="contact-info contact-panel">
-                <div class="contact-panel-top">
-                    <span class="contact-badge">Salon Support</span>
-                    <h3>Get in Touch</h3>
-                    <p>Connect with our team for appointments, service questions, and personalized assistance.</p>
+        <div class="contact-stage">
+            <div class="contact-spotlight">
+                <div class="contact-spotlight-copy">
+                    <span class="contact-badge contact-badge-dark">Salon Support</span>
+                    <h2>Reach us your way.</h2>
+                    <p>Message us for service questions, booking assistance, schedule changes, or beauty recommendations before your visit.</p>
                 </div>
 
-                <div class="contact-detail-list">
-                    <div class="contact-detail-item">
-                        <div class="contact-detail-icon">&#128205;</div>
+                <div class="contact-detail-list contact-detail-list-redesign">
+                    <div class="contact-detail-item contact-detail-item-dark">
+                        <div class="contact-detail-icon contact-detail-icon-dark">&#128205;</div>
                         <div>
-                            <strong>Visit Us</strong>
+                            <strong>Visit Our Salon</strong>
                             <span>123 Salon Street, Cebu City</span>
                         </div>
                     </div>
 
-                    <div class="contact-detail-item">
-                        <div class="contact-detail-icon">&#128222;</div>
+                    <div class="contact-detail-item contact-detail-item-dark">
+                        <div class="contact-detail-icon contact-detail-icon-dark">&#128222;</div>
                         <div>
                             <strong>Call Us</strong>
                             <span>+63 912 345 6789</span>
                         </div>
                     </div>
 
-                    <div class="contact-detail-item">
-                        <div class="contact-detail-icon">&#128231;</div>
+                    <div class="contact-detail-item contact-detail-item-dark">
+                        <div class="contact-detail-icon contact-detail-icon-dark">&#128231;</div>
                         <div>
                             <strong>Email Us</strong>
                             <span>salonbooking@email.com</span>
                         </div>
                     </div>
 
-                    <div class="contact-detail-item">
-                        <div class="contact-detail-icon">&#128338;</div>
+                    <div class="contact-detail-item contact-detail-item-dark">
+                        <div class="contact-detail-icon contact-detail-icon-dark">&#128338;</div>
                         <div>
                             <strong>Opening Hours</strong>
                             <span>Mon-Sat, 8:00 AM - 7:00 PM</span>
                         </div>
                     </div>
                 </div>
+
+                <div class="contact-mini-note">
+                    <strong>Fast Response</strong>
+                    <span>We usually reply during salon hours and prioritize appointment-related questions first.</span>
+                </div>
             </div>
 
-            <div class="contact-form contact-panel">
-                <div class="contact-panel-top">
+            <div class="contact-form-card">
+                <div class="contact-form-card-top">
                     <span class="contact-badge">Quick Message</span>
                     <h3>Send Us a Message</h3>
-                    <p>Share your concern and we’ll get back to you as soon as possible.</p>
+                    <p>Fill out the form below and our team will get back to you as soon as possible.</p>
                 </div>
 
                 {% if message_sent %}
                 <div class="contact-success">Your message has been sent successfully.</div>
                 {% endif %}
 
-                <form method="POST" action="/contact" class="contact-form-fields">
-                    <input type="text" name="name" placeholder="Your Name" required>
-                    <input type="email" name="email" placeholder="Your Email" required>
-                    <textarea name="message" placeholder="Tell us how we can help" rows="5"></textarea>
+                <form method="POST" action="/contact" class="contact-form-fields contact-form-redesign">
+                    <div class="contact-input-group">
+                        <label for="contact-name">Full Name</label>
+                        <input id="contact-name" type="text" name="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="contact-input-group">
+                        <label for="contact-email">Email Address</label>
+                        <input id="contact-email" type="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="contact-input-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="message" placeholder="Tell us how we can help" rows="6"></textarea>
+                    </div>
+
                     <button type="submit">Send Message</button>
                 </form>
             </div>
