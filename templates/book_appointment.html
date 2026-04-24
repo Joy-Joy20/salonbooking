@@ -26,7 +26,7 @@
 
             <div id="home-address-wrap" style="display:none;">
                 <span class="form-label">&#128205; Your Address</span>
-                <input type="text" name="address" placeholder="Enter your full address">
+                <input type="text" name="address" id="home-address" placeholder="Enter your full address">
             </div>
 
             <span class="form-label">Select Service</span>
@@ -134,14 +134,18 @@ function updateServiceType(el) {
     var salonLabel = document.getElementById('salon-label');
     var homeLabel = document.getElementById('home-label');
     var addressWrap = document.getElementById('home-address-wrap');
+    var addressInput = document.getElementById('home-address');
     salonLabel.className = 'payment-opt';
     homeLabel.className = 'payment-opt';
     if (el.value === 'Salon Visit') {
         salonLabel.className = 'payment-opt cash-active';
         addressWrap.style.display = 'none';
+        addressInput.required = false;
     } else {
         homeLabel.className = 'payment-opt cash-active';
         addressWrap.style.display = 'block';
+        addressInput.required = true;
+        addressInput.focus();
     }
 }
 
@@ -176,7 +180,17 @@ function previewScreenshot(input) {
 }
 
 document.getElementById('book-form').addEventListener('submit', function(e) {
+    var serviceType = document.querySelector('input[name=\"service_type\"]:checked').value;
+    var addressInput = document.getElementById('home-address');
     var payment = document.querySelector('input[name=\"payment_method\"]:checked').value;
+
+    if (serviceType === 'Home Service' && !addressInput.value.trim()) {
+        e.preventDefault();
+        alert('Please enter your address for Home Service.');
+        addressInput.focus();
+        return;
+    }
+
     if (payment === 'GCash') {
         var file = document.getElementById('gcash-upload').files[0];
         if (!file) {

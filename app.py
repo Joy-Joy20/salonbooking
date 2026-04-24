@@ -195,6 +195,10 @@ def book_appointment():
         address = request.form.get('address') or None
         gcash_screenshot = None
 
+        if service_type == 'Home Service' and not address:
+            flash('Address is required for Home Service bookings.', 'error')
+            return redirect(url_for('book_appointment', service=service))
+
         # Upload screenshot to Supabase Storage
         screenshot_file = request.files.get('gcash_screenshot')
         if screenshot_file and screenshot_file.filename:
