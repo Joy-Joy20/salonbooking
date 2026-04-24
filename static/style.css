@@ -377,12 +377,24 @@ tr:hover {
     padding: 2.5rem 1.5rem 3.5rem;
 }
 
+.appointment-page {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1.5rem 3.5rem;
+}
+
 .booking-form {
     background: #fff;
     border-radius: 24px;
     padding: 2rem 2.5rem;
     box-shadow: 0 8px 40px rgba(233,30,140,0.10);
     border: 1px solid #fce4f0;
+}
+
+.appointment-page .booking-form {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
 }
 
 .booking-form h2 {
@@ -1013,6 +1025,10 @@ tr:hover {
         padding: 1.25rem 1rem 2rem;
     }
 
+    .appointment-page {
+        padding: 1.25rem 1rem 2rem;
+    }
+
     .services-only-layout {
         padding: 1.25rem;
         border-radius: 22px;
@@ -1037,6 +1053,10 @@ tr:hover {
     }
 
     .services-only-page {
+        padding: 2rem 1.25rem 3rem;
+    }
+
+    .appointment-page {
         padding: 2rem 1.25rem 3rem;
     }
 }
