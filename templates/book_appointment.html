@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="book-page-container">
+
+    <div class="booking-form" id="book-appointment">
+        <h2>Book an Appointment</h2>
+        <form method="POST" enctype="multipart/form-data" id="book-form">
+
+            <span class="form-label">Your Name</span>
+            <input type="text" name="name" placeholder="Enter your full name" required>
+
+            <div style="margin-bottom:12px;">
+                <span class="form-label">Service Type</span>
+                <div class="service-type-group">
+                    <label class="service-type-opt active" id="salon-label">
+                        <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
+                        <span>&#127960;</span> Salon Visit
+                    </label>
+                    <label class="service-type-opt" id="home-label">
+                        <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="updateServiceType(this)">
+                        <span>&#128663;</span> Home Service
+                    </label>
+                </div>
+            </div>
+
+            <div id="home-address-wrap" style="display:none;">
+                <span class="form-label">&#128205; Your Address</span>
+                <input type="text" name="address" placeholder="Enter your full address">
+            </div>
+
+            <span class="form-label">Select Service</span>
+            <select name="service" id="f-service" required>
+                <option value="" {% if not selected_service %}selected{% endif %}>-- Select Service --</option>
+                <optgroup label="&#9986;&#65039; Hair Services">
+                    <option value="Haircut" {% if selected_service == 'Haircut' %}selected{% endif %}>Haircut - &#8369;150</option>
+                    <option value="Hair Color" {% if selected_service == 'Hair Color' %}selected{% endif %}>Hair Color - &#8369;500</option>
+                    <option value="Rebonding" {% if selected_service == 'Rebonding' %}selected{% endif %}>Rebonding - &#8369;1,200</option>
+                    <option value="Keratin Treatment" {% if selected_service == 'Keratin Treatment' %}selected{% endif %}>Keratin Treatment - &#8369;1,500</option>
+                    <option value="Hot Oil" {% if selected_service == 'Hot Oil' %}selected{% endif %}>Hot Oil - &#8369;200</option>
+                </optgroup>
+                <optgroup label="&#128133; Nail Services">
+                    <option value="Manicure" {% if selected_service == 'Manicure' %}selected{% endif %}>Manicure - &#8369;80</option>
+                    <option value="Pedicure" {% if selected_service == 'Pedicure' %}selected{% endif %}>Pedicure - &#8369;100</option>
+                    <option value="Nail Art" {% if selected_service == 'Nail Art' %}selected{% endif %}>Nail Art - &#8369;250</option>
+                    <option value="Gel Polish" {% if selected_service == 'Gel Polish' %}selected{% endif %}>Gel Polish - &#8369;350</option>
+                    <option value="Nail Extension" {% if selected_service == 'Nail Extension' %}selected{% endif %}>Nail Extension - &#8369;600</option>
+                </optgroup>
+                <optgroup label="&#127807; Spa &amp; Wellness">
+                    <option value="Swedish Massage" {% if selected_service == 'Swedish Massage' %}selected{% endif %}>Swedish Massage - &#8369;500</option>
+                    <option value="Deep Tissue" {% if selected_service == 'Deep Tissue' %}selected{% endif %}>Deep Tissue - &#8369;600</option>
+                    <option value="Foot Massage" {% if selected_service == 'Foot Massage' %}selected{% endif %}>Foot Massage - &#8369;300</option>
+                    <option value="Facial" {% if selected_service == 'Facial' %}selected{% endif %}>Facial - &#8369;400</option>
+                    <option value="Body Scrub" {% if selected_service == 'Body Scrub' %}selected{% endif %}>Body Scrub - &#8369;550</option>
+                </optgroup>
+            </select>
+
+            <span class="form-label">Select Stylist</span>
+            <select name="stylist" required>
+                <option value="">-- Select Stylist --</option>
+                {% for s in stylists %}
+                <option value="{{ s.name }}">{{ s.name }} - {{ s.specialty }}</option>
+                {% endfor %}
+            </select>
+
+            <span class="form-label">Appointment Date</span>
+            <input type="date" name="date" required>
+
+            <span class="form-label">Appointment Time</span>
+            <input type="time" name="time" required>
+
+            <div style="margin-bottom:12px;">
+                <span class="payment-label">Payment Method</span>
+                <div class="payment-options">
+                    <label class="payment-opt cash-active" id="cash-label">
+                        <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="updatePayment(this)">
+                        <span>&#128176;</span> Cash
+                    </label>
+                    <label class="payment-opt" id="gcash-label">
+                        <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="updatePayment(this)">
+                        <span>&#128241;</span> GCash
+                    </label>
+                </div>
+
+                <div class="cash-info" id="cash-info">
+                    &#128176; <strong>Pay in cash</strong> upon arrival at the salon.<br>
+                    Please be on time for your appointment. &#128522;
+                </div>
+
+                <div class="gcash-info" id="gcash-info" style="display:none;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:18px;">&#128241;</span>
+                        <span style="font-size:15px; font-weight:700; color:#007bff;">GCash Payment</span>
+                    </div>
+                    <img src="/static/images/gcash-qr.png" alt="GCash QR Code" class="gcash-qr"
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=GCash+09123456789'">
+                    <p style="font-size:13px; color:#555; margin:6px 0 2px;">GCash Number:</p>
+                    <p class="gcash-number">0912 345 6789</p>
+                    <p style="font-size:13px; color:#555;">Account Name: <strong>Salon Booking</strong></p>
+                    <div class="gcash-steps">
+                        &#128204; <strong>Instructions:</strong><br>
+                        1. Open your GCash app<br>
+                        2. Tap <strong>Pay QR</strong> and scan the code above<br>
+                        3. Enter the exact amount for your service<br>
+                        4. Take a <strong>screenshot</strong> of the success screen<br>
+                        5. Upload the screenshot below<br>
+                        6. Click <strong>Book an Appointment</strong> to confirm
+                    </div>
+                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="gcash-ref-input">
+
+                    <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer;" onclick="document.getElementById('gcash-upload').click()">
+                        <div id="upload-prompt">
+                            <p style="font-size:24px; margin-bottom:4px;">&#128228;</p>
+                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
+                            <p style="font-size:11px; color:#888;">Tap here to upload your payment screenshot</p>
+                        </div>
+                        <div id="upload-preview" style="display:none;">
+                            <img id="preview-img" src="" alt="Screenshot preview" style="width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
+                            <p style="font-size:11px; color:#007bff; font-weight:600;">&#9989; Screenshot selected! Click to change.</p>
+                        </div>
+                        <input id="gcash-upload" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewScreenshot(this)">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="book-btn" id="book-btn">Book an Appointment</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+function updateServiceType(el) {
+    var salonLabel = document.getElementById('salon-label');
+    var homeLabel = document.getElementById('home-label');
+    var addressWrap = document.getElementById('home-address-wrap');
+    salonLabel.className = 'payment-opt';
+    homeLabel.className = 'payment-opt';
+    if (el.value === 'Salon Visit') {
+        salonLabel.className = 'payment-opt cash-active';
+        addressWrap.style.display = 'none';
+    } else {
+        homeLabel.className = 'payment-opt cash-active';
+        addressWrap.style.display = 'block';
+    }
+}
+
+function updatePayment(el) {
+    var cashLabel = document.getElementById('cash-label');
+    var gcashLabel = document.getElementById('gcash-label');
+    var cashInfo = document.getElementById('cash-info');
+    var gcashInfo = document.getElementById('gcash-info');
+    cashLabel.className = 'payment-opt';
+    gcashLabel.className = 'payment-opt';
+    if (el.value === 'Cash') {
+        cashLabel.className = 'payment-opt cash-active';
+        cashInfo.style.display = 'block';
+        gcashInfo.style.display = 'none';
+    } else {
+        gcashLabel.className = 'payment-opt gcash-active';
+        cashInfo.style.display = 'none';
+        gcashInfo.style.display = 'block';
+    }
+}
+
+function previewScreenshot(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+            document.getElementById('upload-prompt').style.display = 'none';
+            document.getElementById('upload-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.getElementById('book-form').addEventListener('submit', function(e) {
+    var payment = document.querySelector('input[name=\"payment_method\"]:checked').value;
+    if (payment === 'GCash') {
+        var file = document.getElementById('gcash-upload').files[0];
+        if (!file) {
+            e.preventDefault();
+            alert('Please upload your GCash payment screenshot.');
+            return;
+        }
+    }
+    var btn = document.getElementById('book-btn');
+    btn.textContent = 'Uploading...';
+    btn.disabled = true;
+});
+</script>

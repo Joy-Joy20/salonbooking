@@ -18,7 +18,7 @@
                             <span class="service-item-price">&#8369;150</span>
                         </div>
                         <p class="service-item-desc">Professional haircut and styling for all hair types.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Haircut') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -32,7 +32,7 @@
                             <span class="service-item-price">&#8369;500</span>
                         </div>
                         <p class="service-item-desc">Vibrant hair coloring with premium color products.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Hair Color') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -46,7 +46,7 @@
                             <span class="service-item-price">&#8369;1,200</span>
                         </div>
                         <p class="service-item-desc">Smooth and straighten your hair with long-lasting rebonding treatment.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Rebonding') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -60,7 +60,7 @@
                             <span class="service-item-price">&#8369;1,500</span>
                         </div>
                         <p class="service-item-desc">Restore shine and eliminate frizz with keratin treatment.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Keratin Treatment') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                             <span class="service-item-price">&#8369;200</span>
                         </div>
                         <p class="service-item-desc">Deep conditioning hot oil treatment for healthy, shiny hair.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Hot Oil') }}">Book an Appointment</a>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                             <span class="service-item-price">&#8369;80</span>
                         </div>
                         <p class="service-item-desc">Classic manicure with nail shaping, cuticle care, and polish.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Manicure') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -107,7 +107,7 @@
                             <span class="service-item-price">&#8369;100</span>
                         </div>
                         <p class="service-item-desc">Relaxing pedicure with foot soak, nail care, and polish.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Pedicure') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@
                             <span class="service-item-price">&#8369;250</span>
                         </div>
                         <p class="service-item-desc">Creative nail art designs customized to your style.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Nail Art') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -135,7 +135,7 @@
                             <span class="service-item-price">&#8369;350</span>
                         </div>
                         <p class="service-item-desc">Long-lasting gel polish that stays chip-free for weeks.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Gel Polish') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -149,7 +149,7 @@
                             <span class="service-item-price">&#8369;600</span>
                         </div>
                         <p class="service-item-desc">Beautiful nail extensions for your desired length and shape.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Nail Extension') }}">Book an Appointment</a>
                     </div>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                             <span class="service-item-price">&#8369;500</span>
                         </div>
                         <p class="service-item-desc">Full body relaxation massage using gentle Swedish techniques.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Swedish Massage') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -182,7 +182,7 @@
                             <span class="service-item-price">&#8369;600</span>
                         </div>
                         <p class="service-item-desc">Targets deep muscle tension and chronic pain relief.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Deep Tissue') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -196,7 +196,7 @@
                             <span class="service-item-price">&#8369;300</span>
                         </div>
                         <p class="service-item-desc">Soothing foot massage to relieve tiredness and stress.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Foot Massage') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -210,7 +210,7 @@
                             <span class="service-item-price">&#8369;400</span>
                         </div>
                         <p class="service-item-desc">Deep cleansing facial for glowing, healthy skin.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Facial') }}">Book an Appointment</a>
                     </div>
                 </div>
 
@@ -224,7 +224,7 @@
                             <span class="service-item-price">&#8369;550</span>
                         </div>
                         <p class="service-item-desc">Exfoliating body scrub for smooth, refreshed skin.</p>
-                        <button class="service-book-btn" type="button">Book an Appointment</button>
+                        <a class="service-book-btn" href="{{ url_for('book_appointment', service='Body Scrub') }}">Book an Appointment</a>
                     </div>
                 </div>
             </div>

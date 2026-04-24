@@ -173,10 +173,16 @@ def logout():
     return redirect(url_for('index'))
 
 # ─── USER ROUTES ──────────────────────────────────────────
-@app.route('/book', methods=['GET', 'POST'])
+@app.route('/book')
 @login_required
 def book():
+    return render_template('book.html')
+
+@app.route('/book/appointment', methods=['GET', 'POST'])
+@login_required
+def book_appointment():
     stylists = _get_stylists()
+    selected_service = request.args.get('service', '')
     if request.method == 'POST':
         name = request.form.get('name')
         service = request.form.get('service')
@@ -224,7 +230,7 @@ def book():
             print("Insert error details:", str(e))
             flash(f'Booking failed: {str(e)}', 'error')
         return redirect(url_for('bookings_page'))
-    return render_template('book.html', stylists=stylists)
+    return render_template('book_appointment.html', stylists=stylists, selected_service=selected_service)
 
 @app.route('/bookings')
 @login_required
