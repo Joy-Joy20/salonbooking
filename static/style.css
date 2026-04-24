@@ -232,7 +232,7 @@ button:hover, .btn:hover {
     min-height: 85vh;
     max-width: 920px;
     margin: 0 auto;
-    padding: 100px 24px 120px;
+    padding: 80px 24px 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -257,8 +257,8 @@ button:hover, .btn:hover {
 
 .hero-slide-content h1 {
     margin: 0 0 18px;
-    font-size: clamp(2.6rem, 6vw, 4.8rem);
-    line-height: 1.05;
+    font-size: clamp(2.3rem, 5.3vw, 4.4rem);
+    line-height: 1.1;
     font-weight: 700;
     text-shadow: 0 10px 30px rgba(0,0,0,0.22);
 }
@@ -266,8 +266,8 @@ button:hover, .btn:hover {
 .hero-slide-content p {
     margin: 0;
     max-width: 700px;
-    font-size: clamp(16px, 2.1vw, 22px);
-    line-height: 1.6;
+    font-size: clamp(15px, 1.8vw, 20px);
+    line-height: 1.45;
     color: rgba(255,255,255,0.95);
     text-shadow: 0 4px 18px rgba(0,0,0,0.22);
 }
@@ -277,7 +277,9 @@ button:hover, .btn:hover {
     gap: 14px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 32px;
+    margin-top: 24px;
+    width: 100%;
+    max-width: 520px;
 }
 
 .hero-btn-secondary {
@@ -289,6 +291,10 @@ button:hover, .btn:hover {
 .hero-btn-secondary:hover {
     background: rgba(255,255,255,0.24);
     box-shadow: none;
+}
+
+.hero-actions .hero-btn {
+    min-width: 220px;
 }
 
 .hero-control {
@@ -1203,12 +1209,18 @@ tr:hover {
     }
 
     .hero-slide-content {
-        padding: 86px 18px 110px;
+        padding: 72px 18px 118px;
     }
 
     .hero-actions {
         flex-direction: column;
         align-items: stretch;
+        max-width: 320px;
+        margin-top: 20px;
+    }
+
+    .hero-actions .hero-btn {
+        min-width: 0;
     }
 
     .hero-control {
