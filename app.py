@@ -14,13 +14,15 @@ from itsdangerous import URLSafeTimedSerializer
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 
+MAIL_USER = os.environ.get('MAIL_USERNAME', '')
+
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
+app.config['MAIL_USERNAME'] = MAIL_USER
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME', '')
+app.config['MAIL_DEFAULT_SENDER'] = ('Salon Booking', MAIL_USER)
 
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.secret_key)
@@ -143,7 +145,7 @@ def signup():
                         success = True
                         # Welcome email — non-blocking
                         try:
-                            msg = Message(subject='Welcome to Salon Booking! 🎀', sender=os.environ.get('MAIL_USERNAME', ''), recipients=[email])
+                            msg = Message(subject='Welcome to Salon Booking! 🎀', sender=('Salon Booking', MAIL_USER), recipients=[email])
                             msg.html = f'<p>Hi <strong>{username}</strong>! Your account has been created. <a href="/book">Book Now</a></p>'
                             mail.send(msg)
                         except Exception:
@@ -388,15 +390,25 @@ def admin_delete_user(username):
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
+
+        if not MAIL_USER:
+            flash('Email service is not configured. Contact the admin.', 'error')
+            return redirect(url_for('forgot_password'))
+
         try:
             result = supabase.table('users').select('id').eq('email', email).execute()
             if not result.data:
                 flash('No account found with that email.', 'error')
                 return redirect(url_for('forgot_password'))
+
             token = s.dumps(email, salt='password-reset')
             reset_link = url_for('reset_password', token=token, _external=True)
-            sender_email = os.environ.get('MAIL_USERNAME', '')
-            msg = Message(subject='🔐 Salon Booking — Password Reset', sender=sender_email, recipients=[email])
+
+            msg = Message(
+                subject='🔐 Salon Booking — Password Reset',
+                sender=('Salon Booking', MAIL_USER),
+                recipients=[email]
+            )
             msg.html = f'''
             <div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
               <h2 style="color:#e91e8c;text-align:center;">🎀 Salon Booking</h2>
@@ -406,12 +418,21 @@ def forgot_password():
                 <a href="{reset_link}" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;">Reset Password 🔑</a>
               </div>
               <p style="color:#888;font-size:12px;">If you didn't request this, ignore this email.</p>
+              <hr style="border:none;border-top:1px solid #fce4f0;margin:1rem 0;">
+              <p style="color:#aaa;font-size:11px;text-align:center;">© 2025 Salon Booking</p>
             </div>'''
+
+            print(f"=== Sending reset email to: {email} ===")
             mail.send(msg)
-            flash('Password reset link sent to your email! 📧', 'success')
+            print("=== Email sent successfully ===")
+            flash('Password reset link sent! Check your inbox. 📧', 'success')
+
         except Exception as e:
-            print('Forgot password error:', str(e))
+            print("=== MAIL ERROR ===")
+            print(str(e))
+            print("==================")
             flash(f'Failed to send email: {str(e)}', 'error')
+
         return redirect(url_for('forgot_password'))
     return render_template('forgot_password.html')
 
