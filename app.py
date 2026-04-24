@@ -14,6 +14,42 @@ from itsdangerous import URLSafeTimedSerializer
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 
+SERVICE_CATALOG = [
+    {
+        "category": "Hair Services",
+        "icon": "✂️",
+        "items": [
+            {"name": "Haircut", "price": "₱150", "description": "Professional haircut and styling for all hair types.", "image": "/static/images/haircut.jpg", "placeholder": "Haircut"},
+            {"name": "Hair Color", "price": "₱500", "description": "Vibrant hair coloring with premium color products.", "image": "/static/images/hair-color.jpg", "placeholder": "Hair+Color"},
+            {"name": "Rebonding", "price": "₱1,200", "description": "Smooth and straighten your hair with long-lasting rebonding treatment.", "image": "/static/images/rebonding.jpg", "placeholder": "Rebonding"},
+            {"name": "Keratin Treatment", "price": "₱1,500", "description": "Restore shine and eliminate frizz with keratin treatment.", "image": "/static/images/keratin.jpg", "placeholder": "Keratin+Treatment"},
+            {"name": "Hot Oil", "price": "₱200", "description": "Deep conditioning hot oil treatment for healthy, shiny hair.", "image": "/static/images/hot-oil.jpg", "placeholder": "Hot+Oil"},
+        ]
+    },
+    {
+        "category": "Nail Services",
+        "icon": "💅",
+        "items": [
+            {"name": "Manicure", "price": "₱80", "description": "Classic manicure with nail shaping, cuticle care, and polish.", "image": "/static/images/manicure.jpg", "placeholder": "Manicure"},
+            {"name": "Pedicure", "price": "₱100", "description": "Relaxing pedicure with foot soak, nail care, and polish.", "image": "/static/images/pedicure.jpg", "placeholder": "Pedicure"},
+            {"name": "Nail Art", "price": "₱250", "description": "Creative nail art designs customized to your style.", "image": "/static/images/nail-art.jpg", "placeholder": "Nail+Art"},
+            {"name": "Gel Polish", "price": "₱350", "description": "Long-lasting gel polish that stays chip-free for weeks.", "image": "/static/images/gel-polish.jpg", "placeholder": "Gel+Polish"},
+            {"name": "Nail Extension", "price": "₱600", "description": "Beautiful nail extensions for your desired length and shape.", "image": "/static/images/nail-extension.jpg", "placeholder": "Nail+Extension"},
+        ]
+    },
+    {
+        "category": "Spa & Wellness",
+        "icon": "🌿",
+        "items": [
+            {"name": "Swedish Massage", "price": "₱500", "description": "Full body relaxation massage using gentle Swedish techniques.", "image": "/static/images/swedish.jpg", "placeholder": "Swedish+Massage"},
+            {"name": "Deep Tissue", "price": "₱600", "description": "Targets deep muscle tension and chronic pain relief.", "image": "/static/images/deep-tissue.jpg", "placeholder": "Deep+Tissue"},
+            {"name": "Foot Massage", "price": "₱300", "description": "Soothing foot massage to relieve tiredness and stress.", "image": "/static/images/foot-massage.jpg", "placeholder": "Foot+Massage"},
+            {"name": "Facial", "price": "₱400", "description": "Deep cleansing facial for glowing, healthy skin.", "image": "/static/images/facial.jpg", "placeholder": "Facial"},
+            {"name": "Body Scrub", "price": "₱550", "description": "Exfoliating body scrub for smooth, refreshed skin.", "image": "/static/images/body-scrub.jpg", "placeholder": "Body+Scrub"},
+        ]
+    }
+]
+
 MAIL_USER = os.environ.get('MAIL_USERNAME', '')
 if not MAIL_USER:
     print("=== WARNING: MAIL_USERNAME not found in env, checking .env file ===")
@@ -74,7 +110,7 @@ def admin_required(f):
 # ─── PUBLIC ROUTES ────────────────────────────────────────
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', stylists=_get_stylists(), services=SERVICE_CATALOG, current_user=_get_current_user())
 
 @app.route('/about')
 def about():
@@ -111,6 +147,9 @@ def login():
             if result.data:
                 user = result.data[0]
                 session['user'] = username
+                session['user_id'] = user.get('id')
+                session['user_email'] = user.get('email', '')
+                session['user_phone'] = user.get('phone', '')
                 session['role'] = user.get('role', 'user')
                 session['is_admin'] = session['role'] == 'admin'
                 if session['is_admin']:
@@ -176,7 +215,7 @@ def logout():
 @app.route('/book')
 @login_required
 def book():
-    return render_template('book.html')
+    return redirect(url_for('index'))
 
 @app.route('/book/appointment', methods=['GET', 'POST'])
 @login_required
@@ -236,12 +275,69 @@ def book_appointment():
         return redirect(url_for('bookings_page'))
     return render_template('book_appointment.html', stylists=stylists, selected_service=selected_service)
 
+@app.route('/bookings/create', methods=['POST'])
+@login_required
+def create_booking():
+    current_user = _get_current_user()
+    service = request.form.get('service')
+    stylist = request.form.get('stylist')
+    date = request.form.get('date')
+    time = request.form.get('time') or None
+    payment_method = request.form.get('payment_method', 'Cash')
+    service_type = request.form.get('service_type', 'Salon Visit')
+    address = request.form.get('address') or None
+    redirect_target = request.form.get('redirect_to') or url_for('index')
+
+    if not current_user:
+        flash('Please log in before booking.', 'error')
+        return redirect(url_for('login'))
+
+    if service_type == 'Home Service' and not address:
+        flash('Address is required for Home Service bookings.', 'error')
+        return redirect(redirect_target)
+
+    booking_payload = {
+        "user_id": current_user.get('id'),
+        "name": current_user.get('name'),
+        "service": service,
+        "stylist": stylist,
+        "date": date,
+        "time": time,
+        "status": "Pending",
+        "payment_method": payment_method,
+        "service_type": service_type,
+        "address": address,
+        "booked_by": session.get('user')
+    }
+
+    try:
+        supabase.table("bookings").insert(booking_payload).execute()
+        flash('Booking submitted successfully!', 'success')
+    except Exception as e:
+        print("Create booking error:", e)
+        fallback_payload = dict(booking_payload)
+        fallback_payload.pop("user_id", None)
+        try:
+            supabase.table("bookings").insert(fallback_payload).execute()
+            flash('Booking submitted successfully!', 'success')
+        except Exception as inner_err:
+            print("Create booking fallback error:", inner_err)
+            flash('Booking failed. Please try again.', 'error')
+
+    return redirect(redirect_target)
+
 @app.route('/bookings')
 @login_required
 def bookings_page():
     bookings = []
     try:
-        response = supabase.table("bookings").select("*").eq("booked_by", session.get('user')).execute()
+        if session.get('user_id'):
+            response = supabase.table("bookings").select("*").eq("user_id", session.get('user_id')).execute()
+            bookings = response.data or []
+            if not bookings:
+                response = supabase.table("bookings").select("*").eq("booked_by", session.get('user')).execute()
+        else:
+            response = supabase.table("bookings").select("*").eq("booked_by", session.get('user')).execute()
         bookings = response.data or []
     except Exception as e:
         print("Fetch error:", e)
@@ -251,10 +347,60 @@ def bookings_page():
 @login_required
 def cancel_booking(booking_id):
     try:
-        supabase.table("bookings").update({"status": "Cancelled"}).eq("id", booking_id).eq("booked_by", session.get('user')).execute()
+        query = supabase.table("bookings").update({"status": "Cancelled"}).eq("id", booking_id)
+        if session.get('user_id'):
+            query = query.eq("user_id", session.get('user_id'))
+        else:
+            query = query.eq("booked_by", session.get('user'))
+        query.execute()
     except Exception as e:
         print("Cancel error:", e)
     return redirect(url_for('bookings_page'))
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    current_user = _get_current_user()
+    if not current_user:
+        flash('Unable to load your profile right now.', 'error')
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        phone = request.form.get('phone', '').strip()
+
+        if not name or not email:
+            flash('Name and email are required.', 'error')
+            return render_template('profile.html', current_user=current_user)
+
+        payload = {"username": name, "email": email, "phone": phone}
+
+        try:
+            supabase.table("users").update(payload).eq("id", current_user.get('id')).execute()
+        except Exception as e:
+            print("Profile update with phone failed:", e)
+            fallback_payload = {"username": name, "email": email}
+            try:
+                supabase.table("users").update(fallback_payload).eq("id", current_user.get('id')).execute()
+            except Exception as inner_err:
+                print("Profile update fallback failed:", inner_err)
+                flash('Failed to update profile.', 'error')
+                return render_template('profile.html', current_user=current_user)
+
+        if name != session.get('user'):
+            try:
+                supabase.table("bookings").update({"booked_by": name, "name": name}).eq("booked_by", session.get('user')).execute()
+            except Exception as booking_update_err:
+                print("Booking name sync error:", booking_update_err)
+
+        session['user'] = name
+        session['user_email'] = email
+        session['user_phone'] = phone
+        flash('Profile updated successfully.', 'success')
+        return redirect(url_for('profile'))
+
+    return render_template('profile.html', current_user=current_user)
 
 # ─── ADMIN ROUTES ─────────────────────────────────────────
 def _get_stylists():
@@ -270,6 +416,43 @@ def _get_services():
         return res.data or []
     except:
         return []
+
+def _get_current_user():
+    if not session.get('user'):
+        return None
+
+    current_user = {
+        "id": session.get('user_id'),
+        "name": session.get('user', ''),
+        "email": session.get('user_email', ''),
+        "phone": session.get('user_phone', '')
+    }
+
+    if not supabase:
+        return current_user
+
+    try:
+        if current_user["id"]:
+            res = supabase.table("users").select("*").eq("id", current_user["id"]).execute()
+        else:
+            res = supabase.table("users").select("*").eq("username", session.get('user')).execute()
+
+        if res.data:
+            user = res.data[0]
+            session['user_id'] = user.get('id')
+            session['user'] = user.get('username', session.get('user'))
+            session['user_email'] = user.get('email', '')
+            session['user_phone'] = user.get('phone', '')
+            current_user = {
+                "id": user.get('id'),
+                "name": user.get('username', ''),
+                "email": user.get('email', ''),
+                "phone": user.get('phone', '')
+            }
+    except Exception as e:
+        print("Current user fetch error:", e)
+
+    return current_user
 
 @app.route('/admin')
 @app.route('/admin/dashboard')

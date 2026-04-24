@@ -1,14 +1,17 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
-    <h1 style="color:#e91e8c; text-align:center;">My Bookings 📅</h1>
+<section class="bookings-page-shell">
+    <h1>My Bookings</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-        <div style="background:{% if category == 'success' %}#d1fae5{% else %}#fee2e2{% endif %}; color:{% if category == 'success' %}#065f46{% else %}#991b1b{% endif %}; padding:12px 20px; border-radius:10px; margin-bottom:20px; text-align:center; font-weight:600;">
-            {{ message }}
-        </div>
-        {% endfor %}
+        {% if messages %}
+            <div class="landing-flashes">
+                {% for category, message in messages %}
+                <div class="landing-flash landing-flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endwith %}
 
     {% if bookings %}
@@ -31,11 +34,26 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ b.service }}</td>
-                <td>{% if b.service_type == 'Home Service' %}<span style="color:#e91e8c; font-weight:600;">🚗 Home Service</span>{% if b.address %}<br><span style="font-size:11px; color:#666;">📍 {{ b.address }}</span>{% endif %}{% else %}<span style="font-weight:600;">🏠 Salon Visit</span>{% endif %}</td>
+                <td>
+                    {% if b.service_type == 'Home Service' %}
+                        <span style="color:#e91e8c; font-weight:600;">Home Service</span>
+                        {% if b.address %}
+                        <br><span style="font-size:11px; color:#666;">{{ b.address }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span style="font-weight:600;">Salon Visit</span>
+                    {% endif %}
+                </td>
                 <td>{{ b.stylist }}</td>
                 <td>{{ b.date }}</td>
                 <td>{{ b.time or '-' }}</td>
-                <td>{% if b.payment_method == 'GCash' %}<span style="color:#007bff; font-weight:600;">📱 GCash</span>{% else %}<span style="font-weight:600;">💵 Cash</span>{% endif %}</td>
+                <td>
+                    {% if b.payment_method == 'GCash' %}
+                    <span style="color:#007bff; font-weight:600;">GCash</span>
+                    {% else %}
+                    <span style="font-weight:600;">Cash</span>
+                    {% endif %}
+                </td>
                 <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
                 <td>
                     {% if b.status == 'Pending' %}
@@ -51,10 +69,10 @@
         </tbody>
     </table>
     {% else %}
-    <div style="text-align:center; margin-top:60px;">
-        <p style="font-size:18px; color:#999;">No bookings yet 😔</p>
-        <a href="/book" class="btn" style="margin-top:16px; display:inline-block;">Book Now</a>
+    <div class="bookings-empty">
+        <p style="font-size:18px; color:#999;">No bookings yet</p>
+        <a href="/#our-services" class="btn" style="margin-top:16px; display:inline-block;">Browse Services</a>
     </div>
     {% endif %}
-</div>
+</section>
 {% endblock %}

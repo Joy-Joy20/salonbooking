@@ -9,7 +9,7 @@
 <body>
 
 <nav>
-    <div class="nav-logo">🧖 Salon Booking</div>
+    <a class="nav-logo" href="/">Salon Booking</a>
 
     <div class="nav-links">
         {% if session.get('is_admin') %}
@@ -19,9 +19,8 @@
             <a href="/admin/stylists">Stylists</a>
             <a href="/admin/users">Users</a>
         {% else %}
-            <a href="/">Home</a>
-            <a href="/book">Book</a>
             <a href="/bookings">My Bookings</a>
+            <a href="/profile">Profile</a>
             <a href="/about">About Us</a>
             <a href="/contact">Contact Us</a>
             <a href="/stylist">Stylists</a>
@@ -43,28 +42,27 @@
     {% block content %}{% endblock %}
 </div>
 
-<!-- FOOTER -->
 <footer>
     <div class="footer-content">
         <div class="footer-section">
-            <h3>🧖 Salon Booking</h3>
+            <h3>Salon Booking</h3>
             <p>Your trusted partner for beauty and wellness services.</p>
         </div>
         <div class="footer-section">
             <h3>Quick Links</h3>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/book">Book</a></li>
+                <li><a href="/">Landing Page</a></li>
                 <li><a href="/bookings">My Bookings</a></li>
+                <li><a href="/profile">Profile</a></li>
                 <li><a href="/stylist">Stylists</a></li>
             </ul>
         </div>
         <div class="footer-section">
             <h3>Contact Us</h3>
-            <p>📍 123 Salon Street, Cebu City</p>
-            <p>📞 +63 912 345 6789</p>
-            <p>📧 salonbooking@email.com</p>
-            <p>🕐 Mon-Sat, 8:00 AM - 7:00 PM</p>
+            <p>123 Salon Street, Cebu City</p>
+            <p>+63 912 345 6789</p>
+            <p>salonbooking@email.com</p>
+            <p>Mon-Sat, 8:00 AM - 7:00 PM</p>
         </div>
     </div>
     <div class="footer-bottom">

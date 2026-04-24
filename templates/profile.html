@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="profile-page">
+    <div class="profile-card">
+        <div class="profile-heading">
+            <span class="section-pill">User Profile</span>
+            <h1>Manage your account</h1>
+            <p>Update your personal information so your bookings always stay accurate.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="landing-flash landing-flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/profile" class="profile-form">
+            <div class="profile-field">
+                <label for="profile-name">Name</label>
+                <input id="profile-name" type="text" name="name" value="{{ current_user.name }}" required>
+            </div>
+
+            <div class="profile-field">
+                <label for="profile-email">Email</label>
+                <input id="profile-email" type="email" name="email" value="{{ current_user.email }}" required>
+            </div>
+
+            <div class="profile-field">
+                <label for="profile-phone">Phone</label>
+                <input id="profile-phone" type="text" name="phone" value="{{ current_user.phone or '' }}" placeholder="Optional phone number">
+            </div>
+
+            <button type="submit" class="btn">Edit Profile</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
