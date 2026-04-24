@@ -3,7 +3,7 @@
 {% block content %}
 <div class="book-page-container">
 
-    <div class="booking-form">
+    <div class="booking-form" id="book-appointment">
         <h2>Book an Appointment</h2>
         <form method="POST" enctype="multipart/form-data" id="book-form">
 
@@ -362,6 +362,8 @@
 <script>
 function selectService(serviceName) {
     var select = document.getElementById('f-service');
+    var bookingSection = document.getElementById('book-appointment');
+
     if (!select) {
         return;
     }
@@ -373,10 +375,12 @@ function selectService(serviceName) {
         }
     }
 
-    document.querySelector('.booking-form').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-    });
+    if (bookingSection) {
+        bookingSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
 }
 
 function updateServiceType(el) {
