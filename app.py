@@ -17,6 +17,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "salon_secret_key")
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME', '')
@@ -142,7 +143,7 @@ def signup():
                         success = True
                         # Welcome email — non-blocking
                         try:
-                            msg = Message(subject='Welcome to Salon Booking! 🎀', recipients=[email])
+                            msg = Message(subject='Welcome to Salon Booking! 🎀', sender=os.environ.get('MAIL_USERNAME', ''), recipients=[email])
                             msg.html = f'<p>Hi <strong>{username}</strong>! Your account has been created. <a href="/book">Book Now</a></p>'
                             mail.send(msg)
                         except Exception:
@@ -394,7 +395,8 @@ def forgot_password():
                 return redirect(url_for('forgot_password'))
             token = s.dumps(email, salt='password-reset')
             reset_link = url_for('reset_password', token=token, _external=True)
-            msg = Message(subject='🔐 Salon Booking — Password Reset', recipients=[email])
+            sender_email = os.environ.get('MAIL_USERNAME', '')
+            msg = Message(subject='🔐 Salon Booking — Password Reset', sender=sender_email, recipients=[email])
             msg.html = f'''
             <div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
               <h2 style="color:#e91e8c;text-align:center;">🎀 Salon Booking</h2>
