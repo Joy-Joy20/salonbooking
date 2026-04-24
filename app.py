@@ -388,17 +388,17 @@ def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         try:
-            result = supabase.table('users').select('*').eq('email', email).execute()
+            result = supabase.table('users').select('id').eq('email', email).execute()
             if not result.data:
                 flash('No account found with that email.', 'error')
                 return redirect(url_for('forgot_password'))
             token = s.dumps(email, salt='password-reset')
             reset_link = url_for('reset_password', token=token, _external=True)
-            msg = Message(subject='🔐 House of Joy Salon & Spa — Password Reset', recipients=[email])
+            msg = Message(subject='🔐 Salon Booking — Password Reset', recipients=[email])
             msg.html = f'''
             <div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
-              <h2 style="color:#e91e8c;text-align:center;">🎀 House of Joy Salon & Spa</h2>
-              <p style="color:#333;font-size:14px;">Hi! We received a request to reset your password.</p>
+              <h2 style="color:#e91e8c;text-align:center;">🎀 Salon Booking</h2>
+              <p style="color:#333;font-size:14px;">We received a request to reset your password.</p>
               <p style="color:#333;font-size:14px;">Click the button below. This link expires in <strong>1 hour</strong>.</p>
               <div style="text-align:center;margin:1.5rem 0;">
                 <a href="{reset_link}" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;">Reset Password 🔑</a>
@@ -406,10 +406,10 @@ def forgot_password():
               <p style="color:#888;font-size:12px;">If you didn't request this, ignore this email.</p>
             </div>'''
             mail.send(msg)
-            flash('Password reset link sent to your email! Check your inbox. 📧', 'success')
+            flash('Password reset link sent to your email! 📧', 'success')
         except Exception as e:
-            print('Forgot password error:', e)
-            flash('Failed to send email. Please try again.', 'error')
+            print('Forgot password error:', str(e))
+            flash(f'Failed to send email: {str(e)}', 'error')
         return redirect(url_for('forgot_password'))
     return render_template('forgot_password.html')
 
