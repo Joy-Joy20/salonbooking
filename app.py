@@ -341,18 +341,31 @@ def book():
     if request.method == 'POST':
         try:
             data = request.get_json(silent=True) or request.form
+            service = data.get('service') or data.get('service_name', '')
+            date = data.get('date') or data.get('appointment_date', '')
+            time = data.get('time') or data.get('appointment_time', '')
+            stylist = data.get('stylist', 'Any Available')
+            notes = data.get('notes', '')
+            payment_method = data.get('payment_method', 'Cash')
+            user = session.get('user')
+
+            if not service or not date or not time:
+                flash('Please fill in all required fields.', 'error')
+                return redirect(url_for('index'))
+
             db = get_supabase()
-            db.table('bookings').insert({
-                'username': session.get('user'),
-                'service_name': data.get('service'),
-                'appointment_date': data.get('date'),
-                'appointment_time': data.get('time'),
-                'stylist': data.get('stylist', 'Any Available'),
-                'notes': data.get('notes', ''),
-                'payment_method': data.get('payment_method', 'Cash'),
-                'status': 'pending',
-                'booked_by': session.get('user')
+            result = db.table('bookings').insert({
+                'username': user,
+                'booked_by': user,
+                'service_name': service,
+                'appointment_date': date,
+                'appointment_time': time,
+                'stylist': stylist,
+                'notes': notes,
+                'payment_method': payment_method,
+                'status': 'pending'
             }).execute()
+            print('Booking saved:', result.data)
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
             flash('Booking submitted successfully! ✅', 'success')
@@ -363,6 +376,8 @@ def book():
                 return jsonify({'success': False, 'message': str(e)}), 500
             flash(f'Booking failed: {str(e)}', 'error')
             return redirect(url_for('index'))
+    return redirect(url_for('index'))
+
     return redirect(url_for('index'))
 
 @app.route('/bookings')

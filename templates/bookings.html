@@ -22,9 +22,10 @@
             <tr>
                 <th>#</th>
                 <th>Service</th>
-                <th>Stylist</th>
                 <th>Date</th>
                 <th>Time</th>
+                <th>Stylist</th>
+                <th>Payment</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -33,13 +34,20 @@
             {% for b in bookings %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ b.service_name or b.service or '-' }}</td>
-                <td>{{ b.stylist or '-' }}</td>
+                <td><strong>{{ b.service_name or b.service or '-' }}</strong></td>
                 <td>{{ b.appointment_date or b.date or '-' }}</td>
                 <td>{{ b.appointment_time or b.time or '-' }}</td>
+                <td>{{ b.stylist or 'Any Available' }}</td>
+                <td>
+                    {% if b.payment_method == 'GCash' %}
+                    <span style="color:#007bff; font-weight:600;">📱 GCash</span>
+                    {% else %}
+                    <span style="font-weight:600;">💵 Cash</span>
+                    {% endif %}
+                </td>
                 <td>
                     <span class="status-badge status-{{ (b.status or 'pending')|lower }}">
-                        {{ b.status or 'Pending' }}
+                        {{ (b.status or 'Pending')|capitalize }}
                     </span>
                 </td>
                 <td>
@@ -58,8 +66,8 @@
 
     {% else %}
     <div style="text-align:center; margin-top:60px;">
-        <p style="font-size:18px; color:#999; margin-bottom:16px;">No bookings yet</p>
-        <a href="/" class="btn">Browse Services</a>
+        <p style="font-size:18px; color:#999; margin-bottom:16px;">No bookings yet 😔</p>
+        <a href="/services" class="btn">Browse Services</a>
     </div>
     {% endif %}
 
