@@ -111,6 +111,27 @@ def admin_required(f):
     return decorated
 
 # ─── PUBLIC ROUTES ────────────────────────────────────────
+
+def get_supabase():
+    from supabase import create_client
+    url = os.environ.get("SUPABASE_URL")
+    key = os.environ.get("SUPABASE_KEY")
+    if not url or not key:
+        raise Exception("Missing SUPABASE_URL or SUPABASE_KEY")
+    return create_client(url, key)
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def check_password(input_password, hashed_password):
+    if hashed_password.startswith('$2b$') or hashed_password.startswith('$2a$'):
+        try:
+            import bcrypt
+            return bcrypt.checkpw(input_password.encode('utf-8'), hashed_password.encode('utf-8'))
+        except Exception:
+            return False
+    return hashlib.sha256(input_password.encode()).hexdigest() == hashed_password
+
 @app.route('/')
 def index():
     try:
