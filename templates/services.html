@@ -167,15 +167,15 @@
         </div>
 
         <form id="svc-modal-form" method="POST" action="/book" style="display:none;">
-            <input type="hidden" name="service" id="svc-modal-input">
+            <input type="hidden" name="service_name" id="svc-modal-input" name="service_name">
 
             <!-- STEP 1: BOOKING DETAILS -->
             <div id="svc-step-1">
                 <label class="modal-label">Preferred Date</label>
-                <input type="date" name="date" id="svc-modal-date" required class="modal-input">
+                <input type="date" name="appointment_date" id="svc-modal-date" required class="modal-input">
 
                 <label class="modal-label">Preferred Time</label>
-                <select name="time" id="svc-modal-time" class="modal-input" required>
+                <select name="appointment_time" id="svc-modal-time" class="modal-input" required>
                     <option value="">Select time</option>
                     <option value="08:00">8:00 AM</option>
                     <option value="08:30">8:30 AM</option>

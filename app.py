@@ -341,17 +341,47 @@ def book():
     if request.method == 'POST':
         try:
             data = request.get_json(silent=True) or request.form
-            service = data.get('service') or data.get('service_name', '')
-            date = data.get('date') or data.get('appointment_date', '')
-            time = data.get('time') or data.get('appointment_time', '')
+            service = data.get('service_name') or data.get('service', '')
+            date = data.get('appointment_date') or data.get('date', '')
+            time = data.get('appointment_time') or data.get('time', '')
             stylist = data.get('stylist', 'Any Available')
             notes = data.get('notes', '')
             payment_method = data.get('payment_method', 'Cash')
             user = session.get('user')
 
+            print(f"=== BOOKING: user={user} service={service} date={date} time={time} ===")
+
             if not service or not date or not time:
                 flash('Please fill in all required fields.', 'error')
                 return redirect(url_for('index'))
+
+            db = get_supabase()
+            result = db.table('bookings').insert({
+                'username': user,
+                'booked_by': user,
+                'service_name': service,
+                'appointment_date': date,
+                'appointment_time': time,
+                'stylist': stylist,
+                'notes': notes,
+                'payment_method': payment_method,
+                'status': 'pending',
+                'created_at': datetime.utcnow().isoformat()
+            }).execute()
+
+            print(f"=== BOOKING SAVED: {result.data} ===")
+            if request.is_json:
+                return jsonify({'success': True, 'message': 'Booking confirmed!'})
+            flash('Booking submitted successfully! ✅', 'success')
+            return redirect(url_for('bookings_page'))
+        except Exception as e:
+            print(f"=== BOOKING ERROR: {str(e)} ===")
+            if request.is_json:
+                return jsonify({'success': False, 'message': str(e)}), 500
+            flash(f'Booking failed: {str(e)}', 'error')
+            return redirect(url_for('index'))
+    return redirect(url_for('index'))
+
 
             db = get_supabase()
             result = db.table('bookings').insert({
@@ -539,6 +569,25 @@ def debug():
         "supabase_key_set": bool(os.environ.get('SUPABASE_KEY')),
         "secret_key_set": bool(os.environ.get('SECRET_KEY'))
     }
+
+
+@app.route('/test-booking')
+def test_booking():
+    try:
+        db = get_supabase()
+        result = db.table('bookings').insert({
+            "username": "test_user",
+            "service_name": "Test Service",
+            "appointment_date": "2025-05-01",
+            "appointment_time": "10:00",
+            "stylist": "Any Available",
+            "notes": "Test",
+            "status": "pending",
+            "created_at": datetime.utcnow().isoformat()
+        }).execute()
+        return {"status": "SUCCESS", "data": result.data}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
 
 if __name__ == '__main__':
     app.run(debug=True)
