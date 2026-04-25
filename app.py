@@ -152,17 +152,11 @@ def login():
 
         try:
             db = get_supabase()
+            hashed = hash_password(password)
             result = db.table("users").select("*").eq("username", username).execute()
             if result.data:
                 user = result.data[0]
-                stored_pw = user.get('password', '')
-                # Support both plain and hashed passwords
-                pw_match = False
-                try:
-                    pw_match = bcrypt.checkpw(password.encode('utf-8'), stored_pw.encode('utf-8'))
-                except Exception:
-                    pw_match = (stored_pw == password)
-                if pw_match:
+                if check_password(password, user.get('password', '')):
                     session['user'] = username
                     session['user_id'] = user.get('id')
                     session['user_email'] = user.get('email', '')
@@ -176,6 +170,7 @@ def login():
             print("Login error:", str(e))
             error = f'Login failed: {str(e)}'
     return render_template('login.html', error=error)
+
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -207,7 +202,7 @@ def signup():
                     if existing_email.data:
                         error = 'Email already registered.'
                     else:
-                        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                        hashed = hash_password(password)
                         db.table("users").insert({
                             "username": username,
                             "email": email,
@@ -216,7 +211,6 @@ def signup():
                         }).execute()
                         success = True
                         print(f"=== New user registered: {username} ===")
-                        # Welcome email non-blocking
                         try:
                             if MAIL_USER:
                                 msg = Message(subject='Welcome to Salon Booking!', sender=('Salon Booking', MAIL_USER), recipients=[email])
@@ -228,6 +222,7 @@ def signup():
                 print("Signup error:", str(e))
                 error = f'Signup failed: {str(e)}'
     return render_template('signup.html', error=error, success=success)
+
 
 
 @app.route('/logout')
