@@ -3,6 +3,7 @@ import os
 import traceback
 import hashlib
 from datetime import datetime
+from functools import wraps
 
 try:
     from dotenv import load_dotenv
@@ -99,7 +100,6 @@ def get_stylists():
         return []
 
 def login_required(f):
-    from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'user' not in session:
@@ -108,7 +108,6 @@ def login_required(f):
     return decorated
 
 def admin_required(f):
-    from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
         if not session.get('is_admin'):
@@ -139,7 +138,7 @@ def contact():
 
 @app.route('/services')
 def services():
-    return render_template('services.html', services=SERVICES)
+    return render_template('services.html', services=SERVICES, stylists=get_stylists())
 
 @app.route('/stylist')
 def stylist():
@@ -152,13 +151,11 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
-
         if username == ADMIN_USER and password == ADMIN_PASS:
             session['user'] = username
             session['role'] = 'admin'
             session['is_admin'] = True
             return redirect(url_for('admin_dashboard'))
-
         try:
             db = get_supabase()
             result = db.table('users').select('*').eq('username', username).execute()
@@ -188,7 +185,6 @@ def signup():
         email = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '')
         confirm = request.form.get('confirm', '')
-
         if not username:
             error = 'Username is required.'
         elif not email or '@' not in email:
@@ -212,7 +208,6 @@ def signup():
                         'role': 'user'
                     }).execute()
                     success = True
-                    print(f'New user registered: {username}')
             except Exception as e:
                 print('Signup error:', str(e))
                 error = f'Signup failed: {str(e)}'
@@ -228,113 +223,38 @@ def logout():
 def profile():
     current_username = session.get('user', '').strip()
     current_user = None
-
     try:
         db = get_supabase()
-        user_query = db.table('users').select('*')
         if session.get('user_id'):
-            result = user_query.eq('id', session.get('user_id')).execute()
+            result = db.table('users').select('*').eq('id', session.get('user_id')).execute()
         else:
-            result = user_query.eq('username', current_username).execute()
+            result = db.table('users').select('*').eq('username', current_username).execute()
         current_user = (result.data or [None])[0]
     except Exception as e:
-        print('Profile fetch error:', str(e))
         flash(f'Unable to load profile: {str(e)}', 'error')
 
     if not current_user:
-        flash('Profile not found for the current account.', 'error')
+        flash('Profile not found.', 'error')
         return render_template('profile.html', current_user=None, username=current_username)
 
     if request.method == 'POST':
-        username = request.form.get('name', '').strip()
+        name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip().lower()
-        phone = request.form.get('phone', '').strip()
-
-        if not username:
-            flash('Name is required.', 'error')
+        if not name or not email or '@' not in email:
+            flash('Name and valid email are required.', 'error')
             return render_template('profile.html', current_user=current_user, username=current_username)
-
-        if not email or '@' not in email:
-            flash('Valid email is required.', 'error')
-            return render_template('profile.html', current_user=current_user, username=current_username)
-
         try:
-            user_id = current_user.get('id')
-            existing_username = db.table('users').select('id').eq('username', username).execute().data or []
-            if existing_username and existing_username[0].get('id') != user_id:
-                flash('Username already exists.', 'error')
-                return render_template('profile.html', current_user=current_user, username=current_username)
-
-            existing_email = db.table('users').select('id').eq('email', email).execute().data or []
-            if existing_email and existing_email[0].get('id') != user_id:
-                flash('Email already registered.', 'error')
-                return render_template('profile.html', current_user=current_user, username=current_username)
-
-            update_payload = {
-                'username': username,
-                'email': email,
-                'phone': phone
-            }
-
-            update_query = db.table('users').update(update_payload)
-            if user_id:
-                update_query = update_query.eq('id', user_id)
-            else:
-                update_query = update_query.eq('username', current_username)
-
-            try:
-                update_query.execute()
-            except Exception as phone_error:
-                if 'phone' not in str(phone_error).lower():
-                    raise
-                update_payload.pop('phone', None)
-                retry_query = db.table('users').update(update_payload)
-                if user_id:
-                    retry_query = retry_query.eq('id', user_id)
-                else:
-                    retry_query = retry_query.eq('username', current_username)
-                retry_query.execute()
-
-            if username != current_username:
-                db.table('bookings').update({
-                    'username': username,
-                    'booked_by': username
-                }).eq('booked_by', current_username).execute()
-
-            session['user'] = username
-            session['user_email'] = email
-
-            refreshed_query = db.table('users').select('*')
-            if user_id:
-                refreshed_query = refreshed_query.eq('id', user_id)
-            else:
-                refreshed_query = refreshed_query.eq('username', username)
-            refreshed = refreshed_query.execute().data or []
-            current_user = refreshed[0] if refreshed else {
-                **current_user,
-                'username': username,
-                'email': email,
-                'phone': phone
-            }
-
-            success_message = 'Profile updated successfully.'
-            if 'phone' not in current_user:
-                success_message += ' Phone was skipped because the column is not available yet.'
-            flash(success_message, 'success')
+            db = get_supabase()
+            db.table('users').update({'username': name, 'email': email}).eq('username', current_username).execute()
+            session['user'] = name
+            flash('Profile updated successfully.', 'success')
             return redirect(url_for('profile'))
         except Exception as e:
-            print('Profile update error:', str(e))
-            flash(f'Profile update failed: {str(e)}', 'error')
-            current_user = {
-                **current_user,
-                'username': username,
-                'email': email,
-                'phone': phone
-            }
+            flash(f'Update failed: {str(e)}', 'error')
 
-# ── BOOKING ROUTES ────────────────────────────────────────
     return render_template('profile.html', current_user=current_user, username=session.get('user', ''))
 
+# ── BOOKING ROUTES ────────────────────────────────────────
 @app.route('/book', methods=['GET', 'POST'])
 @login_required
 def book():
@@ -372,7 +292,7 @@ def book():
             print(f"=== BOOKING SAVED: {result.data} ===")
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
-            flash('Booking submitted successfully! ✅', 'success')
+            flash('Booking submitted successfully! \u2705', 'success')
             return redirect(url_for('bookings_page'))
         except Exception as e:
             print(f"=== BOOKING ERROR: {str(e)} ===")
@@ -380,34 +300,6 @@ def book():
                 return jsonify({'success': False, 'message': str(e)}), 500
             flash(f'Booking failed: {str(e)}', 'error')
             return redirect(url_for('index'))
-    return redirect(url_for('index'))
-
-
-            db = get_supabase()
-            result = db.table('bookings').insert({
-                'username': user,
-                'booked_by': user,
-                'service_name': service,
-                'appointment_date': date,
-                'appointment_time': time,
-                'stylist': stylist,
-                'notes': notes,
-                'payment_method': payment_method,
-                'status': 'pending'
-            }).execute()
-            print('Booking saved:', result.data)
-            if request.is_json:
-                return jsonify({'success': True, 'message': 'Booking confirmed!'})
-            flash('Booking submitted successfully! ✅', 'success')
-            return redirect(url_for('bookings_page'))
-        except Exception as e:
-            print('Book error:', str(e))
-            if request.is_json:
-                return jsonify({'success': False, 'message': str(e)}), 500
-            flash(f'Booking failed: {str(e)}', 'error')
-            return redirect(url_for('index'))
-    return redirect(url_for('index'))
-
     return redirect(url_for('index'))
 
 @app.route('/bookings')
@@ -426,12 +318,12 @@ def bookings_page():
         print('Bookings fetch error:', str(e))
     return render_template('bookings.html', bookings=bookings)
 
-@app.route('/cancel-booking/<int:booking_id>', methods=['POST'])
+@app.route('/cancel-booking/<booking_id>', methods=['POST'])
 @login_required
 def cancel_booking(booking_id):
     try:
         db = get_supabase()
-        db.table('bookings').update({'status': 'Cancelled'}).eq('id', booking_id).eq('booked_by', session.get('user')).execute()
+        db.table('bookings').update({'status': 'Cancelled'}).eq('id', booking_id).execute()
     except Exception as e:
         print('Cancel error:', str(e))
     return redirect(url_for('bookings_page'))
@@ -470,7 +362,7 @@ def admin_bookings():
         print('Admin bookings error:', str(e))
     return render_template('admin_bookings.html', bookings=bookings)
 
-@app.route('/admin/bookings/status/<int:booking_id>', methods=['POST'])
+@app.route('/admin/bookings/status/<booking_id>', methods=['POST'])
 @admin_required
 def update_booking_status(booking_id):
     try:
@@ -480,7 +372,7 @@ def update_booking_status(booking_id):
         print('Status update error:', str(e))
     return redirect(url_for('admin_bookings'))
 
-@app.route('/admin/bookings/delete/<int:booking_id>')
+@app.route('/admin/bookings/delete/<booking_id>')
 @admin_required
 def admin_delete_booking(booking_id):
     try:
@@ -550,26 +442,16 @@ def admin_delete_user(username):
         print('Delete user error:', str(e))
     return redirect(url_for('admin_users'))
 
-# ── ENTRY POINT ───────────────────────────────────────────
-
-@app.errorhandler(500)
-def internal_error(error):
-    return f"<h1>500 Error</h1><pre>{traceback.format_exc()}</pre>", 500
-
-@app.errorhandler(404)
-def not_found(error):
-    return f"<h1>404 Not Found</h1><pre>{str(error)}</pre>", 404
-
+# ── DEBUG & ERROR HANDLERS ────────────────────────────────
 @app.route('/debug')
 def debug():
-    return {
+    return jsonify({
         "status": "ok",
-        "user_in_session": session.get('user'),
+        "user": session.get('user'),
         "supabase_url_set": bool(os.environ.get('SUPABASE_URL')),
         "supabase_key_set": bool(os.environ.get('SUPABASE_KEY')),
         "secret_key_set": bool(os.environ.get('SECRET_KEY'))
-    }
-
+    })
 
 @app.route('/test-booking')
 def test_booking():
@@ -585,9 +467,18 @@ def test_booking():
             "status": "pending",
             "created_at": datetime.utcnow().isoformat()
         }).execute()
-        return {"status": "SUCCESS", "data": result.data}
+        return jsonify({"status": "SUCCESS", "data": result.data})
     except Exception as e:
-        return {"status": "ERROR", "error": str(e)}
+        return jsonify({"status": "ERROR", "error": str(e)})
 
+@app.errorhandler(500)
+def internal_error(error):
+    return f"<h1>500 Error</h1><pre>{traceback.format_exc()}</pre>", 500
+
+@app.errorhandler(404)
+def not_found(error):
+    return f"<h1>404 Not Found</h1><pre>{str(error)}</pre>", 404
+
+# ── ENTRY POINT ───────────────────────────────────────────
 if __name__ == '__main__':
     app.run(debug=True)
