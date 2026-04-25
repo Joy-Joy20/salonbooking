@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
+
+    <h1 style="color:#e91e8c; text-align:center; margin-bottom:8px;">My Bookings</h1>
+    <p style="text-align:center; color:#888; margin-bottom:32px;">View and manage your appointments</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; text-align:center; font-weight:600;
+            background:{% if category == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if category == 'success' %}#065f46{% else %}#991b1b{% endif %};">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if bookings %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service</th>
+                <th>Stylist</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in bookings %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ b.service_name or b.service or '-' }}</td>
+                <td>{{ b.stylist or '-' }}</td>
+                <td>{{ b.appointment_date or b.date or '-' }}</td>
+                <td>{{ b.appointment_time or b.time or '-' }}</td>
+                <td>
+                    <span class="status-badge status-{{ (b.status or 'pending')|lower }}">
+                        {{ b.status or 'Pending' }}
+                    </span>
+                </td>
+                <td>
+                    {% if (b.status or 'pending')|lower == 'pending' %}
+                    <form method="POST" action="/cancel-booking/{{ b.id }}" onsubmit="return confirm('Cancel this booking?')" style="display:inline;">
+                        <button type="submit" style="background:#fee2e2; color:#991b1b; border:none; padding:6px 14px; border-radius:999px; font-size:12px; font-weight:600; cursor:pointer;">Cancel</button>
+                    </form>
+                    {% else %}
+                    <span style="color:#aaa; font-size:13px;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div style="text-align:center; margin-top:60px;">
+        <p style="font-size:18px; color:#999; margin-bottom:16px;">No bookings yet</p>
+        <a href="/" class="btn">Browse Services</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
