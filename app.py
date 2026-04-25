@@ -132,6 +132,53 @@ def check_password(input_password, hashed_password):
             return False
     return hashlib.sha256(input_password.encode()).hexdigest() == hashed_password
 
+
+SERVICES = {
+    "hair": {
+        "title": "Hair Services",
+        "icon": "✂️",
+        "services": [
+            {"name": "Haircut - Children", "description": "Clean and cute cut for kids below 12", "price": 150, "duration": "30 mins"},
+            {"name": "Haircut - Men", "description": "Classic and modern cuts for men", "price": 200, "duration": "30 mins"},
+            {"name": "Haircut - Women", "description": "Stylish cuts tailored for women", "price": 300, "duration": "45 mins"},
+            {"name": "Hair Color - Full", "description": "Full hair coloring, short to long hair", "price": 500, "duration": "2 hrs"},
+            {"name": "Highlights / Balayage", "description": "Dimensional color for a natural look", "price": 1200, "duration": "3 hrs"},
+            {"name": "Rebonding", "description": "Smooth and straight hair treatment", "price": 1800, "duration": "4 hrs"},
+            {"name": "Keratin Treatment", "description": "Frizz-free, silky smooth finish", "price": 1500, "duration": "3 hrs"},
+            {"name": "Hot Oil Treatment", "description": "Deep nourishing treatment for dry hair", "price": 250, "duration": "45 mins"},
+            {"name": "Deep Conditioning", "description": "Intense moisture repair for damaged hair", "price": 400, "duration": "1 hr"}
+        ]
+    },
+    "nails": {
+        "title": "Nail Services",
+        "icon": "💅",
+        "services": [
+            {"name": "Manicure - Classic", "description": "Clean, shape, and polish for hands", "price": 150, "duration": "30 mins"},
+            {"name": "Pedicure - Classic", "description": "Clean, shape, and polish for feet", "price": 180, "duration": "45 mins"},
+            {"name": "Gel Polish - Hands", "description": "Long-lasting gel color for hands", "price": 300, "duration": "1 hr"},
+            {"name": "Gel Polish - Feet", "description": "Long-lasting gel color for feet", "price": 350, "duration": "1 hr"},
+            {"name": "Nail Art", "description": "Creative designs on any nail shape", "price": 400, "duration": "1.5 hrs"},
+            {"name": "Nail Extension", "description": "Acrylic or gel nail extensions", "price": 600, "duration": "2 hrs"},
+            {"name": "Nail Repair", "description": "Fix broken or damaged nails", "price": 100, "duration": "20 mins"}
+        ]
+    },
+    "spa": {
+        "title": "Spa & Wellness",
+        "icon": "🌿",
+        "services": [
+            {"name": "Swedish Massage", "description": "Relaxing full body massage for stress relief", "price": 450, "duration": "60 mins"},
+            {"name": "Deep Tissue Massage", "description": "Targets deep muscle tension and pain", "price": 550, "duration": "60 mins"},
+            {"name": "Foot Massage", "description": "Soothing reflexology for tired feet", "price": 300, "duration": "45 mins"},
+            {"name": "Full Body Massage", "description": "Complete relaxation from head to toe", "price": 750, "duration": "90 mins"},
+            {"name": "Make-up - Everyday", "description": "Fresh and natural everyday look", "price": 500, "duration": "1 hr"},
+            {"name": "Make-up - Special Occasion", "description": "Glam look for events and parties", "price": 800, "duration": "1.5 hrs"},
+            {"name": "Bridal Make-up", "description": "Full glam for your special day", "price": 1500, "duration": "2 hrs"},
+            {"name": "Face Shave", "description": "Clean and smooth face shave for men", "price": 150, "duration": "20 mins"},
+            {"name": "Beard Trim & Shaping", "description": "Neat and styled beard grooming", "price": 200, "duration": "30 mins"}
+        ]
+    }
+}
+
 @app.route('/')
 def index():
     try:
@@ -151,6 +198,10 @@ def contact():
     if request.method == 'POST':
         message_sent = True
     return render_template('contact.html', message_sent=message_sent)
+
+@app.route('/services')
+def services():
+    return render_template('services.html', services=SERVICES)
 
 @app.route('/stylist')
 def stylist():

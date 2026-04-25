@@ -1,16 +1,120 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Our Services 💇</h1>
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;">
-    <div class="service-icon-card">✂️<span>Haircut</span></div>
-    <div class="service-icon-card">💄<span>Makeup</span></div>
-    <div class="service-icon-card">🪒<span>Shaving</span></div>
-    <div class="service-icon-card">🎨<span>Hair Color</span></div>
-    <div class="service-icon-card">🍼<span>Hair Treatment</span></div>
-    <div class="service-icon-card">💆<span>Massage</span></div>
+<div style="max-width:1200px; margin:0 auto; padding:40px 30px;">
+
+    <!-- HEADER -->
+    <div style="text-align:center; margin-bottom:40px;">
+        <span style="background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Services</span>
+        <h1 style="font-size:2rem; font-weight:700; color:#1a1a1a; margin:16px 0 8px;">Pick the treatment that fits your day</h1>
+        <p style="color:#888; font-size:15px;">Browse every treatment, choose your stylist, and book in seconds.</p>
+    </div>
+
+    <!-- CATEGORIES -->
+    {% for key, category in services.items() %}
+    <div style="margin-bottom:48px;">
+
+        <!-- CATEGORY TITLE -->
+        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">
+            {{ category.icon }} {{ category.title }}
+        </h2>
+
+        <!-- SERVICE CARDS GRID -->
+        <div class="svc-grid">
+            {% for item in category.services %}
+            <div class="svc-item-card">
+                <div style="flex:1;">
+                    <h4 class="svc-item-name">{{ item.name }}</h4>
+                    <p class="svc-item-desc">{{ item.description }}</p>
+                    <span class="svc-item-duration">🕐 {{ item.duration }}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
+                    <a href="/book?service={{ item.name | urlencode }}" class="svc-book-btn">Book Now</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endfor %}
+
 </div>
-<div style="text-align:center; margin-top:30px;">
-    <a href="/book" class="btn">Book Now</a>
-</div>
+
+<style>
+.svc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.svc-item-card {
+    background: #fff;
+    border: 1.5px solid #fce4f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(233,30,140,0.07);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.svc-item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(233,30,140,0.15);
+    border-color: #e91e8c;
+}
+
+.svc-item-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 6px;
+}
+
+.svc-item-desc {
+    font-size: 13px;
+    color: #777;
+    margin: 0 0 8px;
+    line-height: 1.5;
+}
+
+.svc-item-duration {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 500;
+}
+
+.svc-item-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e91e8c;
+}
+
+.svc-book-btn {
+    background: linear-gradient(135deg, #e91e8c, #ff6eb4);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 3px 10px rgba(233,30,140,0.25);
+}
+
+.svc-book-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(233,30,140,0.35);
+}
+
+@media (max-width: 900px) {
+    .svc-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .svc-grid { grid-template-columns: 1fr; }
+}
+</style>
 {% endblock %}
