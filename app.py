@@ -267,6 +267,8 @@ def book():
             stylist = data.get('stylist', 'Any Available')
             notes = data.get('notes', '')
             payment_method = data.get('payment_method', 'Cash')
+            service_type = data.get('service_type', 'Salon Visit')
+            address = data.get('address', '')
             user = session.get('user')
 
             print(f"=== BOOKING: user={user} service={service} date={date} time={time} ===")
@@ -285,6 +287,8 @@ def book():
                 'stylist': stylist,
                 'notes': notes,
                 'payment_method': payment_method,
+                'service_type': service_type,
+                'address': address,
                 'status': 'pending',
                 'created_at': datetime.utcnow().isoformat()
             }).execute()

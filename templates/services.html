@@ -171,6 +171,22 @@
 
             <!-- STEP 1: BOOKING DETAILS -->
             <div id="svc-step-1">
+                <!-- SERVICE TYPE -->
+                <label class="modal-label">Service Type</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                    <label class="pay-opt pay-opt-active" id="type-salon-label">
+                        <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="switchServiceType('Salon')">
+                        <span>&#127968;</span> Salon Visit
+                    </label>
+                    <label class="pay-opt" id="type-home-label">
+                        <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="switchServiceType('Home')">
+                        <span>&#128663;</span> Home Service
+                    </label>
+                </div>
+                <div id="home-address-wrap" style="display:none;">
+                    <label class="modal-label">Your Address</label>
+                    <input type="text" name="address" id="svc-address" placeholder="Enter your full address" class="modal-input">
+                </div>
                 <label class="modal-label">Preferred Date</label>
                 <input type="date" name="appointment_date" id="svc-modal-date" required class="modal-input">
 
@@ -319,11 +335,29 @@ function closeSvcModalOutside(e) {
     if (e.target === document.getElementById('svc-modal-overlay')) closeSvcModal();
 }
 
+function switchServiceType(type) {
+    var salonLabel = document.getElementById('type-salon-label');
+    var homeLabel = document.getElementById('type-home-label');
+    var addressWrap = document.getElementById('home-address-wrap');
+    salonLabel.className = 'pay-opt';
+    homeLabel.className = 'pay-opt';
+    if (type === 'Salon') {
+        salonLabel.className = 'pay-opt pay-opt-active';
+        addressWrap.style.display = 'none';
+    } else {
+        homeLabel.className = 'pay-opt pay-opt-active';
+        addressWrap.style.display = 'block';
+    }
+}
+
 function goToPayment() {
     var date = document.getElementById('svc-modal-date').value;
     var time = document.getElementById('svc-modal-time').value;
+    var serviceType = document.querySelector('input[name="service_type"]:checked').value;
+    var address = document.getElementById('svc-address').value;
     if (!date) { alert('Please select a date.'); return; }
     if (!time) { alert('Please select a time.'); return; }
+    if (serviceType === 'Home Service' && !address.trim()) { alert('Please enter your address for Home Service.'); return; }
     document.getElementById('svc-step-1').style.display = 'none';
     document.getElementById('svc-step-2').style.display = 'block';
 }
