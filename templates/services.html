@@ -1,6 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<!-- CAROUSEL -->
+<section class="hero-carousel" aria-label="Services highlights">
+    <div class="hero-carousel-track" id="svc-carousel-track">
+        <article class="hero-slide is-active" style="background:linear-gradient(135deg,#e91e8c 0%,#ff6eb4 100%);">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">✂️ Hair Services</span>
+                <h1>Look Your Best Every Day</h1>
+                <p>Haircut, Color, Rebonding, Keratin Treatment &amp; more — starting at ₱150</p>
+                <a class="btn hero-btn" href="#hair">See Hair Services</a>
+            </div>
+        </article>
+        <article class="hero-slide" style="background:linear-gradient(135deg,#7c3aed 0%,#c084fc 100%);">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">💅 Nail Services</span>
+                <h1>Beautiful Nails, Every Time</h1>
+                <p>Manicure, Pedicure, Nail Art, Gel Polish &amp; more — starting at ₱100</p>
+                <a class="btn hero-btn" href="#nails">See Nail Services</a>
+            </div>
+        </article>
+        <article class="hero-slide" style="background:linear-gradient(135deg,#be185d 0%,#fb7185 100%);">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">🌿 Spa &amp; Wellness</span>
+                <h1>Relax, Refresh, Rejuvenate</h1>
+                <p>Massage, Make-up, Facial, Shaving &amp; more — starting at ₱150</p>
+                <a class="btn hero-btn" href="#spa">See Spa Services</a>
+            </div>
+        </article>
+    </div>
+    <button class="hero-control hero-control-prev" onclick="moveSvcSlide(-1)">&#10094;</button>
+    <button class="hero-control hero-control-next" onclick="moveSvcSlide(1)">&#10095;</button>
+    <div class="hero-dots" id="svc-dots">
+        <button class="hero-dot is-active" onclick="goToSvcSlide(0)"></button>
+        <button class="hero-dot" onclick="goToSvcSlide(1)"></button>
+        <button class="hero-dot" onclick="goToSvcSlide(2)"></button>
+    </div>
+</section>
+
 <div style="max-width:1200px; margin:0 auto; padding:40px 30px;">
 
     <div style="text-align:center; margin-bottom:40px;">
@@ -121,4 +162,22 @@
 @media (max-width:900px) { .svc-grid { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:600px) { .svc-grid { grid-template-columns:1fr; } }
 </style>
+<script>
+var svcSlideIndex = 0;
+var svcSlides = document.querySelectorAll('.hero-carousel .hero-slide');
+var svcDots = document.querySelectorAll('#svc-dots .hero-dot');
+var svcTimer = null;
+function showSvcSlide(n) {
+    if (n >= svcSlides.length) svcSlideIndex = 0;
+    else if (n < 0) svcSlideIndex = svcSlides.length - 1;
+    else svcSlideIndex = n;
+    document.getElementById('svc-carousel-track').style.transform = 'translateX(-' + (svcSlideIndex * 100) + '%)';
+    svcDots.forEach(function(d,i){ d.classList.toggle('is-active', i === svcSlideIndex); });
+}
+function moveSvcSlide(dir) { showSvcSlide(svcSlideIndex + dir); resetSvcAuto(); }
+function goToSvcSlide(n) { showSvcSlide(n); resetSvcAuto(); }
+function resetSvcAuto() { clearInterval(svcTimer); svcTimer = setInterval(function(){ showSvcSlide(svcSlideIndex + 1); }, 4000); }
+resetSvcAuto();
+</script>
+
 {% endblock %}
