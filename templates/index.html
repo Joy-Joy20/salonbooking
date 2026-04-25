@@ -78,7 +78,7 @@
     <div class="service-category landing-service-category">
         <h3 class="category-heading">{{ category.icon }} {{ category.category }}</h3>
         <div class="service-items-grid">
-            {% for item in category.services %}
+            {% for item in category.items %}
             <button
                 class="service-item-card landing-service-card"
                 type="button"
@@ -127,7 +127,7 @@
             <div class="booking-modal-grid">
                 <div class="booking-modal-field">
                     <label for="booking-name">Name</label>
-                    <input id="booking-name" type="text" name="name_display" value="{{ current_user.name }}" readonly>
+                    <input id="booking-name" type="text" name="name_display" value="{{ username }}" readonly>
                 </div>
 
                 <div class="booking-modal-field booking-modal-field-full">
