@@ -223,7 +223,118 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    current_username = session.get('user', '').strip()
+    current_user = None
+
+    try:
+        db = get_supabase()
+        user_query = db.table('users').select('*')
+        if session.get('user_id'):
+            result = user_query.eq('id', session.get('user_id')).execute()
+        else:
+            result = user_query.eq('username', current_username).execute()
+        current_user = (result.data or [None])[0]
+    except Exception as e:
+        print('Profile fetch error:', str(e))
+        flash(f'Unable to load profile: {str(e)}', 'error')
+
+    if not current_user:
+        flash('Profile not found for the current account.', 'error')
+        return render_template('profile.html', current_user=None, username=current_username)
+
+    if request.method == 'POST':
+        username = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        phone = request.form.get('phone', '').strip()
+
+        if not username:
+            flash('Name is required.', 'error')
+            return render_template('profile.html', current_user=current_user, username=current_username)
+
+        if not email or '@' not in email:
+            flash('Valid email is required.', 'error')
+            return render_template('profile.html', current_user=current_user, username=current_username)
+
+        try:
+            user_id = current_user.get('id')
+            existing_username = db.table('users').select('id').eq('username', username).execute().data or []
+            if existing_username and existing_username[0].get('id') != user_id:
+                flash('Username already exists.', 'error')
+                return render_template('profile.html', current_user=current_user, username=current_username)
+
+            existing_email = db.table('users').select('id').eq('email', email).execute().data or []
+            if existing_email and existing_email[0].get('id') != user_id:
+                flash('Email already registered.', 'error')
+                return render_template('profile.html', current_user=current_user, username=current_username)
+
+            update_payload = {
+                'username': username,
+                'email': email,
+                'phone': phone
+            }
+
+            update_query = db.table('users').update(update_payload)
+            if user_id:
+                update_query = update_query.eq('id', user_id)
+            else:
+                update_query = update_query.eq('username', current_username)
+
+            try:
+                update_query.execute()
+            except Exception as phone_error:
+                if 'phone' not in str(phone_error).lower():
+                    raise
+                update_payload.pop('phone', None)
+                retry_query = db.table('users').update(update_payload)
+                if user_id:
+                    retry_query = retry_query.eq('id', user_id)
+                else:
+                    retry_query = retry_query.eq('username', current_username)
+                retry_query.execute()
+
+            if username != current_username:
+                db.table('bookings').update({
+                    'username': username,
+                    'booked_by': username
+                }).eq('booked_by', current_username).execute()
+
+            session['user'] = username
+            session['user_email'] = email
+
+            refreshed_query = db.table('users').select('*')
+            if user_id:
+                refreshed_query = refreshed_query.eq('id', user_id)
+            else:
+                refreshed_query = refreshed_query.eq('username', username)
+            refreshed = refreshed_query.execute().data or []
+            current_user = refreshed[0] if refreshed else {
+                **current_user,
+                'username': username,
+                'email': email,
+                'phone': phone
+            }
+
+            success_message = 'Profile updated successfully.'
+            if 'phone' not in current_user:
+                success_message += ' Phone was skipped because the column is not available yet.'
+            flash(success_message, 'success')
+            return redirect(url_for('profile'))
+        except Exception as e:
+            print('Profile update error:', str(e))
+            flash(f'Profile update failed: {str(e)}', 'error')
+            current_user = {
+                **current_user,
+                'username': username,
+                'email': email,
+                'phone': phone
+            }
+
 # ── BOOKING ROUTES ────────────────────────────────────────
+    return render_template('profile.html', current_user=current_user, username=session.get('user', ''))
+
 @app.route('/book', methods=['GET', 'POST'])
 @login_required
 def book():
