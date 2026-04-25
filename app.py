@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import traceback
 import hashlib
 from datetime import datetime
 
@@ -389,5 +390,24 @@ def admin_delete_user(username):
     return redirect(url_for('admin_users'))
 
 # ── ENTRY POINT ───────────────────────────────────────────
+
+@app.errorhandler(500)
+def internal_error(error):
+    return f"<h1>500 Error</h1><pre>{traceback.format_exc()}</pre>", 500
+
+@app.errorhandler(404)
+def not_found(error):
+    return f"<h1>404 Not Found</h1><pre>{str(error)}</pre>", 404
+
+@app.route('/debug')
+def debug():
+    return {
+        "status": "ok",
+        "user_in_session": session.get('user'),
+        "supabase_url_set": bool(os.environ.get('SUPABASE_URL')),
+        "supabase_key_set": bool(os.environ.get('SUPABASE_KEY')),
+        "secret_key_set": bool(os.environ.get('SECRET_KEY'))
+    }
+
 if __name__ == '__main__':
     app.run(debug=True)

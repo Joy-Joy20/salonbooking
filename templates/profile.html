@@ -20,17 +20,17 @@
         <form method="POST" action="/profile" class="profile-form">
             <div class="profile-field">
                 <label for="profile-name">Name</label>
-                <input id="profile-name" type="text" name="name" value="{{ current_user.name }}" required>
+                <input id="profile-name" type="text" name="name" value="{{ current_user.name if current_user else username }}" required>
             </div>
 
             <div class="profile-field">
                 <label for="profile-email">Email</label>
-                <input id="profile-email" type="email" name="email" value="{{ current_user.email }}" required>
+                <input id="profile-email" type="email" name="email" value="{{ current_user.email if current_user else '' }}" required>
             </div>
 
             <div class="profile-field">
                 <label for="profile-phone">Phone</label>
-                <input id="profile-phone" type="text" name="phone" value="{{ current_user.phone or '' }}" placeholder="Optional phone number">
+                <input id="profile-phone" type="text" name="phone" value="{{ current_user.phone if current_user else '' }}" placeholder="Optional phone number">
             </div>
 
             <button type="submit" class="btn">Edit Profile</button>
