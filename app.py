@@ -7,6 +7,9 @@ except ImportError:
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from supabase import create_client
+from supabase_helper import get_supabase
+import bcrypt
+import hashlib
 from functools import wraps
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
@@ -138,8 +141,8 @@ def stylist():
 def login():
     error = None
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
 
         if username == ADMIN_USER and password == ADMIN_PASS:
             session['user'] = username
@@ -148,23 +151,32 @@ def login():
             return redirect(url_for('admin_dashboard'))
 
         try:
-            result = supabase.table("users").select("*").eq("username", username).eq("password", password).execute()
+            db = get_supabase()
+            result = db.table("users").select("*").eq("username", username).execute()
             if result.data:
                 user = result.data[0]
-                session['user'] = username
-                session['user_id'] = user.get('id')
-                session['user_email'] = user.get('email', '')
-                session['user_phone'] = user.get('phone', '')
-                session['role'] = user.get('role', 'user')
-                session['is_admin'] = session['role'] == 'admin'
-                if session['is_admin']:
-                    return redirect(url_for('admin_dashboard'))
-                return redirect(url_for('index'))
+                stored_pw = user.get('password', '')
+                # Support both plain and hashed passwords
+                pw_match = False
+                try:
+                    pw_match = bcrypt.checkpw(password.encode('utf-8'), stored_pw.encode('utf-8'))
+                except Exception:
+                    pw_match = (stored_pw == password)
+                if pw_match:
+                    session['user'] = username
+                    session['user_id'] = user.get('id')
+                    session['user_email'] = user.get('email', '')
+                    session['role'] = user.get('role', 'user')
+                    session['is_admin'] = session['role'] == 'admin'
+                    if session['is_admin']:
+                        return redirect(url_for('admin_dashboard'))
+                    return redirect(url_for('index'))
             error = 'Invalid username or password.'
         except Exception as e:
-            error = 'Login failed. Try again.'
-            print("Login error:", e)
+            print("Login error:", str(e))
+            error = f'Login failed: {str(e)}'
     return render_template('login.html', error=error)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -178,38 +190,45 @@ def signup():
 
         if not username:
             error = 'Username is required.'
+        elif not email or '@' not in email:
+            error = 'Valid email is required.'
         elif password != confirm:
             error = 'Passwords do not match.'
-        elif '@' not in email or '.' not in email.split('@')[-1]:
-            error = 'Please enter a valid email address.'
+        elif len(password) < 6:
+            error = 'Password must be at least 6 characters.'
         else:
             try:
-                existing_user = supabase.table("users").select("id").eq("username", username).execute()
+                db = get_supabase()
+                existing_user = db.table("users").select("id").eq("username", username).execute()
                 if existing_user.data:
                     error = 'Username already exists.'
                 else:
-                    existing_email = supabase.table("users").select("id").eq("email", email).execute()
+                    existing_email = db.table("users").select("id").eq("email", email).execute()
                     if existing_email.data:
                         error = 'Email already registered.'
                     else:
-                        supabase.table("users").insert({
+                        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                        db.table("users").insert({
                             "username": username,
                             "email": email,
-                            "password": password,
+                            "password": hashed,
                             "role": "user"
                         }).execute()
                         success = True
-                        # Welcome email — non-blocking
+                        print(f"=== New user registered: {username} ===")
+                        # Welcome email non-blocking
                         try:
-                            msg = Message(subject='Welcome to Salon Booking! 🎀', sender=('Salon Booking', MAIL_USER), recipients=[email])
-                            msg.html = f'<p>Hi <strong>{username}</strong>! Your account has been created. <a href="/book">Book Now</a></p>'
-                            mail.send(msg)
+                            if MAIL_USER:
+                                msg = Message(subject='Welcome to Salon Booking!', sender=('Salon Booking', MAIL_USER), recipients=[email])
+                                msg.html = f'<p>Hi <strong>{username}</strong>! Your account has been created. <a href="/book">Book Now</a></p>'
+                                mail.send(msg)
                         except Exception:
                             pass
             except Exception as e:
-                print("Signup error:", e)
+                print("Signup error:", str(e))
                 error = f'Signup failed: {str(e)}'
     return render_template('signup.html', error=error, success=success)
+
 
 @app.route('/logout')
 def logout():
