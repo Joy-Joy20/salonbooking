@@ -57,18 +57,19 @@
         </h2>
         <div class="svc-grid">
             {% set hair_services = [
-                {"name": "Haircut - Children", "description": "Clean and cute cut for kids below 12 years old. Includes wash and blow dry.", "duration": "30 mins", "price": 150},
-                {"name": "Haircut - Men", "description": "Classic and modern cuts for men. Includes wash, cut, and basic styling.", "duration": "30 mins", "price": 200},
-                {"name": "Haircut - Women", "description": "Stylish cuts tailored for women. Includes wash, cut, blow dry, and basic styling.", "duration": "45 mins", "price": 300},
-                {"name": "Hair Color - Full", "description": "Full hair coloring service from root to tip. Includes toning and conditioning treatment.", "duration": "2 hrs", "price": 500},
-                {"name": "Highlights / Balayage", "description": "Dimensional color technique for a natural sun-kissed look. Customized to your hair type.", "duration": "3 hrs", "price": 1200},
-                {"name": "Rebonding", "description": "Permanent hair straightening treatment for smooth, frizz-free, and silky straight hair.", "duration": "4 hrs", "price": 1800},
-                {"name": "Keratin Treatment", "description": "Protein-based treatment that eliminates frizz and leaves hair smooth, shiny, and manageable.", "duration": "3 hrs", "price": 1500},
-                {"name": "Hot Oil Treatment", "description": "Deep nourishing hot oil treatment that restores moisture and shine to dry, damaged hair.", "duration": "45 mins", "price": 250},
-                {"name": "Deep Conditioning", "description": "Intensive moisture repair mask for severely damaged or chemically treated hair.", "duration": "1 hr", "price": 400}
+                {"name": "Haircut - Children", "img": "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop", "description": "Clean and cute cut for kids below 12 years old. Includes wash and blow dry.", "duration": "30 mins", "price": 150},
+                {"name": "Haircut - Men", "img": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=250&fit=crop", "description": "Classic and modern cuts for men. Includes wash, cut, and basic styling.", "duration": "30 mins", "price": 200},
+                {"name": "Haircut - Women", "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop", "description": "Stylish cuts tailored for women. Includes wash, cut, blow dry, and basic styling.", "duration": "45 mins", "price": 300},
+                {"name": "Hair Color - Full", "img": "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&h=250&fit=crop", "description": "Full hair coloring service from root to tip. Includes toning and conditioning treatment.", "duration": "2 hrs", "price": 500},
+                {"name": "Highlights / Balayage", "img": "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=250&fit=crop", "description": "Dimensional color technique for a natural sun-kissed look. Customized to your hair type.", "duration": "3 hrs", "price": 1200},
+                {"name": "Rebonding", "img": "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=250&fit=crop", "description": "Permanent hair straightening treatment for smooth, frizz-free, and silky straight hair.", "duration": "4 hrs", "price": 1800},
+                {"name": "Keratin Treatment", "img": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=400&h=250&fit=crop", "description": "Protein-based treatment that eliminates frizz and leaves hair smooth, shiny, and manageable.", "duration": "3 hrs", "price": 1500},
+                {"name": "Hot Oil Treatment", "img": "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&h=250&fit=crop", "description": "Deep nourishing hot oil treatment that restores moisture and shine to dry, damaged hair.", "duration": "45 mins", "price": 250},
+                {"name": "Deep Conditioning", "img": "https://images.unsplash.com/photo-1582095133179-bfd08e2fb6b8?w=400&h=250&fit=crop", "description": "Intensive moisture repair mask for severely damaged or chemically treated hair.", "duration": "1 hr", "price": 400}
             ] %}
             {% for item in hair_services %}
             <div class="svc-item-card">
+                <img src="{{ item.img }}" alt="{{ item.name }}" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
                 <div style="flex:1;">
                     <h4 class="svc-item-name">{{ item.name }}</h4>
                     <p class="svc-item-desc">{{ item.description }}</p>
@@ -90,16 +91,17 @@
         </h2>
         <div class="svc-grid">
             {% set nail_services = [
-                {"name": "Manicure - Classic", "description": "Complete hand care including nail shaping, cuticle treatment, hand massage, and polish application.", "duration": "30 mins", "price": 150},
-                {"name": "Pedicure - Classic", "description": "Complete foot care including foot soak, nail shaping, cuticle treatment, foot scrub, and polish.", "duration": "45 mins", "price": 180},
-                {"name": "Gel Polish - Hands", "description": "Long-lasting gel color for hands that stays chip-free for up to 3 weeks. Includes base and top coat.", "duration": "1 hr", "price": 300},
-                {"name": "Gel Polish - Feet", "description": "Long-lasting gel color for feet that stays chip-free for up to 3 weeks. Includes base and top coat.", "duration": "1 hr", "price": 350},
-                {"name": "Nail Art", "description": "Creative and custom nail art designs. From simple patterns to intricate artwork on any nail shape.", "duration": "1.5 hrs", "price": 400},
-                {"name": "Nail Extension", "description": "Acrylic or gel nail extensions to achieve your desired length and shape. Includes shaping and polish.", "duration": "2 hrs", "price": 600},
-                {"name": "Nail Repair", "description": "Quick fix for broken, cracked, or damaged nails. Restores nail to its original look.", "duration": "20 mins", "price": 100}
+                {"name": "Manicure - Classic", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Complete hand care including nail shaping, cuticle treatment, hand massage, and polish application.", "duration": "30 mins", "price": 150},
+                {"name": "Pedicure - Classic", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop", "description": "Complete foot care including foot soak, nail shaping, cuticle treatment, foot scrub, and polish.", "duration": "45 mins", "price": 180},
+                {"name": "Gel Polish - Hands", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop&sat=-20", "description": "Long-lasting gel color for hands that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 300},
+                {"name": "Gel Polish - Feet", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop&sat=-20", "description": "Long-lasting gel color for feet that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 350},
+                {"name": "Nail Art", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop&hue=30", "description": "Creative and custom nail art designs. From simple patterns to intricate artwork on any nail shape.", "duration": "1.5 hrs", "price": 400},
+                {"name": "Nail Extension", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop&hue=60", "description": "Acrylic or gel nail extensions to achieve your desired length and shape.", "duration": "2 hrs", "price": 600},
+                {"name": "Nail Repair", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop&hue=90", "description": "Quick fix for broken, cracked, or damaged nails. Restores nail to its original look.", "duration": "20 mins", "price": 100}
             ] %}
             {% for item in nail_services %}
             <div class="svc-item-card">
+                <img src="{{ item.img }}" alt="{{ item.name }}" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
                 <div style="flex:1;">
                     <h4 class="svc-item-name">{{ item.name }}</h4>
                     <p class="svc-item-desc">{{ item.description }}</p>
@@ -121,18 +123,19 @@
         </h2>
         <div class="svc-grid">
             {% set spa_services = [
-                {"name": "Swedish Massage", "description": "Full body relaxation massage using gentle Swedish techniques to relieve stress and improve circulation.", "duration": "60 mins", "price": 450},
-                {"name": "Deep Tissue Massage", "description": "Targets deep muscle layers to release chronic tension, knots, and pain. Ideal for active individuals.", "duration": "60 mins", "price": 550},
-                {"name": "Foot Massage", "description": "Soothing reflexology foot massage that relieves tiredness, improves blood flow, and promotes relaxation.", "duration": "45 mins", "price": 300},
-                {"name": "Full Body Massage", "description": "Complete head-to-toe relaxation massage combining Swedish and pressure point techniques.", "duration": "90 mins", "price": 750},
-                {"name": "Make-up - Everyday", "description": "Fresh and natural everyday makeup look. Perfect for work, school, or casual outings.", "duration": "1 hr", "price": 500},
-                {"name": "Make-up - Special Occasion", "description": "Glamorous makeup look for parties, events, debuts, and special celebrations.", "duration": "1.5 hrs", "price": 800},
-                {"name": "Bridal Make-up", "description": "Full glam bridal makeup for your wedding day. Includes trial consultation and long-lasting finish.", "duration": "2 hrs", "price": 1500},
-                {"name": "Face Shave", "description": "Clean and smooth professional face shave for men. Includes hot towel treatment and aftershave.", "duration": "20 mins", "price": 150},
-                {"name": "Beard Trim & Shaping", "description": "Neat and precisely shaped beard grooming. Includes trimming, edging, and beard conditioning.", "duration": "30 mins", "price": 200}
+                {"name": "Swedish Massage", "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop", "description": "Full body relaxation massage using gentle Swedish techniques to relieve stress and improve circulation.", "duration": "60 mins", "price": 450},
+                {"name": "Deep Tissue Massage", "img": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=250&fit=crop", "description": "Targets deep muscle layers to release chronic tension, knots, and pain. Ideal for active individuals.", "duration": "60 mins", "price": 550},
+                {"name": "Foot Massage", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop", "description": "Soothing reflexology foot massage that relieves tiredness, improves blood flow, and promotes relaxation.", "duration": "45 mins", "price": 300},
+                {"name": "Full Body Massage", "img": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=250&fit=crop", "description": "Complete head-to-toe relaxation massage combining Swedish and pressure point techniques.", "duration": "90 mins", "price": 750},
+                {"name": "Make-up - Everyday", "img": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=250&fit=crop", "description": "Fresh and natural everyday makeup look. Perfect for work, school, or casual outings.", "duration": "1 hr", "price": 500},
+                {"name": "Make-up - Special Occasion", "img": "https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=400&h=250&fit=crop", "description": "Glamorous makeup look for parties, events, debuts, and special celebrations.", "duration": "1.5 hrs", "price": 800},
+                {"name": "Bridal Make-up", "img": "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=250&fit=crop", "description": "Full glam bridal makeup for your wedding day. Includes trial consultation and long-lasting finish.", "duration": "2 hrs", "price": 1500},
+                {"name": "Face Shave", "img": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=250&fit=crop&sat=-30", "description": "Clean and smooth professional face shave for men. Includes hot towel treatment and aftershave.", "duration": "20 mins", "price": 150},
+                {"name": "Beard Trim & Shaping", "img": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&h=250&fit=crop", "description": "Neat and precisely shaped beard grooming. Includes trimming, edging, and beard conditioning.", "duration": "30 mins", "price": 200}
             ] %}
             {% for item in spa_services %}
             <div class="svc-item-card">
+                <img src="{{ item.img }}" alt="{{ item.name }}" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
                 <div style="flex:1;">
                     <h4 class="svc-item-name">{{ item.name }}</h4>
                     <p class="svc-item-desc">{{ item.description }}</p>
