@@ -387,11 +387,10 @@ def bookings_page():
     try:
         db = get_supabase()
         user = session.get('user')
-        # Try both booked_by and username columns
-        res = db.table('bookings').select('*').eq('booked_by', user).execute()
+        res = db.table('bookings').select('*').eq('username', user).order('created_at', desc=True).execute()
         bookings = res.data or []
         if not bookings:
-            res2 = db.table('bookings').select('*').eq('username', user).execute()
+            res2 = db.table('bookings').select('*').eq('booked_by', user).execute()
             bookings = res2.data or []
     except Exception as e:
         print('Bookings fetch error:', str(e))
