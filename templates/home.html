@@ -59,11 +59,11 @@
         <button class="filter-btn" onclick="filterCategory('spa')">🌿 Spa & Wellness</button>
     </div>
 
-    {% for key, category in services.items() %}
-    <div class="svc-category-block" id="{{ key }}" data-category="{{ key }}">
-        <h3 class="svc-cat-heading">{{ category.icon }} {{ category.title }}</h3>
+    {% for cat in services %}
+    <div class="svc-category-block" id="{{ cat.key }}" data-category="{{ cat.key }}">
+        <h3 class="svc-cat-heading">{{ cat.icon }} {{ cat.category }}</h3>
         <div class="svc-grid">
-            {% for item in category.services %}
+            {% for item in cat.services_list %}
             <div class="svc-item-card" data-category="{{ key }}">
                 <div>
                     <h4 class="svc-item-name">{{ item.name }}</h4>
