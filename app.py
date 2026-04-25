@@ -185,21 +185,18 @@ SERVICES = [
 
 @app.route('/')
 def index():
-    try:
-        return render_template('index.html', stylists=_get_stylists(), services=SERVICE_CATALOG, current_user=_get_current_user())
+    return render_template('index.html',
+        services=SERVICES,
+        stylists=_get_stylists(),
+        logged_in=bool(session.get('user')),
+        username=session.get('user', '')
+    )
+
     except Exception as e:
         print("Index render error:", e)
         flash('We could not load the landing page completely. Please try again.', 'error')
         return render_template('index.html', stylists=[], services=SERVICE_CATALOG, current_user=None)
 
-@app.route('/home')
-@login_required
-def home():
-    return render_template('home.html',
-        username=session.get('user', 'Guest'),
-        services=SERVICES,
-        stylists=_get_stylists()
-    )
 
 @app.route('/about')
 def about():
@@ -249,7 +246,7 @@ def login():
                     session['is_admin'] = session['role'] == 'admin'
                     if session['is_admin']:
                         return redirect(url_for('admin_dashboard'))
-                    return redirect(url_for('home'))
+                    return redirect(url_for('index'))
             error = 'Invalid username or password.'
         except Exception as e:
             print("Login error:", str(e))
@@ -316,9 +313,33 @@ def logout():
     return redirect(url_for('index'))
 
 # ─── USER ROUTES ──────────────────────────────────────────
-@app.route('/book')
+@app.route('/book', methods=['GET', 'POST'])
 @login_required
 def book():
+    if request.method == 'POST':
+        try:
+            data = request.get_json(silent=True) or request.form
+            db = get_supabase()
+            db.table('bookings').insert({
+                "username": session.get('user'),
+                "service_name": data.get('service'),
+                "appointment_date": data.get('date'),
+                "appointment_time": data.get('time'),
+                "stylist": data.get('stylist', 'Any Available'),
+                "notes": data.get('notes', ''),
+                "status": "pending",
+                "booked_by": session.get('user')
+            }).execute()
+            if request.is_json:
+                return {"success": True, "message": "Booking confirmed!"}
+            flash('Booking submitted successfully!', 'success')
+            return redirect(url_for('bookings_page'))
+        except Exception as e:
+            print("Book error:", str(e))
+            if request.is_json:
+                return {"success": False, "message": str(e)}, 500
+            flash(f'Booking failed: {str(e)}', 'error')
+            return redirect(url_for('index'))
     return redirect(url_for('index'))
 
 @app.route('/book/appointment', methods=['GET', 'POST'])

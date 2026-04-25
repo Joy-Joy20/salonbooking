@@ -1,247 +1,377 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<section class="hero-carousel" aria-label="Salon highlights">
-    <div class="hero-carousel-track" id="hero-carousel-track">
-        <article class="hero-slide is-active">
-            <div class="hero-slide-bg hero-slide-bg-one"></div>
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">Beauty and Wellness</span>
-                <h1>Welcome to Salon Booking</h1>
-                <p>Book your appointment easily and treat yourself to polished looks, relaxing care, and confidence-boosting services.</p>
-                <div class="hero-actions">
-                    <a class="btn hero-btn" href="#our-services">Explore Services</a>
-                    <a class="btn hero-btn hero-btn-secondary" href="/stylist">Meet Our Stylists</a>
-                </div>
-            </div>
-        </article>
+<!-- ═══ SECTION 1: HERO CAROUSEL ═══ -->
+<section class="carousel" aria-label="Hero">
+    <div class="carousel-track" id="carousel-track">
 
-        <article class="hero-slide">
-            <div class="hero-slide-bg hero-slide-bg-two"></div>
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">Signature Services</span>
-                <h1>Hair, Nails, and Spa in One Place</h1>
-                <p>Browse every treatment, choose your stylist, and book from a smoother experience built right into the landing page.</p>
-                <div class="hero-actions">
-                    <a class="btn hero-btn" href="#our-services">Choose a Service</a>
-                    <a class="btn hero-btn hero-btn-secondary" href="/contact">Ask Us First</a>
-                </div>
+        <div class="carousel-slide" style="background:linear-gradient(135deg,#e91e8c 0%,#ff6eb4 100%);">
+            <div class="carousel-content">
+                <h1>Welcome to House of Joy<br>Salon &amp; Spa</h1>
+                <p>Your beauty, our passion — book your appointment today</p>
+                <a href="#services" class="carousel-btn" onclick="smoothScroll('services')">Book Now</a>
             </div>
-        </article>
+        </div>
 
-        <article class="hero-slide">
-            <div class="hero-slide-bg hero-slide-bg-three"></div>
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">Easy Booking Flow</span>
-                <h1>Reserve Fast With Less Steps</h1>
-                <p>Tap a service card, confirm your stylist and schedule, and save your booking instantly with your account details already prepared.</p>
-                <div class="hero-actions">
-                    <a class="btn hero-btn" href="#our-services">Book From Services</a>
-                    <a class="btn hero-btn hero-btn-secondary" href="/bookings">View My Bookings</a>
-                </div>
+        <div class="carousel-slide" style="background:linear-gradient(135deg,#7c3aed 0%,#c084fc 100%);">
+            <div class="carousel-content">
+                <h1>Look Good,<br>Feel Amazing</h1>
+                <p>Professional stylists ready to transform your look</p>
+                <a href="#services" class="carousel-btn" onclick="smoothScroll('services')">Explore Services</a>
             </div>
-        </article>
+        </div>
+
+        <div class="carousel-slide" style="background:linear-gradient(135deg,#be185d 0%,#fb7185 100%);">
+            <div class="carousel-content">
+                <h1>Book Your Appointment<br>Today</h1>
+                <p>Hair, nails, spa &amp; wellness — all in one place</p>
+                <a href="#services" class="carousel-btn" onclick="smoothScroll('services')">Get Started</a>
+            </div>
+        </div>
+
     </div>
-
-    <button class="hero-control hero-control-prev" type="button" aria-label="Previous slide" onclick="moveHeroSlide(-1)">&#10094;</button>
-    <button class="hero-control hero-control-next" type="button" aria-label="Next slide" onclick="moveHeroSlide(1)">&#10095;</button>
-
-    <div class="hero-dots" id="hero-dots">
-        <button class="hero-dot is-active" type="button" aria-label="Go to slide 1" onclick="goToHeroSlide(0)"></button>
-        <button class="hero-dot" type="button" aria-label="Go to slide 2" onclick="goToHeroSlide(1)"></button>
-        <button class="hero-dot" type="button" aria-label="Go to slide 3" onclick="goToHeroSlide(2)"></button>
+    <button class="carousel-arrow carousel-prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="carousel-arrow carousel-next" onclick="moveSlide(1)">&#10095;</button>
+    <div class="carousel-dots" id="carousel-dots">
+        <button class="carousel-dot active" onclick="goToSlide(0)"></button>
+        <button class="carousel-dot" onclick="goToSlide(1)"></button>
+        <button class="carousel-dot" onclick="goToSlide(2)"></button>
     </div>
 </section>
 
-<section class="landing-services" id="our-services">
-    <div class="landing-services-head">
+<!-- ═══ SECTION 2: FEATURED CATEGORIES ═══ -->
+<section class="page-section" id="services">
+    <div class="section-head">
         <span class="section-pill">Our Services</span>
         <h2>Pick the treatment that fits your day</h2>
-        <p>Every service card opens a quick booking modal so you can reserve without leaving the landing page.</p>
+        <p>Every service card opens a quick booking modal so you can reserve without leaving the page.</p>
+    </div>
+    <div class="feat-grid">
+        {% for cat in services %}
+        <div class="feat-card">
+            <div class="feat-icon">{{ cat.icon }}</div>
+            <h3 class="feat-title">{{ cat.category }}</h3>
+            <p class="feat-desc">
+                {% for item in cat.items[:3] %}{{ item.name }}{% if not loop.last %}, {% endif %}{% endfor %} &amp; more
+            </p>
+            <p class="feat-from">From ₱{{ cat.items | map(attribute='price') | min }}</p>
+            <button class="feat-btn" onclick="smoothScroll('{{ cat.key }}'); filterCategory('{{ cat.key }}')">Explore</button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══ SECTION 3: ALL SERVICES ═══ -->
+<section class="page-section page-section-gray" id="all-services">
+    <div class="section-head">
+        <h2>Available Services</h2>
     </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="landing-flashes">
-                {% for category, message in messages %}
-                <div class="landing-flash landing-flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    <!-- FILTER BUTTONS -->
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+        {% for cat in services %}
+        <button class="filter-btn" id="filter-{{ cat.key }}" onclick="filterCategory('{{ cat.key }}', this)">{{ cat.icon }} {{ cat.category }}</button>
+        {% endfor %}
+    </div>
 
-    {% for category in services %}
-    <div class="service-category landing-service-category">
-        <h3 class="category-heading">{{ category.icon }} {{ category.category }}</h3>
-        <div class="service-items-grid">
-            {% for item in category.services %}
-            <button
-                class="service-item-card landing-service-card"
-                type="button"
-                onclick="openBookingModal('{{ item.name }}', '{{ item.price }}')"
-                {% if not session.get('user') %}data-requires-login="true"{% endif %}>
-                <div class="service-img-wrap">
-                    <img src="{{ item.image }}" alt="{{ item.name }}"
-                        onerror="this.src='https://placehold.co/300x180/fce4f0/e91e8c?text={{ item.placeholder }}'">
+    <!-- SERVICE CATEGORIES -->
+    {% for cat in services %}
+    <div class="svc-block" id="{{ cat.key }}" data-cat="{{ cat.key }}">
+        <h3 class="svc-block-title">{{ cat.icon }} {{ cat.category }}</h3>
+        <div class="svc-grid">
+            {% for item in cat.items %}
+            <div class="svc-card" data-cat="{{ cat.key }}">
+                <div class="svc-card-body">
+                    <h4>{{ item.name }}</h4>
+                    <p>{{ item.description }}</p>
+                    <span class="svc-duration">⏱ {{ item.duration }}</span>
                 </div>
-                <div class="service-item-body">
-                    <div class="service-item-header">
-                        <h4 class="service-item-name">{{ item.name }}</h4>
-                        <span class="service-item-price">{{ item.price }}</span>
-                    </div>
-                    <p class="service-item-desc">{{ item.description }}</p>
-                    <span class="service-cta-label">{% if session.get('user') %}Book This Service{% else %}Log In To Book{% endif %}</span>
+                <div class="svc-card-footer">
+                    <span class="svc-price">₱{{ "{:,}".format(item.price) }}</span>
+                    {% if logged_in %}
+                    <button class="svc-book-btn" onclick="openModal('{{ item.name }}', {{ item.price }})">Book Now</button>
+                    {% else %}
+                    <a href="/login" class="svc-book-btn">Book Now</a>
+                    {% endif %}
                 </div>
-            </button>
+            </div>
             {% endfor %}
         </div>
     </div>
     {% endfor %}
 </section>
 
-<div class="booking-modal-backdrop" id="booking-modal-backdrop" onclick="closeBookingModal(event)">
-    <div class="booking-modal" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
-        <button class="booking-modal-close" type="button" aria-label="Close booking modal" onclick="closeBookingModal()">&times;</button>
-        <div class="booking-modal-header">
+<!-- ═══ SECTION 4: BOOKING MODAL ═══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal-box" role="dialog" aria-modal="true">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+
+        <div class="modal-header">
             <span class="section-pill">Quick Booking</span>
-            <h3 id="booking-modal-title">Reserve your appointment</h3>
-            <p>Finish your booking in a few steps without leaving the page.</p>
+            <h3>Book Appointment</h3>
         </div>
 
-        {% if session.get('user') %}
-        <form method="POST" action="/bookings/create" class="booking-modal-form" id="booking-modal-form" onsubmit="startBookingSubmit()">
-            <input type="hidden" name="redirect_to" value="/">
-            <input type="hidden" name="payment_method" value="Cash">
-            <input type="hidden" name="service_type" value="Salon Visit">
+        <div class="modal-svc-badge">
+            <span>Selected Service</span>
+            <strong id="modal-svc-name"></strong>
+            <em id="modal-svc-price"></em>
+        </div>
 
-            <div class="booking-selected-service" id="booking-selected-service">
-                <span class="booking-selected-label">Selected Service</span>
-                <strong id="booking-selected-name">Haircut</strong>
-                <em id="booking-selected-price">₱150</em>
+        <div id="modal-success" style="display:none; background:#d1fae5; color:#065f46; padding:12px 16px; border-radius:10px; margin-bottom:12px; font-weight:600; text-align:center;">
+            ✅ Booking confirmed! We'll see you soon.
+        </div>
+        <div id="modal-error" style="display:none; background:#fee2e2; color:#991b1b; padding:12px 16px; border-radius:10px; margin-bottom:12px; font-weight:600; text-align:center;"></div>
+
+        <form id="modal-form" onsubmit="submitBooking(event)">
+            <input type="hidden" id="modal-svc-input" name="service">
+
+            <label class="modal-label">Preferred Date</label>
+            <input type="date" id="modal-date" name="date" required class="modal-input">
+
+            <label class="modal-label">Preferred Time</label>
+            <select id="modal-time" name="time" required class="modal-input">
+                <option value="">Select time</option>
+                <option value="08:00">8:00 AM</option>
+                <option value="08:30">8:30 AM</option>
+                <option value="09:00">9:00 AM</option>
+                <option value="09:30">9:30 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="10:30">10:30 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="11:30">11:30 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="13:00">1:00 PM</option>
+                <option value="13:30">1:30 PM</option>
+                <option value="14:00">2:00 PM</option>
+                <option value="14:30">2:30 PM</option>
+                <option value="15:00">3:00 PM</option>
+                <option value="15:30">3:30 PM</option>
+                <option value="16:00">4:00 PM</option>
+                <option value="16:30">4:30 PM</option>
+                <option value="17:00">5:00 PM</option>
+                <option value="17:30">5:30 PM</option>
+                <option value="18:00">6:00 PM</option>
+                <option value="18:30">6:30 PM</option>
+                <option value="19:00">7:00 PM</option>
+            </select>
+
+            <label class="modal-label">Stylist</label>
+            <select name="stylist" class="modal-input">
+                <option value="Any Available">Any Available</option>
+                {% for s in stylists %}
+                <option value="{{ s.name }}">{{ s.name }}{% if s.specialty %} — {{ s.specialty }}{% endif %}</option>
+                {% endfor %}
+            </select>
+
+            <label class="modal-label">Notes (optional)</label>
+            <textarea name="notes" placeholder="Any special requests?" class="modal-input" style="height:80px; resize:none;"></textarea>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="modal-confirm" id="modal-submit-btn">Confirm Booking</button>
             </div>
-
-            <div class="booking-modal-grid">
-                <div class="booking-modal-field">
-                    <label for="booking-name">Name</label>
-                    <input id="booking-name" type="text" name="name_display" value="{{ current_user.name }}" readonly>
-                </div>
-
-                <div class="booking-modal-field booking-modal-field-full">
-                    <label for="booking-service">Service</label>
-                    <input id="booking-service" type="text" name="service" readonly>
-                </div>
-
-                <div class="booking-modal-field">
-                    <label for="booking-stylist">Stylist</label>
-                    <select id="booking-stylist" name="stylist" required>
-                        <option value="">Select Stylist</option>
-                        {% for s in stylists %}
-                        <option value="{{ s.name }}">{{ s.name }} - {{ s.specialty }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="booking-modal-field">
-                    <label for="booking-date">Date</label>
-                    <input id="booking-date" type="date" name="date" required>
-                </div>
-
-                <div class="booking-modal-field">
-                    <label for="booking-time">Time</label>
-                    <input id="booking-time" type="time" name="time" required>
-                </div>
-            </div>
-
-            <button class="book-btn booking-submit-btn" type="submit" id="booking-submit-btn">Submit Booking</button>
         </form>
-        {% else %}
-        <div class="booking-modal-login">
-            <p>Please log in first so we can pre-fill your details and save your booking.</p>
-            <a class="btn hero-btn" href="/login">Go to Login</a>
-        </div>
-        {% endif %}
     </div>
 </div>
 
+<!-- ═══ CSS ═══ -->
+<style>
+/* CAROUSEL */
+.carousel { position:relative; width:100%; height:520px; overflow:hidden; }
+.carousel-track { display:flex; height:100%; transition:transform 0.5s ease; }
+.carousel-slide { min-width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.carousel-content { text-align:center; color:#fff; padding:0 20px; max-width:700px; }
+.carousel-content h1 { font-size:2.8rem; font-weight:700; line-height:1.2; margin-bottom:16px; text-shadow:0 2px 12px rgba(0,0,0,0.2); }
+.carousel-content p { font-size:18px; opacity:0.9; margin-bottom:28px; }
+.carousel-btn { display:inline-block; background:#fff; color:#e91e8c; padding:14px 36px; border-radius:999px; font-size:15px; font-weight:700; text-decoration:none; transition:all 0.2s; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
+.carousel-btn:hover { background:#e91e8c; color:#fff; transform:translateY(-2px); }
+.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.25); border:none; color:#fff; font-size:20px; width:44px; height:44px; border-radius:50%; cursor:pointer; transition:background 0.2s; z-index:10; }
+.carousel-arrow:hover { background:rgba(255,255,255,0.45); }
+.carousel-prev { left:16px; }
+.carousel-next { right:16px; }
+.carousel-dots { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:8px; }
+.carousel-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.5); border:none; cursor:pointer; transition:all 0.2s; padding:0; }
+.carousel-dot.active { background:#fff; transform:scale(1.3); }
+
+/* SECTIONS */
+.page-section { max-width:1200px; margin:0 auto; padding:60px 30px; }
+.page-section-gray { background:#fdf0f6; max-width:100%; padding:60px 0; }
+.page-section-gray > * { max-width:1200px; margin-left:auto; margin-right:auto; padding-left:30px; padding-right:30px; }
+.section-head { text-align:center; margin-bottom:40px; }
+.section-head h2 { font-size:1.9rem; font-weight:700; color:#1a1a1a; margin:12px 0 8px; }
+.section-head p { color:#888; font-size:15px; }
+.section-pill { background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase; }
+
+/* FEATURED CARDS */
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.feat-card { background:#fff; border:1.5px solid #fce4f0; border-radius:20px; padding:32px 24px; box-shadow:0 4px 20px rgba(233,30,140,0.07); transition:all 0.3s; text-align:center; }
+.feat-card:hover { transform:translateY(-6px); box-shadow:0 14px 36px rgba(233,30,140,0.16); border-color:#e91e8c; }
+.feat-icon { font-size:3.2rem; margin-bottom:14px; }
+.feat-title { font-size:19px; font-weight:700; color:#e91e8c; margin-bottom:8px; }
+.feat-desc { font-size:13px; color:#777; margin-bottom:10px; line-height:1.5; }
+.feat-from { font-size:14px; font-weight:700; color:#e91e8c; margin-bottom:18px; }
+.feat-btn { background:#fff; color:#e91e8c; border:2px solid #e91e8c; padding:10px 28px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:'Poppins',sans-serif; }
+.feat-btn:hover { background:#e91e8c; color:#fff; }
+
+/* FILTER BAR */
+.filter-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px; }
+.filter-btn { padding:9px 22px; border-radius:999px; border:2px solid #f0b8d8; background:#fff; color:#555; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:'Poppins',sans-serif; }
+.filter-btn.active, .filter-btn:hover { background:#e91e8c; border-color:#e91e8c; color:#fff; }
+
+/* SERVICE BLOCKS */
+.svc-block { margin-bottom:48px; }
+.svc-block-title { font-size:1.3rem; font-weight:700; color:#1a1a1a; margin-bottom:18px; padding-bottom:12px; border-bottom:2px solid #fce4f0; }
+.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.svc-card { background:#fff; border:1.5px solid #fce4f0; border-radius:14px; padding:20px; box-shadow:0 4px 15px rgba(255,20,147,0.08); transition:all 0.25s; display:flex; flex-direction:column; }
+.svc-card:hover { transform:translateY(-5px); box-shadow:0 10px 28px rgba(255,20,147,0.18); border-color:#e91e8c; }
+.svc-card-body { flex:1; }
+.svc-card-body h4 { font-size:15px; font-weight:700; color:#1a1a1a; margin:0 0 6px; }
+.svc-card-body p { font-size:13px; color:#666; margin:0 0 8px; line-height:1.5; }
+.svc-duration { font-size:12px; color:#aaa; }
+.svc-card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:14px; }
+.svc-price { font-size:20px; font-weight:700; color:#FF1493; }
+.svc-book-btn { background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:#fff; border:none; padding:9px 18px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:'Poppins',sans-serif; text-decoration:none; box-shadow:0 3px 10px rgba(233,30,140,0.25); }
+.svc-book-btn:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(233,30,140,0.35); }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:#fff; border-radius:24px; padding:32px 28px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 24px 64px rgba(233,30,140,0.2); border:1px solid #fce4f0; animation:modalIn 0.25s ease; }
+@keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:26px; cursor:pointer; color:#bbb; line-height:1; }
+.modal-close:hover { color:#e91e8c; }
+.modal-header { text-align:center; margin-bottom:18px; }
+.modal-header h3 { font-size:1.2rem; font-weight:700; color:#1a1a1a; margin:10px 0 0; }
+.modal-svc-badge { background:#fdf0f6; border-radius:12px; padding:12px 16px; margin-bottom:16px; border:1px solid #fce4f0; }
+.modal-svc-badge span { font-size:11px; color:#aaa; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; display:block; }
+.modal-svc-badge strong { font-size:15px; color:#e91e8c; display:block; margin-top:2px; }
+.modal-svc-badge em { font-size:13px; color:#aaa; font-style:normal; }
+.modal-label { font-size:12px; font-weight:600; color:#555; display:block; margin:12px 0 4px; }
+.modal-input { width:100%; padding:11px 14px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; transition:border 0.2s; background:#fff; }
+.modal-input:focus { border-color:#e91e8c; box-shadow:0 0 0 3px rgba(233,30,140,0.08); }
+.modal-actions { display:flex; gap:10px; margin-top:20px; }
+.modal-cancel { flex:1; padding:12px; background:#fff; color:#e91e8c; border:2px solid #e91e8c; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; transition:all 0.2s; }
+.modal-cancel:hover { background:#fce4f0; }
+.modal-confirm { flex:2; padding:12px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:#fff; border:none; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 14px rgba(233,30,140,0.3); transition:all 0.2s; }
+.modal-confirm:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(233,30,140,0.4); }
+.modal-confirm:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+/* RESPONSIVE */
+@media (max-width:900px) {
+    .feat-grid { grid-template-columns:1fr 1fr; }
+    .svc-grid { grid-template-columns:1fr 1fr; }
+    .carousel-content h1 { font-size:2rem; }
+}
+@media (max-width:600px) {
+    .feat-grid { grid-template-columns:1fr; }
+    .svc-grid { grid-template-columns:1fr; }
+    .carousel { height:420px; }
+    .carousel-content h1 { font-size:1.6rem; }
+    .carousel-content p { font-size:15px; }
+}
+</style>
+
+<!-- ═══ JAVASCRIPT ═══ -->
 <script>
-var heroSlideIndex = 0;
-var heroSlides = document.querySelectorAll('.hero-slide');
-var heroDots = document.querySelectorAll('.hero-dot');
-var heroInterval = null;
-var bookingModalBackdrop = document.getElementById('booking-modal-backdrop');
-var bookingSelectedName = document.getElementById('booking-selected-name');
-var bookingSelectedPrice = document.getElementById('booking-selected-price');
-var bookingServiceInput = document.getElementById('booking-service');
+// ── CAROUSEL ──
+var slideIndex = 0;
+var slides = document.querySelectorAll('.carousel-slide');
+var dots = document.querySelectorAll('.carousel-dot');
+var autoTimer = null;
 
-function showHeroSlide(index) {
-    if (!heroSlides.length) return;
-    if (index < 0) {
-        heroSlideIndex = heroSlides.length - 1;
-    } else if (index >= heroSlides.length) {
-        heroSlideIndex = 0;
-    } else {
-        heroSlideIndex = index;
+function showSlide(n) {
+    if (n >= slides.length) slideIndex = 0;
+    else if (n < 0) slideIndex = slides.length - 1;
+    else slideIndex = n;
+    document.getElementById('carousel-track').style.transform = 'translateX(-' + (slideIndex * 100) + '%)';
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === slideIndex); });
+}
+function moveSlide(dir) { showSlide(slideIndex + dir); resetAuto(); }
+function goToSlide(n) { showSlide(n); resetAuto(); }
+function resetAuto() { clearInterval(autoTimer); autoTimer = setInterval(function(){ showSlide(slideIndex + 1); }, 4000); }
+resetAuto();
+
+// ── SMOOTH SCROLL ──
+function smoothScroll(id) {
+    var el = document.getElementById(id);
+    if (el) { setTimeout(function(){ el.scrollIntoView({ behavior:'smooth', block:'start' }); }, 100); }
+}
+
+// ── FILTER ──
+function filterCategory(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    else {
+        var fb = document.getElementById('filter-' + cat);
+        if (fb) fb.classList.add('active');
+        else document.querySelector('.filter-btn').classList.add('active');
     }
-    for (var i = 0; i < heroSlides.length; i++) {
-        heroSlides[i].classList.toggle('is-active', i === heroSlideIndex);
-        heroDots[i].classList.toggle('is-active', i === heroSlideIndex);
-    }
+    document.querySelectorAll('.svc-block').forEach(function(block){
+        block.style.display = (cat === 'all' || block.dataset.cat === cat) ? 'block' : 'none';
+    });
 }
 
-function moveHeroSlide(step) {
-    showHeroSlide(heroSlideIndex + step);
-    resetHeroAutoplay();
+// ── MODAL ──
+function openModal(name, price) {
+    document.getElementById('modal-svc-name').textContent = name;
+    document.getElementById('modal-svc-price').textContent = '₱' + price.toLocaleString();
+    document.getElementById('modal-svc-input').value = name;
+    document.getElementById('modal-success').style.display = 'none';
+    document.getElementById('modal-error').style.display = 'none';
+    document.getElementById('modal-form').style.display = 'block';
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('modal-date').setAttribute('min', today);
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
 }
 
-function goToHeroSlide(index) {
-    showHeroSlide(index);
-    resetHeroAutoplay();
+function submitBooking(e) {
+    e.preventDefault();
+    var btn = document.getElementById('modal-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    var form = document.getElementById('modal-form');
+    var data = {
+        service: document.getElementById('modal-svc-input').value,
+        date: document.getElementById('modal-date').value,
+        time: document.getElementById('modal-time').value,
+        stylist: form.querySelector('[name="stylist"]').value,
+        notes: form.querySelector('[name="notes"]').value
+    };
+    fetch('/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+        if (res.success) {
+            document.getElementById('modal-form').style.display = 'none';
+            document.getElementById('modal-success').style.display = 'block';
+            setTimeout(closeModal, 2500);
+        } else {
+            document.getElementById('modal-error').textContent = res.message || 'Booking failed.';
+            document.getElementById('modal-error').style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Confirm Booking';
+        }
+    })
+    .catch(function(){
+        document.getElementById('modal-error').textContent = 'Network error. Please try again.';
+        document.getElementById('modal-error').style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Confirm Booking';
+    });
 }
-
-function startHeroAutoplay() {
-    heroInterval = window.setInterval(function() {
-        showHeroSlide(heroSlideIndex + 1);
-    }, 5000);
-}
-
-function resetHeroAutoplay() {
-    if (heroInterval) window.clearInterval(heroInterval);
-    startHeroAutoplay();
-}
-
-function openBookingModal(serviceName, servicePrice) {
-    var isLoggedIn = {{ 'true' if session.get('user') else 'false' }};
-    if (!isLoggedIn) {
-        window.location.href = '/login';
-        return;
-    }
-
-    bookingSelectedName.textContent = serviceName;
-    bookingSelectedPrice.textContent = servicePrice;
-    bookingServiceInput.value = serviceName;
-    bookingModalBackdrop.classList.add('is-open');
-    document.body.classList.add('modal-open');
-}
-
-function closeBookingModal(event) {
-    if (event && event.target && event.target !== bookingModalBackdrop) return;
-    bookingModalBackdrop.classList.remove('is-open');
-    document.body.classList.remove('modal-open');
-}
-
-function startBookingSubmit() {
-    var submitBtn = document.getElementById('booking-submit-btn');
-    if (!submitBtn) return;
-    submitBtn.textContent = 'Saving Booking...';
-    submitBtn.disabled = true;
-}
-
-showHeroSlide(0);
-startHeroAutoplay();
 </script>
 
 {% endblock %}
