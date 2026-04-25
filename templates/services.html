@@ -169,47 +169,94 @@
         <form id="svc-modal-form" method="POST" action="/book" style="display:none;">
             <input type="hidden" name="service" id="svc-modal-input">
 
-            <label class="modal-label">Preferred Date</label>
-            <input type="date" name="date" id="svc-modal-date" required class="modal-input">
+            <!-- STEP 1: BOOKING DETAILS -->
+            <div id="svc-step-1">
+                <label class="modal-label">Preferred Date</label>
+                <input type="date" name="date" id="svc-modal-date" required class="modal-input">
 
-            <label class="modal-label">Preferred Time</label>
-            <select name="time" class="modal-input" required>
-                <option value="">Select time</option>
-                <option value="08:00">8:00 AM</option>
-                <option value="08:30">8:30 AM</option>
-                <option value="09:00">9:00 AM</option>
-                <option value="09:30">9:30 AM</option>
-                <option value="10:00">10:00 AM</option>
-                <option value="10:30">10:30 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="11:30">11:30 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="13:00">1:00 PM</option>
-                <option value="13:30">1:30 PM</option>
-                <option value="14:00">2:00 PM</option>
-                <option value="14:30">2:30 PM</option>
-                <option value="15:00">3:00 PM</option>
-                <option value="15:30">3:30 PM</option>
-                <option value="16:00">4:00 PM</option>
-                <option value="17:00">5:00 PM</option>
-                <option value="18:00">6:00 PM</option>
-                <option value="19:00">7:00 PM</option>
-            </select>
+                <label class="modal-label">Preferred Time</label>
+                <select name="time" id="svc-modal-time" class="modal-input" required>
+                    <option value="">Select time</option>
+                    <option value="08:00">8:00 AM</option>
+                    <option value="08:30">8:30 AM</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="09:30">9:30 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="13:30">1:30 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="14:30">2:30 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="15:30">3:30 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                    <option value="17:00">5:00 PM</option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="19:00">7:00 PM</option>
+                </select>
 
-            <label class="modal-label">Stylist</label>
-            <select name="stylist" class="modal-input">
-                <option value="Any Available">Any Available</option>
-                {% for s in stylists %}
-                <option value="{{ s.name }}">{{ s.name }}{% if s.specialty %} — {{ s.specialty }}{% endif %}</option>
-                {% endfor %}
-            </select>
+                <label class="modal-label">Stylist</label>
+                <select name="stylist" class="modal-input">
+                    <option value="Any Available">Any Available</option>
+                    {% for s in stylists %}
+                    <option value="{{ s.name }}">{{ s.name }}{% if s.specialty %} — {{ s.specialty }}{% endif %}</option>
+                    {% endfor %}
+                </select>
 
-            <label class="modal-label">Notes (optional)</label>
-            <textarea name="notes" placeholder="Any special requests?" class="modal-input" style="height:70px; resize:none;"></textarea>
+                <label class="modal-label">Notes (optional)</label>
+                <textarea name="notes" placeholder="Any special requests?" class="modal-input" style="height:70px; resize:none;"></textarea>
 
-            <div style="display:flex; gap:10px; margin-top:16px;">
-                <button type="button" class="modal-cancel" onclick="closeSvcModal()">Cancel</button>
-                <button type="submit" class="modal-confirm">Confirm Booking</button>
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                    <button type="button" class="modal-cancel" onclick="closeSvcModal()">Cancel</button>
+                    <button type="button" class="modal-confirm" onclick="goToPayment()">Next: Payment →</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: PAYMENT METHOD -->
+            <div id="svc-step-2" style="display:none;">
+                <p style="font-size:13px; font-weight:600; color:#444; margin-bottom:12px;">Choose your payment method:</p>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+                    <label class="pay-opt pay-opt-active" id="pay-cash-label">
+                        <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="switchPayment('Cash')">
+                        <span style="font-size:18px;">&#128181;</span> Cash
+                    </label>
+                    <label class="pay-opt" id="pay-gcash-label">
+                        <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="switchPayment('GCash')">
+                        <span style="font-size:18px;">&#128241;</span> GCash
+                    </label>
+                </div>
+
+                <!-- CASH INFO -->
+                <div id="pay-cash-info" style="background:#fff9fb; border:1.5px solid #f0b8d8; border-radius:12px; padding:12px 16px; font-size:13px; color:#666; line-height:1.7;">
+                    &#128181; <strong>Pay in cash</strong> upon arrival at the salon.<br>
+                    Please be on time for your appointment. &#128522;
+                </div>
+
+                <!-- GCASH INFO -->
+                <div id="pay-gcash-info" style="display:none; background:#fff; border:2px solid #007bff; border-radius:14px; padding:1rem; text-align:center;">
+                    <p style="font-size:14px; font-weight:700; color:#007bff; margin-bottom:8px;">&#128241; GCash Payment</p>
+                    <img src="/static/images/gcash-qr.png" alt="GCash QR"
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GCash+09123456789'"
+                        style="width:140px; height:140px; border-radius:10px; border:1px solid #dce8ff; padding:6px; object-fit:contain; display:block; margin:0 auto 8px;">
+                    <p style="font-size:16px; font-weight:700; color:#007bff; letter-spacing:1px;">0912 345 6789</p>
+                    <p style="font-size:12px; color:#555;">Account: <strong>Salon Booking</strong></p>
+                    <div style="background:#f0f7ff; border-radius:10px; padding:10px; font-size:11px; color:#444; text-align:left; line-height:1.8; margin-top:10px;">
+                        1. Open GCash app<br>
+                        2. Tap <strong>Pay QR</strong> &amp; scan above<br>
+                        3. Enter exact amount<br>
+                        4. Take screenshot &amp; enter reference below
+                    </div>
+                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="modal-input" style="margin-top:10px;">
+                </div>
+
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                    <button type="button" class="modal-cancel" onclick="backToDetails()">← Back</button>
+                    <button type="submit" class="modal-confirm">✅ Confirm Booking</button>
+                </div>
             </div>
         </form>
     </div>
@@ -237,6 +284,8 @@
 .modal-cancel { flex:1; padding:11px; background:#fff; color:#e91e8c; border:2px solid #e91e8c; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; }
 .modal-cancel:hover { background:#fce4f0; }
 .modal-confirm { flex:2; padding:11px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:#fff; border:none; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
+.pay-opt { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; border-radius:12px; border:2px solid #f0b8d8; cursor:pointer; font-size:13px; font-weight:600; background:#fff; color:#555; transition:all 0.2s; }
+.pay-opt-active { border-color:#e91e8c; background:#fce4f0; color:#e91e8c; }
 @media (max-width:900px) { .svc-grid { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:600px) { .svc-grid { grid-template-columns:1fr; } }
 </style>
@@ -253,6 +302,8 @@ function openSvcModal(name, price, duration) {
     if (isLoggedIn) {
         document.getElementById('svc-modal-form').style.display = 'block';
         document.getElementById('svc-modal-login').style.display = 'none';
+        document.getElementById('svc-step-1').style.display = 'block';
+        document.getElementById('svc-step-2').style.display = 'none';
     } else {
         document.getElementById('svc-modal-form').style.display = 'none';
         document.getElementById('svc-modal-login').style.display = 'block';
@@ -268,7 +319,34 @@ function closeSvcModalOutside(e) {
     if (e.target === document.getElementById('svc-modal-overlay')) closeSvcModal();
 }
 
-// Carousel
+function goToPayment() {
+    var date = document.getElementById('svc-modal-date').value;
+    var time = document.getElementById('svc-modal-time').value;
+    if (!date) { alert('Please select a date.'); return; }
+    if (!time) { alert('Please select a time.'); return; }
+    document.getElementById('svc-step-1').style.display = 'none';
+    document.getElementById('svc-step-2').style.display = 'block';
+}
+function backToDetails() {
+    document.getElementById('svc-step-2').style.display = 'none';
+    document.getElementById('svc-step-1').style.display = 'block';
+}
+function switchPayment(method) {
+    var cashLabel = document.getElementById('pay-cash-label');
+    var gcashLabel = document.getElementById('pay-gcash-label');
+    cashLabel.className = 'pay-opt';
+    gcashLabel.className = 'pay-opt';
+    if (method === 'Cash') {
+        cashLabel.className = 'pay-opt pay-opt-active';
+        document.getElementById('pay-cash-info').style.display = 'block';
+        document.getElementById('pay-gcash-info').style.display = 'none';
+    } else {
+        gcashLabel.className = 'pay-opt pay-opt-gcash';
+        document.getElementById('pay-cash-info').style.display = 'none';
+        document.getElementById('pay-gcash-info').style.display = 'block';
+    }
+}
+
 var svcSlideIndex = 0;
 var svcSlides = document.querySelectorAll('.hero-carousel .hero-slide');
 var svcDots = document.querySelectorAll('#svc-dots .hero-dot');
