@@ -21,7 +21,6 @@
         {% else %}
             <a href="/services">Services</a>
             <a href="/bookings">My Bookings</a>
-            <a href="/profile">Profile</a>
             <a href="/about">About Us</a>
             <a href="/contact">Contact Us</a>
             <a href="/stylist">Stylists</a>
@@ -32,6 +31,7 @@
         {% if session.get('user') %}
             <span>{{ session['user'] }}</span>
             <span class="role-badge">{{ session.get('role', 'user') }}</span>
+            <a href="/profile" title="Profile" style="color:white; font-size:18px;"><i class="fa fa-user-circle"></i></a>
             <a href="/logout">Logout</a>
         {% else %}
             <a href="/login"><i class="fa fa-user"></i> Login</a>
