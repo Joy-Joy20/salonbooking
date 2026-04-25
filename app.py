@@ -2,6 +2,7 @@
 import os
 import traceback
 import hashlib
+import uuid
 from datetime import datetime
 from functools import wraps
 
@@ -276,6 +277,57 @@ def book():
             if not service or not date or not time:
                 flash('Please fill in all required fields.', 'error')
                 return redirect(url_for('index'))
+
+            # Handle GCash screenshot upload
+            screenshot_url = ''
+            gcash_file = request.files.get('gcash_screenshot')
+            if gcash_file and gcash_file.filename:
+                try:
+                    file_bytes = gcash_file.read()
+                    file_ext = gcash_file.filename.rsplit('.', 1)[-1].lower() if '.' in gcash_file.filename else 'jpg'
+                    unique_filename = f"gcash_{user}_{uuid.uuid4().hex}.{file_ext}"
+                    db = get_supabase()
+                    db.storage.from_('gcash-payments').upload(
+                        path=unique_filename,
+                        file=file_bytes,
+                        file_options={"content-type": gcash_file.content_type or "image/jpeg"}
+                    )
+                    screenshot_url = db.storage.from_('gcash-payments').get_public_url(unique_filename)
+                    print(f"=== SCREENSHOT UPLOADED: {screenshot_url} ===")
+                except Exception as upload_err:
+                    print(f"=== SCREENSHOT UPLOAD ERROR: {str(upload_err)} ===")
+
+            db = get_supabase()
+            result = db.table('bookings').insert({
+                'username': user,
+                'booked_by': user,
+                'service_name': service,
+                'appointment_date': date,
+                'appointment_time': time,
+                'stylist': stylist,
+                'notes': notes,
+                'payment_method': payment_method,
+                'service_type': service_type,
+                'address': address,
+                'payment_screenshot': screenshot_url,
+                'payment_status': 'under_review' if screenshot_url else 'unpaid',
+                'status': 'pending',
+                'created_at': datetime.utcnow().isoformat()
+            }).execute()
+
+            print(f"=== BOOKING SAVED: {result.data} ===")
+            if request.is_json:
+                return jsonify({'success': True, 'message': 'Booking confirmed!'})
+            flash('Booking submitted successfully! ✅', 'success')
+            return redirect(url_for('bookings_page'))
+        except Exception as e:
+            print(f"=== BOOKING ERROR: {str(e)} ===")
+            if request.is_json:
+                return jsonify({'success': False, 'message': str(e)}), 500
+            flash(f'Booking failed: {str(e)}', 'error')
+            return redirect(url_for('index'))
+    return redirect(url_for('index'))
+
 
             db = get_supabase()
             result = db.table('bookings').insert({

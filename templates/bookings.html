@@ -27,6 +27,7 @@
                 <th>Stylist</th>
                 <th>Payment</th>
                 <th>Status</th>
+                <th>Screenshot</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -49,6 +50,15 @@
                     <span class="status-badge status-{{ (b.status or 'pending')|lower }}">
                         {{ (b.status or 'Pending')|capitalize }}
                     </span>
+                </td>
+                <td>
+                    {% if b.payment_screenshot %}
+                    <a href="{{ b.payment_screenshot }}" target="_blank">
+                        <img src="{{ b.payment_screenshot }}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:2px solid #e91e8c; cursor:pointer;" title="Click to view full size">
+                    </a>
+                    {% else %}
+                    <span style="color:#aaa; font-size:12px;">—</span>
+                    {% endif %}
                 </td>
                 <td>
                     {% if (b.status or 'pending')|lower == 'pending' %}
