@@ -11,17 +11,13 @@
     </div>
 
     <!-- CATEGORIES -->
-    {% for key, category in services.items() %}
+    {% for cat in services %}
     <div style="margin-bottom:48px;">
-
-        <!-- CATEGORY TITLE -->
         <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">
-            {{ category.icon }} {{ category.title }}
+            {{ cat.icon }} {{ cat.category }}
         </h2>
-
-        <!-- SERVICE CARDS GRID -->
         <div class="svc-grid">
-            {% for item in category.services %}
+            {% for item in cat.items %}
             <div class="svc-item-card">
                 <div style="flex:1;">
                     <h4 class="svc-item-name">{{ item.name }}</h4>
@@ -35,7 +31,6 @@
             </div>
             {% endfor %}
         </div>
-
     </div>
     {% endfor %}
 
