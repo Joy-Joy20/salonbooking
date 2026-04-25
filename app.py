@@ -188,6 +188,15 @@ def index():
         flash('We could not load the landing page completely. Please try again.', 'error')
         return render_template('index.html', stylists=[], services=SERVICE_CATALOG, current_user=None)
 
+@app.route('/home')
+@login_required
+def home():
+    return render_template('home.html',
+        username=session.get('user', 'Guest'),
+        services=SERVICES,
+        stylists=_get_stylists()
+    )
+
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -236,7 +245,7 @@ def login():
                     session['is_admin'] = session['role'] == 'admin'
                     if session['is_admin']:
                         return redirect(url_for('admin_dashboard'))
-                    return redirect(url_for('index'))
+                    return redirect(url_for('home'))
             error = 'Invalid username or password.'
         except Exception as e:
             print("Login error:", str(e))
