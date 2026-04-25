@@ -349,12 +349,13 @@ def book():
                 'appointment_time': data.get('time'),
                 'stylist': data.get('stylist', 'Any Available'),
                 'notes': data.get('notes', ''),
+                'payment_method': data.get('payment_method', 'Cash'),
                 'status': 'pending',
                 'booked_by': session.get('user')
             }).execute()
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
-            flash('Booking submitted successfully!', 'success')
+            flash('Booking submitted successfully! ✅', 'success')
             return redirect(url_for('bookings_page'))
         except Exception as e:
             print('Book error:', str(e))
