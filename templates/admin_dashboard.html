@@ -1,58 +1,87 @@
-{% extends 'base.html' %}
-{% block content %}
-<div style="max-width:1200px; margin:0 auto; padding:40px 30px;">
-    <h1 style="color:#e91e8c; text-align:center;">Admin Dashboard 🛠️</h1>
+{% extends 'admin_base.html' %}
+{% block page_title %}Dashboard{% endblock %}
 
-    <div class="admin-stats">
-        <div class="stat-card">
-            <div class="stat-icon">📋</div>
-            <div class="stat-num">{{ total_bookings }}</div>
+{% block content %}
+
+<!-- STATS CARDS -->
+<div class="stats-grid">
+    <div class="stat-card" style="border-left-color:#FF1493;">
+        <div class="stat-icon">📅</div>
+        <div>
+            <div class="stat-num" style="color:#FF1493;">{{ total_bookings }}</div>
             <div class="stat-label">Total Bookings</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">⏳</div>
-            <div class="stat-num">{{ pending_bookings }}</div>
+    </div>
+    <div class="stat-card" style="border-left-color:#FFA500;">
+        <div class="stat-icon">⏳</div>
+        <div>
+            <div class="stat-num" style="color:#FFA500;">{{ pending_bookings }}</div>
             <div class="stat-label">Pending Bookings</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">👥</div>
-            <div class="stat-num">{{ total_users }}</div>
+    </div>
+    <div class="stat-card" style="border-left-color:#4A90D9;">
+        <div class="stat-icon">👥</div>
+        <div>
+            <div class="stat-num" style="color:#4A90D9;">{{ total_users }}</div>
             <div class="stat-label">Total Users</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">✂️</div>
-            <div class="stat-num">{{ total_stylists }}</div>
+    </div>
+    <div class="stat-card" style="border-left-color:#27AE60;">
+        <div class="stat-icon">✂️</div>
+        <div>
+            <div class="stat-num" style="color:#27AE60;">{{ total_stylists }}</div>
             <div class="stat-label">Total Stylists</div>
         </div>
     </div>
+</div>
 
-    <h2 style="margin-top:30px; text-align:left; color:#333;">Recent Bookings</h2>
+<!-- RECENT BOOKINGS -->
+<div class="admin-table-wrap">
+    <h2 style="padding:20px 24px 16px;">Recent Bookings</h2>
     {% if recent_bookings %}
     <table>
-        <tr><th>Customer</th><th>Service</th><th>Stylist</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr>
-        {% for b in recent_bookings %}
-        <tr>
-            <td>{{ b.name }}</td>
-            <td>{{ b.service }}</td>
-            <td>{{ b.stylist }}</td>
-            <td>{{ b.date }}</td>
-            <td>{{ b.time or '-' }}</td>
-            <td><span class="status-badge status-{{ (b.status or 'Pending')|lower }}">{{ b.status or 'Pending' }}</span></td>
-            <td>
-                <form method="POST" action="/admin/bookings/status/{{ b.id }}" style="display:inline; flex-direction:row; align-items:center; gap:6px;">
-                    <select name="status" style="padding:4px 8px; border-radius:6px; border:1px solid #ffb6d9; font-size:12px; width:auto; margin:0;">
-                        <option {% if b.status == 'Pending' %}selected{% endif %}>Pending</option>
-                        <option {% if b.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
-                        <option {% if b.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                    </select>
-                    <button type="submit" style="margin:0; padding:4px 10px; font-size:12px;">Save</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Stylist</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in recent_bookings %}
+            <tr>
+                <td>{{ b.get('username') or b.get('booked_by') or 'N/A' }}</td>
+                <td>{{ b.get('service_name') or 'N/A' }}</td>
+                <td>{{ b.get('stylist') or 'Any Available' }}</td>
+                <td>{{ b.get('appointment_date') or '-' }}</td>
+                <td>{{ b.get('appointment_time') or '-' }}</td>
+                <td>
+                    <span class="badge badge-{{ (b.get('status') or 'pending')|lower }}">
+                        {{ (b.get('status') or 'pending')|capitalize }}
+                    </span>
+                </td>
+                <td>
+                    <form action="/admin/bookings/status/{{ b.id }}" method="POST" class="admin-form-row">
+                        <select name="status">
+                            <option value="pending" {% if b.get('status') == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="confirmed" {% if b.get('status') == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option value="completed" {% if b.get('status') == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="cancelled" {% if b.get('status') == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                        <button type="submit" class="btn-save">Save</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
-    <p style="text-align:left; color:#999;">No bookings yet.</p>
+    <p style="padding:24px; color:#999; text-align:center;">No bookings yet.</p>
     {% endif %}
 </div>
+
 {% endblock %}

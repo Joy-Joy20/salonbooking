@@ -1,29 +1,42 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
+{% block page_title %}Manage Users{% endblock %}
+
 {% block content %}
-<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
-    <h1 style="color:#e91e8c; text-align:center;">Manage Users 👥</h1>
+<div class="admin-table-wrap">
+    <h2 style="padding:20px 24px 16px;">All Users</h2>
     {% if users %}
     <table>
-        <tr><th>Username</th><th>Role</th><th>Actions</th></tr>
-        {% for u in users %}
-        <tr>
-            <td>{{ u.username }}</td>
-            <td><span class="role-badge" style="background:{% if u.role == 'admin' %}#e91e8c{% else %}#aaa{% endif %};">{{ u.role or 'user' }}</span></td>
-            <td style="display:flex; gap:8px; align-items:center;">
-                <form method="POST" action="/admin/users/role/{{ u.username }}" style="flex-direction:row; gap:4px; align-items:center; display:flex;">
-                    <select name="role" style="padding:4px 8px; border-radius:6px; border:1px solid #ffb6d9; font-size:12px; width:auto; margin:0;">
-                        <option {% if u.role == 'user' %}selected{% endif %} value="user">User</option>
-                        <option {% if u.role == 'admin' %}selected{% endif %} value="admin">Admin</option>
-                    </select>
-                    <button type="submit" style="margin:0; padding:4px 10px; font-size:12px;">Save</button>
-                </form>
-                <a href="/admin/users/delete/{{ u.username }}" class="btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td><strong>{{ u.username }}</strong></td>
+                <td>{{ u.email or '—' }}</td>
+                <td>
+                    <span class="badge" style="background:{% if u.role == 'admin' %}#FF1493; color:white{% else %}#f0f0f0; color:#555{% endif %};">
+                        {{ u.role or 'user' }}
+                    </span>
+                </td>
+                <td>
+                    <div class="admin-form-row">
+                        <form method="POST" action="/admin/users/role/{{ u.username }}" style="display:flex; gap:6px;">
+                            <select name="role">
+                                <option value="user" {% if u.role == 'user' %}selected{% endif %}>User</option>
+                                <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Admin</option>
+                            </select>
+                            <button type="submit" class="btn-save">Save</button>
+                        </form>
+                        <a href="/admin/users/delete/{{ u.username }}" class="btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% else %}
-    <p style="color:#999;">No users yet.</p>
+    <p style="padding:24px; color:#999; text-align:center;">No users yet.</p>
     {% endif %}
 </div>
 {% endblock %}

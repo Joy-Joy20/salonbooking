@@ -1,29 +1,54 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
+{% block page_title %}Manage Stylists{% endblock %}
+
 {% block content %}
-<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
-    <h1 style="color:#e91e8c; text-align:center;">Manage Stylists ✂️</h1>
 
-    <div class="card" style="margin:30px auto 30px; max-width:500px;">
-        <h3 style="text-align:left; margin-bottom:16px;">Add New Stylist</h3>
-        <form method="POST" action="/admin/stylists/add" style="display:flex; flex-direction:column; gap:12px; align-items:stretch;">
-            <input type="text" name="name" placeholder="Full Name" required style="margin:0; width:100%;">
-            <input type="text" name="specialty" placeholder="Specialty" required style="margin:0; width:100%;">
-            <input type="text" name="photo" placeholder="Photo URL (optional)" style="margin:0; width:100%;">
-            <button type="submit" style="margin:0; width:100%;">Add Stylist</button>
-        </form>
-    </div>
-
-    <div class="stylist-grid">
-        {% for s in stylists %}
-        <div class="stylist-card">
-            <img src="{{ s.photo or 'https://i.pravatar.cc/150?u=' + s.name }}" alt="{{ s.name }}">
-            <h3>{{ s.name }}</h3>
-            <p class="specialty">{{ s.specialty }}</p>
-            <a href="/admin/stylists/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this stylist?')" style="margin-top:10px;">Delete</a>
+<div class="admin-card">
+    <h2>Add New Stylist</h2>
+    <form method="POST" action="/admin/stylists/add" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Full Name</label>
+            <input type="text" name="name" placeholder="Full Name" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none;">
         </div>
-        {% else %}
-        <p style="color:#999; text-align:center;">No stylists yet.</p>
-        {% endfor %}
-    </div>
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Specialty</label>
+            <input type="text" name="specialty" placeholder="Specialty" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none;">
+        </div>
+        <div style="grid-column:span 2;">
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Photo URL (optional)</label>
+            <input type="text" name="photo" placeholder="https://..." style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none;">
+        </div>
+        <div style="grid-column:span 2;">
+            <button type="submit" class="btn-save" style="padding:10px 28px; font-size:14px;">Add Stylist</button>
+        </div>
+    </form>
+</div>
+
+<div class="admin-table-wrap">
+    <h2 style="padding:20px 24px 16px;">All Stylists</h2>
+    {% if stylists %}
+    <table>
+        <thead>
+            <tr><th>Photo</th><th>Name</th><th>Specialty</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            {% for s in stylists %}
+            <tr>
+                <td>
+                    <img src="{{ s.photo or 'https://i.pravatar.cc/40?u=' + s.name }}" alt="{{ s.name }}"
+                        style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #FF1493;">
+                </td>
+                <td><strong>{{ s.name }}</strong></td>
+                <td>{{ s.specialty }}</td>
+                <td>
+                    <a href="/admin/stylists/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this stylist?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="padding:24px; color:#999; text-align:center;">No stylists yet.</p>
+    {% endif %}
 </div>
 {% endblock %}
