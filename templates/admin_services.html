@@ -1,31 +1,15 @@
 {% extends 'admin_base.html' %}
-{% block page_title %}Services Overview{% endblock %}
+{% block page_title %}Services{% endblock %}
 
 {% block content %}
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-    <h1 style="font-size:22px; font-weight:700; color:#1a1a2e;">💼 Services Overview</h1>
-    <span style="background:#FFE0F0; color:#FF1493; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;">
-        {% set total = namespace(count=0) %}
-        {% for cat in services %}{% set total.count = total.count + cat['items']|length %}{% endfor %}
-        Total: {{ total.count }} services
-    </span>
-</div>
-
-<!-- CATEGORY CARDS -->
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
-    {% for cat in services %}
-    <div style="background:white; border-radius:12px; padding:20px; display:flex; align-items:center; gap:16px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
-        border-left:4px solid {% if cat.key == 'hair' %}#FF1493{% elif cat.key == 'nails' %}#9B59B6{% else %}#27AE60{% endif %};">
-        <span style="font-size:2.5rem;">{{ cat.icon }}</span>
-        <div>
-            <h3 style="font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:4px;">{{ cat.category }}</h3>
-            <p style="font-size:13px; color:#888; margin-bottom:2px;">{{ cat['items']|length }} services</p>
-            <p style="font-size:13px; font-weight:600; color:#FF1493;">From ₱{{ cat['items'] | map(attribute='price') | min }}</p>
-        </div>
-    </div>
+{% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}
+    <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+        background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+        color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
     {% endfor %}
-</div>
+{% endwith %}
 
 <!-- ADD SERVICE FORM -->
 <div class="admin-card" style="margin-bottom:24px;">
@@ -33,11 +17,13 @@
     <form method="POST" action="/admin/services/add" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; align-items:end;">
         <div>
             <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Service Name</label>
-            <input type="text" name="name" placeholder="e.g. Haircut - Kids" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+            <input type="text" name="name" placeholder="e.g. Haircut - Kids" required
+                style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
         </div>
         <div>
             <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category</label>
-            <select name="category" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+            <select name="category" required
+                style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
                 <option value="">-- Select Category --</option>
                 <option value="Hair Services">✂️ Hair Services</option>
                 <option value="Nail Services">💅 Nail Services</option>
@@ -46,15 +32,18 @@
         </div>
         <div>
             <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Duration</label>
-            <input type="text" name="duration" placeholder="e.g. 30 mins" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+            <input type="text" name="duration" placeholder="e.g. 30 mins" required
+                style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
         </div>
         <div>
             <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Price (₱)</label>
-            <input type="number" name="price" placeholder="e.g. 150" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+            <input type="number" name="price" placeholder="e.g. 150" required
+                style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
         </div>
         <div style="grid-column:span 2;">
             <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Description</label>
-            <input type="text" name="description" placeholder="Short description" style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+            <input type="text" name="description" placeholder="Short description"
+                style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
         </div>
         <div style="display:flex; align-items:flex-end;">
             <button type="submit" class="btn-save" style="width:100%; padding:11px;">+ Add Service</button>
@@ -62,19 +51,57 @@
     </form>
 </div>
 
-<!-- FILTER BUTTONS -->
-<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
-    <button class="svc-filter-btn active" onclick="filterSvc('all', this)">All Services</button>
-    <button class="svc-filter-btn" onclick="filterSvc('hair', this)">✂️ Hair</button>
-    <button class="svc-filter-btn" onclick="filterSvc('nails', this)">💅 Nails</button>
-    <button class="svc-filter-btn" onclick="filterSvc('spa', this)">🌿 Spa</button>
-</div>
-
-<!-- SERVICES TABLE -->
-<div class="admin-table-wrap">
+<!-- ADDED SERVICES FROM SUPABASE -->
+{% if services_db %}
+<div class="admin-table-wrap" style="margin-bottom:24px;">
+    <h2 style="padding:20px 24px 16px;">Added Services ({{ services_db|length }})</h2>
     <table>
         <thead>
-            <tr><th>#</th><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th><th>Action</th></tr>
+            <tr><th>Name</th><th>Category</th><th>Duration</th><th>Price</th><th>Description</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            {% for s in services_db %}
+            <tr>
+                <td><strong>{{ s.name }}</strong></td>
+                <td>
+                    <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
+                        {% if s.category_key == 'hair' %}background:#FFE0F0; color:#FF1493;
+                        {% elif s.category_key == 'nails' %}background:#F3E0FF; color:#9B59B6;
+                        {% else %}background:#E0FFE8; color:#27AE60;{% endif %}">
+                        {{ s.category }}
+                    </span>
+                </td>
+                <td>{{ s.duration }}</td>
+                <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(s.price) }}</td>
+                <td style="color:#888; font-size:12px;">{{ s.description or '—' }}</td>
+                <td style="display:flex; gap:6px;">
+                    <a href="/admin/services/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this service?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div style="background:white; border-radius:12px; padding:24px; text-align:center; color:#999; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    No custom services added yet. Use the form above to add services.
+</div>
+{% endif %}
+
+<!-- DEFAULT SERVICES OVERVIEW -->
+<div class="admin-table-wrap">
+    <h2 style="padding:20px 24px 16px;">Default Services Overview</h2>
+
+    <div style="padding:0 24px 16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="svc-filter-btn active" onclick="filterSvc('all', this)">All</button>
+        <button class="svc-filter-btn" onclick="filterSvc('hair', this)">✂️ Hair</button>
+        <button class="svc-filter-btn" onclick="filterSvc('nails', this)">💅 Nails</button>
+        <button class="svc-filter-btn" onclick="filterSvc('spa', this)">🌿 Spa</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>#</th><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th></tr>
         </thead>
         <tbody>
             {% set counter = namespace(n=1) %}
@@ -82,10 +109,7 @@
             {% for item in cat['items'] %}
             <tr class="svc-row" data-cat="{{ cat.key }}">
                 <td>{{ counter.n }}</td>
-                <td>
-                    <strong>{{ item.name }}</strong><br>
-                    <small style="color:#888;">{{ item.description }}</small>
-                </td>
+                <td><strong>{{ item.name }}</strong><br><small style="color:#888;">{{ item.description }}</small></td>
                 <td>
                     <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
                         {% if cat.key == 'hair' %}background:#FFE0F0; color:#FF1493;
@@ -96,7 +120,6 @@
                 </td>
                 <td>⏱ {{ item.duration }}</td>
                 <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(item.price) }}</td>
-            <td><a href="#" class="btn-edit">✏️ Edit</a></td>
             </tr>
             {% set counter.n = counter.n + 1 %}
             {% endfor %}

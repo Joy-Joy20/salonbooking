@@ -506,8 +506,16 @@ def admin_delete_user(username):
 @app.route('/admin/services')
 @admin_required
 def admin_services_page():
+    services_db = []
+    try:
+        db = get_supabase()
+        result = db.table('services').select('*').order('category').execute()
+        services_db = result.data or []
+    except Exception as e:
+        print('Services fetch error:', str(e))
     return render_template('admin_services.html',
         services=SERVICES,
+        services_db=services_db,
         unread_count=get_unread_count()
     )
 
@@ -669,6 +677,18 @@ def admin_add_service():
         flash('Service added successfully!', 'success')
     except Exception as e:
         flash(f'Failed to add service: {str(e)}', 'error')
+    return redirect(url_for('admin_services_page'))
+
+
+@app.route('/admin/services/delete/<service_id>')
+@admin_required
+def admin_delete_service(service_id):
+    try:
+        db = get_supabase()
+        db.table('services').delete().eq('id', service_id).execute()
+        flash('Service deleted!', 'success')
+    except Exception as e:
+        flash(f'Delete failed: {str(e)}', 'error')
     return redirect(url_for('admin_services_page'))
 
 @app.route('/debug')
