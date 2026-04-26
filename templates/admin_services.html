@@ -27,6 +27,41 @@
     {% endfor %}
 </div>
 
+<!-- ADD SERVICE FORM -->
+<div class="admin-card" style="margin-bottom:24px;">
+    <h2>Add New Service</h2>
+    <form method="POST" action="/admin/services/add" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; align-items:end;">
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Service Name</label>
+            <input type="text" name="name" placeholder="e.g. Haircut - Kids" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+        </div>
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category</label>
+            <select name="category" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+                <option value="">-- Select Category --</option>
+                <option value="Hair Services">✂️ Hair Services</option>
+                <option value="Nail Services">💅 Nail Services</option>
+                <option value="Spa &amp; Wellness">🌿 Spa &amp; Wellness</option>
+            </select>
+        </div>
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Duration</label>
+            <input type="text" name="duration" placeholder="e.g. 30 mins" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+        </div>
+        <div>
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Price (₱)</label>
+            <input type="number" name="price" placeholder="e.g. 150" required style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="grid-column:span 2;">
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:4px;">Description</label>
+            <input type="text" name="description" placeholder="Short description" style="width:100%; padding:10px 14px; border-radius:8px; border:1.5px solid #ddd; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+            <button type="submit" class="btn-save" style="width:100%; padding:11px;">+ Add Service</button>
+        </div>
+    </form>
+</div>
+
 <!-- FILTER BUTTONS -->
 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
     <button class="svc-filter-btn active" onclick="filterSvc('all', this)">All Services</button>

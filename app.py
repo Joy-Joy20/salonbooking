@@ -645,6 +645,32 @@ def admin_edit_user(username):
         flash(f'Error: {str(e)}', 'error')
         return redirect(url_for('admin_users'))
 
+
+@app.route('/admin/services/add', methods=['POST'])
+@admin_required
+def admin_add_service():
+    try:
+        category = request.form.get('category', '')
+        if 'Hair' in category:
+            category_key = 'hair'
+        elif 'Nail' in category:
+            category_key = 'nails'
+        else:
+            category_key = 'spa'
+        db = get_supabase()
+        db.table('services').insert({
+            'name': request.form.get('name'),
+            'category': category,
+            'category_key': category_key,
+            'description': request.form.get('description', ''),
+            'duration': request.form.get('duration', ''),
+            'price': int(request.form.get('price', 0))
+        }).execute()
+        flash('Service added successfully!', 'success')
+    except Exception as e:
+        flash(f'Failed to add service: {str(e)}', 'error')
+    return redirect(url_for('admin_services_page'))
+
 @app.route('/debug')
 def debug():
     return jsonify({
