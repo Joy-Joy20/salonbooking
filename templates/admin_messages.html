@@ -1,0 +1,99 @@
+{% extends 'admin_base.html' %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:700; color:#1a1a2e;">💬 Messages from Users</h1>
+    <span style="background:#FFE0F0; color:#FF1493; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;">
+        {{ unread_count }} unread
+    </span>
+</div>
+
+{% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for category, message in msgs %}
+    <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+        background:{% if category == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+        color:{% if category == 'success' %}#065f46{% else %}#991b1b{% endif %};">
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endwith %}
+
+{% if messages %}
+<div style="display:flex; flex-direction:column; gap:16px;">
+    {% for msg in messages %}
+    <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 2px 10px rgba(0,0,0,0.06);
+        border-left:4px solid {% if msg.status == 'unread' %}#FF1493{% elif msg.status == 'replied' %}#27AE60{% else %}#4A90D9{% endif %};">
+
+        <!-- HEADER -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:42px; height:42px; border-radius:50%; background:#FF1493; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;">
+                    {{ (msg.sender_username or 'U')[0]|upper }}
+                </div>
+                <div>
+                    <strong style="display:block; color:#1a1a2e;">{{ msg.sender_username or 'Unknown' }}</strong>
+                    <small style="color:#888;">{{ msg.sender_email or 'No email' }}</small>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:#888; font-size:13px;">{{ (msg.created_at or '')[:10] }}</span>
+                <span style="padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;
+                    {% if msg.status == 'unread' %}background:#FFE0F0; color:#FF1493;
+                    {% elif msg.status == 'replied' %}background:#E0FFE8; color:#27AE60;
+                    {% else %}background:#E0F0FF; color:#2980B9;{% endif %}">
+                    {{ (msg.status or 'unread')|upper }}
+                </span>
+            </div>
+        </div>
+
+        <!-- SUBJECT -->
+        {% if msg.subject %}
+        <div style="font-size:15px; color:#333; margin-bottom:10px;">📌 <strong>{{ msg.subject }}</strong></div>
+        {% endif %}
+
+        <!-- MESSAGE -->
+        <div style="background:#f9f9f9; border-radius:8px; padding:14px; color:#555; font-size:14px; line-height:1.6; margin-bottom:16px;">
+            {{ msg.message }}
+        </div>
+
+        <!-- EXISTING REPLY -->
+        {% if msg.reply %}
+        <div style="background:#E0FFE8; border-radius:8px; padding:14px; color:#27AE60; font-size:14px; margin-bottom:16px;">
+            <strong>✅ Admin Reply:</strong>
+            <p style="margin-top:6px;">{{ msg.reply }}</p>
+            <small>Replied: {{ (msg.replied_at or '')[:10] }}</small>
+        </div>
+        {% endif %}
+
+        <!-- ACTIONS -->
+        {% if msg.status != 'replied' %}
+        <form action="/admin/messages/reply/{{ msg.id }}" method="POST">
+            <textarea name="reply" placeholder="Type your reply..." rows="3" required
+                style="width:100%; padding:12px; border:2px solid #FF1493; border-radius:8px; font-size:14px; resize:vertical; margin-bottom:10px; box-sizing:border-box; font-family:'Poppins',sans-serif;"></textarea>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <button type="submit" style="background:#FF1493; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; font-size:14px; font-family:'Poppins',sans-serif;">✉️ Send Reply</button>
+                {% if msg.status == 'unread' %}
+                <a href="/admin/messages/read/{{ msg.id }}" style="color:#2980B9; font-weight:600; text-decoration:none; font-size:13px;">✓ Mark as Read</a>
+                {% endif %}
+                <a href="/admin/messages/delete/{{ msg.id }}" onclick="return confirm('Delete this message?')" style="color:#E74C3C; font-weight:600; text-decoration:none; font-size:13px;">🗑️ Delete</a>
+            </div>
+        </form>
+        {% else %}
+        <a href="/admin/messages/delete/{{ msg.id }}" onclick="return confirm('Delete this message?')" style="color:#E74C3C; font-weight:600; text-decoration:none; font-size:13px;">🗑️ Delete</a>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div style="text-align:center; padding:80px 20px; color:#888;">
+    <div style="font-size:60px; margin-bottom:16px;">💬</div>
+    <h3 style="font-size:20px; color:#555; margin-bottom:8px;">No messages yet</h3>
+    <p>Messages from users will appear here.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -93,6 +93,15 @@ def check_password(input_password, hashed_password):
     return hash_password(input_password) == hashed_password
 
 
+
+def get_unread_count():
+    try:
+        db = get_supabase()
+        result = db.table('messages').select('id').eq('status', 'unread').execute()
+        return len(result.data or [])
+    except Exception:
+        return 0
+
 def get_stylists():
     try:
         db = get_supabase()
@@ -388,7 +397,8 @@ def admin_dashboard():
         total_users=len(users),
         total_stylists=len(stylists),
         recent_bookings=recent,
-        services=SERVICES
+        services=SERVICES,
+        unread_count=get_unread_count()
     )
 
 
@@ -401,7 +411,7 @@ def admin_bookings():
         bookings = db.table('bookings').select('*').execute().data or []
     except Exception as e:
         print('Admin bookings error:', str(e))
-    return render_template('admin_bookings.html', bookings=bookings)
+    return render_template('admin_bookings.html', bookings=bookings, unread_count=get_unread_count())
 
 
 @app.route('/admin/bookings/status/<booking_id>', methods=['POST'])
@@ -429,7 +439,7 @@ def admin_delete_booking(booking_id):
 @app.route('/admin/stylists')
 @admin_required
 def admin_stylists():
-    return render_template('admin_stylists.html', stylists=get_stylists())
+    return render_template('admin_stylists.html', stylists=get_stylists(), unread_count=get_unread_count())
 
 
 @app.route('/admin/stylists/add', methods=['POST'])
@@ -467,7 +477,7 @@ def admin_users():
         users = db.table('users').select('*').execute().data or []
     except Exception as e:
         print('Admin users error:', str(e))
-    return render_template('admin_users.html', users=users)
+    return render_template('admin_users.html', users=users, unread_count=get_unread_count())
 
 
 @app.route('/admin/users/role/<username>', methods=['POST'])
@@ -491,6 +501,71 @@ def admin_delete_user(username):
         print('Delete user error:', str(e))
     return redirect(url_for('admin_users'))
 
+
+
+@app.route('/admin/services')
+@admin_required
+def admin_services_page():
+    return render_template('admin_services.html',
+        services=SERVICES,
+        unread_count=get_unread_count()
+    )
+
+
+@app.route('/admin/messages')
+@admin_required
+def admin_messages():
+    messages = []
+    try:
+        db = get_supabase()
+        result = db.table('messages').select('*').order('created_at', desc=True).execute()
+        messages = result.data or []
+    except Exception as e:
+        print('Messages error:', str(e))
+    return render_template('admin_messages.html',
+        messages=messages,
+        unread_count=get_unread_count()
+    )
+
+
+@app.route('/admin/messages/reply/<message_id>', methods=['POST'])
+@admin_required
+def admin_reply_message(message_id):
+    try:
+        reply = request.form.get('reply', '').strip()
+        db = get_supabase()
+        db.table('messages').update({
+            'reply': reply,
+            'status': 'replied',
+            'replied_at': datetime.utcnow().isoformat()
+        }).eq('id', message_id).execute()
+        flash('Reply sent!', 'success')
+    except Exception as e:
+        flash(f'Reply failed: {str(e)}', 'error')
+    return redirect(url_for('admin_messages'))
+
+
+@app.route('/admin/messages/delete/<message_id>')
+@admin_required
+def admin_delete_message(message_id):
+    try:
+        db = get_supabase()
+        db.table('messages').delete().eq('id', message_id).execute()
+        flash('Message deleted.', 'success')
+    except Exception as e:
+        flash(f'Delete failed: {str(e)}', 'error')
+    return redirect(url_for('admin_messages'))
+
+
+@app.route('/admin/messages/read/<message_id>')
+@admin_required
+def admin_mark_read(message_id):
+    try:
+        db = get_supabase()
+        db.table('messages').update({'status': 'read'}).eq('id', message_id).execute()
+    except Exception as e:
+        print('Mark read error:', str(e))
+    return redirect(url_for('admin_messages'))
 
 @app.route('/debug')
 def debug():

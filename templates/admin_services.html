@@ -1,41 +1,86 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
+{% block page_title %}Services Overview{% endblock %}
+
 {% block content %}
-<div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
-    <h1 style="color:#e91e8c; text-align:center;">Manage Services 💅</h1>
 
-    <div class="card" style="margin:30px auto 30px; max-width:800px;">
-        <h3 style="text-align:left; margin-bottom:16px;">Add New Service</h3>
-        <form method="POST" action="/admin/services/add" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <input type="text" name="name" placeholder="Service Name" required style="margin:0; width:100%;">
-            <select name="category" required style="margin:0; width:100%;">
-                <option value="">-- Category --</option>
-                <option value="Hair">✂️ Hair</option>
-                <option value="Nail">💅 Nail</option>
-                <option value="Spa">🌸 Spa</option>
-            </select>
-            <input type="text" name="description" placeholder="Description" style="margin:0; width:100%;">
-            <input type="number" name="price" placeholder="Price (₱)" style="margin:0; width:100%;">
-            <div style="grid-column:span 2; display:flex; justify-content:flex-start;">
-                <button type="submit" style="margin:0;">Add Service</button>
-            </div>
-        </form>
-    </div>
-
-    {% if services %}
-    <table>
-        <tr><th>Name</th><th>Category</th><th>Description</th><th>Price</th><th>Action</th></tr>
-        {% for s in services %}
-        <tr>
-            <td>{{ s.name }}</td>
-            <td>{{ s.category }}</td>
-            <td>{{ s.description or '-' }}</td>
-            <td>₱{{ s.price or '0' }}</td>
-            <td><a href="/admin/services/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this service?')">Delete</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p style="color:#999; text-align:center;">No services yet.</p>
-    {% endif %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:700; color:#1a1a2e;">💼 Services Overview</h1>
+    <span style="background:#FFE0F0; color:#FF1493; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;">
+        {% set total = namespace(count=0) %}
+        {% for cat in services %}{% set total.count = total.count + cat['items']|length %}{% endfor %}
+        Total: {{ total.count }} services
+    </span>
 </div>
+
+<!-- CATEGORY CARDS -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+    {% for cat in services %}
+    <div style="background:white; border-radius:12px; padding:20px; display:flex; align-items:center; gap:16px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+        border-left:4px solid {% if cat.key == 'hair' %}#FF1493{% elif cat.key == 'nails' %}#9B59B6{% else %}#27AE60{% endif %};">
+        <span style="font-size:2.5rem;">{{ cat.icon }}</span>
+        <div>
+            <h3 style="font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:4px;">{{ cat.category }}</h3>
+            <p style="font-size:13px; color:#888; margin-bottom:2px;">{{ cat['items']|length }} services</p>
+            <p style="font-size:13px; font-weight:600; color:#FF1493;">From ₱{{ cat['items'] | map(attribute='price') | min }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- FILTER BUTTONS -->
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+    <button class="svc-filter-btn active" onclick="filterSvc('all', this)">All Services</button>
+    <button class="svc-filter-btn" onclick="filterSvc('hair', this)">✂️ Hair</button>
+    <button class="svc-filter-btn" onclick="filterSvc('nails', this)">💅 Nails</button>
+    <button class="svc-filter-btn" onclick="filterSvc('spa', this)">🌿 Spa</button>
+</div>
+
+<!-- SERVICES TABLE -->
+<div class="admin-table-wrap">
+    <table>
+        <thead>
+            <tr><th>#</th><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+            {% set counter = namespace(n=1) %}
+            {% for cat in services %}
+            {% for item in cat['items'] %}
+            <tr class="svc-row" data-cat="{{ cat.key }}">
+                <td>{{ counter.n }}</td>
+                <td>
+                    <strong>{{ item.name }}</strong><br>
+                    <small style="color:#888;">{{ item.description }}</small>
+                </td>
+                <td>
+                    <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
+                        {% if cat.key == 'hair' %}background:#FFE0F0; color:#FF1493;
+                        {% elif cat.key == 'nails' %}background:#F3E0FF; color:#9B59B6;
+                        {% else %}background:#E0FFE8; color:#27AE60;{% endif %}">
+                        {{ cat.icon }} {{ cat.category }}
+                    </span>
+                </td>
+                <td>⏱ {{ item.duration }}</td>
+                <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(item.price) }}</td>
+            </tr>
+            {% set counter.n = counter.n + 1 %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+.svc-filter-btn { padding:8px 20px; border-radius:999px; border:2px solid #FF1493; background:white; color:#FF1493; font-weight:600; font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'Poppins',sans-serif; }
+.svc-filter-btn.active, .svc-filter-btn:hover { background:#FF1493; color:white; }
+</style>
+<script>
+function filterSvc(cat, btn) {
+    document.querySelectorAll('.svc-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.svc-row').forEach(function(row){
+        row.style.display = (cat === 'all' || row.dataset.cat === cat) ? '' : 'none';
+    });
+}
+</script>
+
 {% endblock %}
