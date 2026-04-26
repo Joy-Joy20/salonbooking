@@ -41,7 +41,8 @@
                 <td><strong>{{ s.name }}</strong></td>
                 <td>{{ s.specialty }}</td>
                 <td>
-                    <a href="/admin/stylists/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this stylist?')">Delete</a>
+                    <a href="/admin/stylists/edit/{{ s.id }}" class="btn-edit">✏️ Edit</a>
+                <a href="/admin/stylists/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this stylist?')">Delete</a>
                 </td>
             </tr>
             {% endfor %}
