@@ -94,6 +94,14 @@
             Total: {{ total.count }} services
         </span>
     </div>
+
+    <!-- FILTER BUTTONS -->
+    <div style="padding:0 24px 16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="svc-filter-btn active" onclick="filterSvc('all', this)">All</button>
+        <button class="svc-filter-btn" onclick="filterSvc('hair', this)">✂️ Hair</button>
+        <button class="svc-filter-btn" onclick="filterSvc('nails', this)">💅 Nails</button>
+        <button class="svc-filter-btn" onclick="filterSvc('spa', this)">🌿 Spa</button>
+    </div>
     <table>
         <thead>
             <tr><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th></tr>
@@ -101,7 +109,7 @@
         <tbody>
             {% for cat in services %}
             {% for item in cat['items'] %}
-            <tr>
+            <tr class="svc-row" data-cat="{{ cat.key }}">
                 <td><strong>{{ item.name }}</strong></td>
                 <td>
                     <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
@@ -119,5 +127,19 @@
         </tbody>
     </table>
 </div>
+
+<style>
+.svc-filter-btn { padding:7px 18px; border-radius:999px; border:2px solid #FF1493; background:white; color:#FF1493; font-weight:600; font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'Poppins',sans-serif; }
+.svc-filter-btn.active, .svc-filter-btn:hover { background:#FF1493; color:white; }
+</style>
+<script>
+function filterSvc(cat, btn) {
+    document.querySelectorAll('.svc-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.svc-row').forEach(function(row){
+        row.style.display = (cat === 'all' || row.dataset.cat === cat) ? '' : 'none';
+    });
+}
+</script>
 
 {% endblock %}
