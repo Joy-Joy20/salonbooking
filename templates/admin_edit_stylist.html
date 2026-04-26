@@ -1,0 +1,50 @@
+{% extends 'admin_base.html' %}
+{% block page_title %}Edit Stylist{% endblock %}
+{% block content %}
+<div class="edit-page">
+    <div class="edit-page-header">
+        <h1>✏️ Edit Stylist</h1>
+        <a href="/admin/stylists" class="btn-back">← Back to Stylists</a>
+    </div>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+            background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if stylist %}
+    <div class="edit-card">
+        {% if stylist.photo %}
+        <div style="text-align:center; margin-bottom:20px;">
+            <img src="{{ stylist.photo }}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #FF1493;">
+        </div>
+        {% endif %}
+        <form action="/admin/stylists/edit/{{ stylist.id }}" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" value="{{ stylist.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Specialty</label>
+                    <input type="text" name="specialty" value="{{ stylist.specialty or '' }}">
+                </div>
+                <div class="form-group full-width">
+                    <label>Photo URL (optional)</label>
+                    <input type="text" name="photo_url" value="{{ stylist.photo or '' }}" placeholder="https://...">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-form-save">💾 Save Changes</button>
+                <a href="/admin/stylists" class="btn-form-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <p style="color:#999;">Stylist not found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'admin_base.html' %}
+{% block page_title %}Edit Booking{% endblock %}
+{% block content %}
+<div class="edit-page">
+    <div class="edit-page-header">
+        <h1>✏️ Edit Booking</h1>
+        <a href="/admin/bookings" class="btn-back">← Back to Bookings</a>
+    </div>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+            background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if booking %}
+    <div class="edit-card">
+        <div style="background:#FFF0F7; border-radius:8px; padding:14px; margin-bottom:24px;">
+            <strong>👤 Customer: {{ booking.username or booking.booked_by }}</strong><br>
+            <small style="color:#888;">Booking ID: {{ booking.id }}</small>
+        </div>
+
+        <form action="/admin/bookings/edit/{{ booking.id }}" method="POST">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Service</label>
+                    <select name="service_name" required>
+                        {% for cat in services %}
+                        <optgroup label="{{ cat.category }}">
+                            {% for item in cat['items'] %}
+                            <option value="{{ item.name }}" {% if booking.service_name == item.name %}selected{% endif %}>
+                                {{ item.name }} — ₱{{ "{:,}".format(item.price) }}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Appointment Date</label>
+                    <input type="date" name="appointment_date" value="{{ booking.appointment_date or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Appointment Time</label>
+                    <select name="appointment_time" required>
+                        {% for h in range(8, 20) %}
+                        {% for m in ['00', '30'] %}
+                        {% set tv = '%02d:%s'|format(h, m) %}
+                        <option value="{{ tv }}" {% if booking.appointment_time == tv %}selected{% endif %}>{{ tv }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stylist</label>
+                    <select name="stylist">
+                        <option value="Any Available" {% if booking.stylist == 'Any Available' %}selected{% endif %}>Any Available</option>
+                        {% for s in stylists %}
+                        <option value="{{ s.name }}" {% if booking.stylist == s.name %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Booking Status</label>
+                    <select name="status">
+                        {% for st in ['pending','confirmed','completed','cancelled'] %}
+                        <option value="{{ st }}" {% if booking.status == st %}selected{% endif %}>{{ st|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Status</label>
+                    <select name="payment_status">
+                        {% for ps in ['unpaid','under_review','paid'] %}
+                        <option value="{{ ps }}" {% if booking.payment_status == ps %}selected{% endif %}>{{ ps|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="3">{{ booking.notes or '' }}</textarea>
+                </div>
+            </div>
+            {% if booking.payment_screenshot %}
+            <div style="margin-bottom:20px;">
+                <label style="font-size:13px; font-weight:600; color:#333; display:block; margin-bottom:8px;">GCash Screenshot:</label>
+                <a href="{{ booking.payment_screenshot }}" target="_blank">
+                    <img src="{{ booking.payment_screenshot }}" style="max-width:200px; border-radius:8px; border:2px solid #FF1493;">
+                </a>
+            </div>
+            {% endif %}
+            <div class="form-actions">
+                <button type="submit" class="btn-form-save">💾 Save Changes</button>
+                <a href="/admin/bookings" class="btn-form-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <p style="color:#999;">Booking not found.</p>
+    {% endif %}
+</div>
+{% endblock %}

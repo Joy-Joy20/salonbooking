@@ -1,0 +1,52 @@
+{% extends 'admin_base.html' %}
+{% block page_title %}Edit User{% endblock %}
+{% block content %}
+<div class="edit-page">
+    <div class="edit-page-header">
+        <h1>✏️ Edit User</h1>
+        <a href="/admin/users" class="btn-back">← Back to Users</a>
+    </div>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+            background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if user %}
+    <div class="edit-card">
+        <form action="/admin/users/edit/{{ user.username }}" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ user.username }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ user.email or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select name="role">
+                        <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>New Password <small style="color:#aaa;">(leave blank to keep current)</small></label>
+                    <input type="password" name="new_password" placeholder="Enter new password">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-form-save">💾 Save Changes</button>
+                <a href="/admin/users" class="btn-form-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <p style="color:#999;">User not found.</p>
+    {% endif %}
+</div>
+{% endblock %}
