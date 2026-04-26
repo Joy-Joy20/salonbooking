@@ -148,7 +148,25 @@ def about():
 def contact():
     message_sent = False
     if request.method == 'POST':
-        message_sent = True
+        try:
+            name = request.form.get('name', '').strip()
+            email = request.form.get('email', '').strip()
+            message = request.form.get('message', '').strip()
+            if name and message:
+                db = get_supabase()
+                db.table('messages').insert({
+                    'sender_username': name,
+                    'sender_email': email,
+                    'subject': 'Contact Form Message',
+                    'message': message,
+                    'status': 'unread',
+                    'created_at': datetime.utcnow().isoformat()
+                }).execute()
+                print(f"Message saved from: {name}")
+            message_sent = True
+        except Exception as e:
+            print(f"Contact save error: {str(e)}")
+            message_sent = True
     return render_template('contact.html', message_sent=message_sent)
 
 
