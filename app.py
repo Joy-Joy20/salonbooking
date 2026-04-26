@@ -301,8 +301,7 @@ def book():
                 except Exception as upload_err:
                     print(f"Screenshot upload error: {str(upload_err)}")
 
-            db = get_supabase()
-            result = db.table('bookings').insert({
+            booking_data = {
                 'username': user,
                 'booked_by': user,
                 'service_name': service,
@@ -317,9 +316,15 @@ def book():
                 'payment_status': 'under_review' if screenshot_url else 'unpaid',
                 'status': 'pending',
                 'created_at': datetime.utcnow().isoformat()
-            }).execute()
+            }
+            print(f"=== INSERTING: {booking_data} ===")
+            db = get_supabase()
+            result = db.table('bookings').insert(booking_data).execute()
+            print(f"=== RESULT: {result.data} ===")
 
-            print(f"Booking saved: {result.data}")
+            if not result.data:
+                raise Exception("Insert returned no data - check Supabase table and RLS")
+
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
             flash('Booking submitted successfully! \u2705', 'success')
