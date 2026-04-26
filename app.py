@@ -294,6 +294,38 @@ def profile():
     return render_template('profile.html', current_user=current_user, username=session.get('user', ''))
 
 
+
+@app.route('/dashboard')
+@login_required
+def user_dashboard():
+    user = session.get('user')
+    bookings = []
+    try:
+        db = get_supabase()
+        res = db.table('bookings').select('*').eq('username', user).order('created_at', desc=True).execute()
+        bookings = res.data or []
+        if not bookings:
+            res2 = db.table('bookings').select('*').eq('booked_by', user).execute()
+            bookings = res2.data or []
+    except Exception as e:
+        print('Dashboard bookings error:', str(e))
+
+    total = len(bookings)
+    pending = len([b for b in bookings if (b.get('status') or '').lower() == 'pending'])
+    completed = len([b for b in bookings if (b.get('status') or '').lower() in ['completed', 'confirmed']])
+    recent = bookings[:5]
+    upcoming = next((b for b in bookings if (b.get('status') or '').lower() == 'pending'), None)
+
+    return render_template('user_dashboard.html',
+        username=user,
+        user_email=session.get('user_email', ''),
+        total_bookings=total,
+        pending_bookings=pending,
+        completed_bookings=completed,
+        recent_bookings=recent,
+        upcoming_booking=upcoming
+    )
+
 @app.route('/book', methods=['GET', 'POST'])
 @login_required
 def book():
