@@ -84,4 +84,40 @@
     {% endif %}
 </div>
 
+<!-- SERVICES OVERVIEW -->
+<div class="admin-table-wrap" style="margin-top:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px 16px;">
+        <h2 style="margin:0; padding:0; border:none;">Services Overview</h2>
+        <span style="background:#FFF0F7; color:#FF1493; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600;">
+            {% set total = namespace(count=0) %}
+            {% for cat in services %}{% set total.count = total.count + cat.items|length %}{% endfor %}
+            Total: {{ total.count }} services
+        </span>
+    </div>
+    <table>
+        <thead>
+            <tr><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+            {% for cat in services %}
+            {% for item in cat.items %}
+            <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>
+                    <span style="padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;
+                        {% if cat.key == 'hair' %}background:#FFE0F0; color:#FF1493;
+                        {% elif cat.key == 'nails' %}background:#F3E0FF; color:#9B59B6;
+                        {% else %}background:#E0FFE8; color:#27AE60;{% endif %}">
+                        {{ cat.icon }} {{ cat.category }}
+                    </span>
+                </td>
+                <td>{{ item.duration }}</td>
+                <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(item.price) }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

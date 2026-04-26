@@ -387,7 +387,8 @@ def admin_dashboard():
         pending_bookings=len(pending),
         total_users=len(users),
         total_stylists=len(stylists),
-        recent_bookings=recent
+        recent_bookings=recent,
+        services=SERVICES
     )
 
 

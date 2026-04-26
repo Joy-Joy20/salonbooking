@@ -230,9 +230,6 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a href="/admin/dashboard" class="{{ 'active' if request.path == '/admin/dashboard' or request.path == '/admin' else '' }}">
-            <i class="fa fa-chart-bar"></i> Dashboard
-        </a>
         <a href="/admin/bookings" class="{{ 'active' if '/admin/bookings' in request.path else '' }}">
             <i class="fa fa-calendar-check"></i> Bookings
         </a>
