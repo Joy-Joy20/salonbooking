@@ -30,7 +30,6 @@
     <div class="nav-right">
         {% if session.get('user') %}
             <span>{{ session['user'] }}</span>
-            <span class="role-badge">{{ session.get('role', 'user') }}</span>
             <a href="/profile" title="Profile" style="color:white; font-size:18px;"><i class="fa fa-user-circle"></i></a>
             <a href="/logout">Logout</a>
         {% else %}
