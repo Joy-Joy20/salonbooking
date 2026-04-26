@@ -658,24 +658,40 @@ def admin_edit_user(username):
 @admin_required
 def admin_add_service():
     try:
-        category = request.form.get('category', '')
-        if 'Hair' in category:
+        db = get_supabase()
+        name = request.form.get('name', '').strip()
+        category = request.form.get('category', '').strip()
+        duration = request.form.get('duration', '').strip()
+        description = request.form.get('description', '').strip()
+        try:
+            price_int = int(float(request.form.get('price', 0)))
+        except Exception:
+            price_int = 0
+
+        if not name or not category:
+            flash('Service name and category are required.', 'error')
+            return redirect(url_for('admin_services_page'))
+
+        category_lower = category.lower()
+        if 'hair' in category_lower:
             category_key = 'hair'
-        elif 'Nail' in category:
+        elif 'nail' in category_lower:
             category_key = 'nails'
         else:
             category_key = 'spa'
-        db = get_supabase()
-        db.table('services').insert({
-            'name': request.form.get('name'),
+
+        result = db.table('services').insert({
+            'name': name,
             'category': category,
             'category_key': category_key,
-            'description': request.form.get('description', ''),
-            'duration': request.form.get('duration', ''),
-            'price': int(request.form.get('price', 0))
+            'description': description,
+            'duration': duration,
+            'price': price_int
         }).execute()
-        flash('Service added successfully!', 'success')
+        print(f"Service added: {result.data}")
+        flash(f'Service "{name}" added successfully!', 'success')
     except Exception as e:
+        print(f"Add service error: {str(e)}")
         flash(f'Failed to add service: {str(e)}', 'error')
     return redirect(url_for('admin_services_page'))
 
