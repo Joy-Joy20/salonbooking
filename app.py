@@ -567,6 +567,84 @@ def admin_mark_read(message_id):
         print('Mark read error:', str(e))
     return redirect(url_for('admin_messages'))
 
+
+@app.route('/admin/bookings/edit/<booking_id>', methods=['GET', 'POST'])
+@admin_required
+def admin_edit_booking(booking_id):
+    try:
+        db = get_supabase()
+        if request.method == 'POST':
+            db.table('bookings').update({
+                'service_name': request.form.get('service_name'),
+                'appointment_date': request.form.get('appointment_date'),
+                'appointment_time': request.form.get('appointment_time'),
+                'stylist': request.form.get('stylist'),
+                'notes': request.form.get('notes'),
+                'status': request.form.get('status'),
+                'payment_status': request.form.get('payment_status')
+            }).eq('id', booking_id).execute()
+            flash('Booking updated successfully!', 'success')
+            return redirect(url_for('admin_bookings'))
+        result = db.table('bookings').select('*').eq('id', booking_id).execute()
+        booking = result.data[0] if result.data else None
+        return render_template('admin_edit_booking.html',
+            booking=booking, stylists=get_stylists(),
+            services=SERVICES, unread_count=get_unread_count())
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'error')
+        return redirect(url_for('admin_bookings'))
+
+
+@app.route('/admin/stylists/edit/<stylist_id>', methods=['GET', 'POST'])
+@admin_required
+def admin_edit_stylist(stylist_id):
+    try:
+        db = get_supabase()
+        if request.method == 'POST':
+            update_data = {
+                'name': request.form.get('name'),
+                'specialty': request.form.get('specialty'),
+            }
+            photo_url = request.form.get('photo_url', '').strip()
+            if photo_url:
+                update_data['photo'] = photo_url
+            db.table('stylists').update(update_data).eq('id', stylist_id).execute()
+            flash('Stylist updated!', 'success')
+            return redirect(url_for('admin_stylists'))
+        result = db.table('stylists').select('*').eq('id', stylist_id).execute()
+        stylist = result.data[0] if result.data else None
+        return render_template('admin_edit_stylist.html',
+            stylist=stylist, unread_count=get_unread_count())
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'error')
+        return redirect(url_for('admin_stylists'))
+
+
+@app.route('/admin/users/edit/<username>', methods=['GET', 'POST'])
+@admin_required
+def admin_edit_user(username):
+    try:
+        db = get_supabase()
+        if request.method == 'POST':
+            update_data = {
+                'username': request.form.get('username'),
+                'email': request.form.get('email'),
+                'role': request.form.get('role')
+            }
+            new_password = request.form.get('new_password', '')
+            if new_password:
+                update_data['password'] = hash_password(new_password)
+            db.table('users').update(update_data).eq('username', username).execute()
+            flash('User updated!', 'success')
+            return redirect(url_for('admin_users'))
+        result = db.table('users').select('*').eq('username', username).execute()
+        user = result.data[0] if result.data else None
+        return render_template('admin_edit_user.html',
+            user=user, unread_count=get_unread_count())
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'error')
+        return redirect(url_for('admin_users'))
+
 @app.route('/debug')
 def debug():
     return jsonify({
