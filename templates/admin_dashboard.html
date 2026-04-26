@@ -90,7 +90,7 @@
         <h2 style="margin:0; padding:0; border:none;">Services Overview</h2>
         <span style="background:#FFF0F7; color:#FF1493; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600;">
             {% set total = namespace(count=0) %}
-            {% for cat in services %}{% set total.count = total.count + cat.items|length %}{% endfor %}
+            {% for cat in services %}{% set total.count = total.count + cat['items']|length %}{% endfor %}
             Total: {{ total.count }} services
         </span>
     </div>
@@ -100,7 +100,7 @@
         </thead>
         <tbody>
             {% for cat in services %}
-            {% for item in cat.items %}
+            {% for item in cat['items'] %}
             <tr>
                 <td><strong>{{ item.name }}</strong></td>
                 <td>
