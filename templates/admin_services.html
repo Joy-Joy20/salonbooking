@@ -39,7 +39,7 @@
 <div class="admin-table-wrap">
     <table>
         <thead>
-            <tr><th>#</th><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th></tr>
+            <tr><th>#</th><th>Service Name</th><th>Category</th><th>Duration</th><th>Price</th><th>Action</th></tr>
         </thead>
         <tbody>
             {% set counter = namespace(n=1) %}
@@ -61,6 +61,7 @@
                 </td>
                 <td>⏱ {{ item.duration }}</td>
                 <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(item.price) }}</td>
+            <td><a href="#" class="btn-edit">✏️ Edit</a></td>
             </tr>
             {% set counter.n = counter.n + 1 %}
             {% endfor %}

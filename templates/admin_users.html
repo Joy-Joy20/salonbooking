@@ -28,6 +28,7 @@
                             </select>
                             <button type="submit" class="btn-save">Save</button>
                         </form>
+                        <a href="/admin/users/edit/{{ u.username }}" class="btn-edit">✏️ Edit</a>
                         <a href="/admin/users/delete/{{ u.username }}" class="btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
                     </div>
                 </td>
