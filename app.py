@@ -15,11 +15,9 @@ except ImportError:
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from supabase import create_client
 
-# ── APP INSTANCE (TOP LEVEL) ──────────────────────────────
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'salon-secret-key')
 
-# ── CONSTANTS ─────────────────────────────────────────────
 ADMIN_USER = os.environ.get('ADMIN_USER', 'admin')
 ADMIN_PASS = os.environ.get('ADMIN_PASS', 'admin123')
 
@@ -72,7 +70,7 @@ SERVICES = [
     }
 ]
 
-# ── HELPERS ───────────────────────────────────────────────
+
 def get_supabase():
     url = os.environ.get('SUPABASE_URL')
     key = os.environ.get('SUPABASE_KEY')
@@ -80,8 +78,10 @@ def get_supabase():
         raise Exception('Missing SUPABASE_URL or SUPABASE_KEY')
     return create_client(url, key)
 
+
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
+
 
 def check_password(input_password, hashed_password):
     if hashed_password.startswith('$2b$') or hashed_password.startswith('$2a$'):
@@ -92,6 +92,7 @@ def check_password(input_password, hashed_password):
             return False
     return hash_password(input_password) == hashed_password
 
+
 def get_stylists():
     try:
         db = get_supabase()
@@ -99,6 +100,7 @@ def get_stylists():
         return res.data or []
     except Exception:
         return []
+
 
 def login_required(f):
     @wraps(f)
@@ -108,6 +110,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -116,7 +119,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
-# ── PUBLIC ROUTES ─────────────────────────────────────────
+
 @app.route('/')
 def index():
     return render_template('index.html',
@@ -126,9 +129,11 @@ def index():
         username=session.get('user', '')
     )
 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -137,15 +142,17 @@ def contact():
         message_sent = True
     return render_template('contact.html', message_sent=message_sent)
 
+
 @app.route('/services')
 def services():
     return render_template('services.html', services=SERVICES, stylists=get_stylists())
+
 
 @app.route('/stylist')
 def stylist():
     return render_template('stylist.html', stylists=get_stylists())
 
-# ── AUTH ROUTES ───────────────────────────────────────────
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -173,9 +180,9 @@ def login():
                     return redirect(url_for('index'))
             error = 'Invalid username or password.'
         except Exception as e:
-            print('Login error:', str(e))
             error = f'Login failed: {str(e)}'
     return render_template('login.html', error=error)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -210,14 +217,15 @@ def signup():
                     }).execute()
                     success = True
             except Exception as e:
-                print('Signup error:', str(e))
                 error = f'Signup failed: {str(e)}'
     return render_template('signup.html', error=error, success=success)
+
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -255,7 +263,7 @@ def profile():
 
     return render_template('profile.html', current_user=current_user, username=session.get('user', ''))
 
-# ── BOOKING ROUTES ────────────────────────────────────────
+
 @app.route('/book', methods=['GET', 'POST'])
 @login_required
 def book():
@@ -272,13 +280,10 @@ def book():
             address = data.get('address', '')
             user = session.get('user')
 
-            print(f"=== BOOKING: user={user} service={service} date={date} time={time} ===")
-
             if not service or not date or not time:
                 flash('Please fill in all required fields.', 'error')
                 return redirect(url_for('index'))
 
-            # Handle GCash screenshot upload
             screenshot_url = ''
             gcash_file = request.files.get('gcash_screenshot')
             if gcash_file and gcash_file.filename:
@@ -293,9 +298,8 @@ def book():
                         file_options={"content-type": gcash_file.content_type or "image/jpeg"}
                     )
                     screenshot_url = db.storage.from_('gcash-payments').get_public_url(unique_filename)
-                    print(f"=== SCREENSHOT UPLOADED: {screenshot_url} ===")
                 except Exception as upload_err:
-                    print(f"=== SCREENSHOT UPLOAD ERROR: {str(upload_err)} ===")
+                    print(f"Screenshot upload error: {str(upload_err)}")
 
             db = get_supabase()
             result = db.table('bookings').insert({
@@ -315,48 +319,21 @@ def book():
                 'created_at': datetime.utcnow().isoformat()
             }).execute()
 
-            print(f"=== BOOKING SAVED: {result.data} ===")
-            if request.is_json:
-                return jsonify({'success': True, 'message': 'Booking confirmed!'})
-            flash('Booking submitted successfully! ✅', 'success')
-            return redirect(url_for('bookings_page'))
-        except Exception as e:
-            print(f"=== BOOKING ERROR: {str(e)} ===")
-            if request.is_json:
-                return jsonify({'success': False, 'message': str(e)}), 500
-            flash(f'Booking failed: {str(e)}', 'error')
-            return redirect(url_for('index'))
-    return redirect(url_for('index'))
-
-
-            db = get_supabase()
-            result = db.table('bookings').insert({
-                'username': user,
-                'booked_by': user,
-                'service_name': service,
-                'appointment_date': date,
-                'appointment_time': time,
-                'stylist': stylist,
-                'notes': notes,
-                'payment_method': payment_method,
-                'service_type': service_type,
-                'address': address,
-                'status': 'pending',
-                'created_at': datetime.utcnow().isoformat()
-            }).execute()
-
-            print(f"=== BOOKING SAVED: {result.data} ===")
+            print(f"Booking saved: {result.data}")
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
             flash('Booking submitted successfully! \u2705', 'success')
             return redirect(url_for('bookings_page'))
+
         except Exception as e:
-            print(f"=== BOOKING ERROR: {str(e)} ===")
+            print(f"Booking error: {str(e)}")
             if request.is_json:
                 return jsonify({'success': False, 'message': str(e)}), 500
             flash(f'Booking failed: {str(e)}', 'error')
             return redirect(url_for('index'))
+
     return redirect(url_for('index'))
+
 
 @app.route('/bookings')
 @login_required
@@ -374,6 +351,7 @@ def bookings_page():
         print('Bookings fetch error:', str(e))
     return render_template('bookings.html', bookings=bookings)
 
+
 @app.route('/cancel-booking/<booking_id>', methods=['POST'])
 @login_required
 def cancel_booking(booking_id):
@@ -384,7 +362,7 @@ def cancel_booking(booking_id):
         print('Cancel error:', str(e))
     return redirect(url_for('bookings_page'))
 
-# ── ADMIN ROUTES ──────────────────────────────────────────
+
 @app.route('/admin')
 @app.route('/admin/dashboard')
 @admin_required
@@ -407,6 +385,7 @@ def admin_dashboard():
         recent_bookings=recent
     )
 
+
 @app.route('/admin/bookings')
 @admin_required
 def admin_bookings():
@@ -418,6 +397,7 @@ def admin_bookings():
         print('Admin bookings error:', str(e))
     return render_template('admin_bookings.html', bookings=bookings)
 
+
 @app.route('/admin/bookings/status/<booking_id>', methods=['POST'])
 @admin_required
 def update_booking_status(booking_id):
@@ -427,6 +407,7 @@ def update_booking_status(booking_id):
     except Exception as e:
         print('Status update error:', str(e))
     return redirect(url_for('admin_bookings'))
+
 
 @app.route('/admin/bookings/delete/<booking_id>')
 @admin_required
@@ -438,10 +419,12 @@ def admin_delete_booking(booking_id):
         print('Delete booking error:', str(e))
     return redirect(url_for('admin_bookings'))
 
+
 @app.route('/admin/stylists')
 @admin_required
 def admin_stylists():
     return render_template('admin_stylists.html', stylists=get_stylists())
+
 
 @app.route('/admin/stylists/add', methods=['POST'])
 @admin_required
@@ -457,6 +440,7 @@ def admin_add_stylist():
         print('Add stylist error:', str(e))
     return redirect(url_for('admin_stylists'))
 
+
 @app.route('/admin/stylists/delete/<int:stylist_id>')
 @admin_required
 def admin_delete_stylist(stylist_id):
@@ -466,6 +450,7 @@ def admin_delete_stylist(stylist_id):
     except Exception as e:
         print('Delete stylist error:', str(e))
     return redirect(url_for('admin_stylists'))
+
 
 @app.route('/admin/users')
 @admin_required
@@ -478,6 +463,7 @@ def admin_users():
         print('Admin users error:', str(e))
     return render_template('admin_users.html', users=users)
 
+
 @app.route('/admin/users/role/<username>', methods=['POST'])
 @admin_required
 def admin_update_role(username):
@@ -487,6 +473,7 @@ def admin_update_role(username):
     except Exception as e:
         print('Role update error:', str(e))
     return redirect(url_for('admin_users'))
+
 
 @app.route('/admin/users/delete/<username>')
 @admin_required
@@ -498,7 +485,7 @@ def admin_delete_user(username):
         print('Delete user error:', str(e))
     return redirect(url_for('admin_users'))
 
-# ── DEBUG & ERROR HANDLERS ────────────────────────────────
+
 @app.route('/debug')
 def debug():
     return jsonify({
@@ -508,6 +495,7 @@ def debug():
         "supabase_key_set": bool(os.environ.get('SUPABASE_KEY')),
         "secret_key_set": bool(os.environ.get('SECRET_KEY'))
     })
+
 
 @app.route('/test-booking')
 def test_booking():
@@ -527,14 +515,16 @@ def test_booking():
     except Exception as e:
         return jsonify({"status": "ERROR", "error": str(e)})
 
+
 @app.errorhandler(500)
 def internal_error(error):
     return f"<h1>500 Error</h1><pre>{traceback.format_exc()}</pre>", 500
+
 
 @app.errorhandler(404)
 def not_found(error):
     return f"<h1>404 Not Found</h1><pre>{str(error)}</pre>", 404
 
-# ── ENTRY POINT ───────────────────────────────────────────
+
 if __name__ == '__main__':
     app.run(debug=True)
