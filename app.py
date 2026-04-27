@@ -838,6 +838,16 @@ def resend_verification():
         print('Resend error:', str(e))
     return redirect(url_for('email_verification_page', email=email))
 
+
+@app.route('/debug-email')
+def debug_email():
+    return {
+        "gmail_user_set": bool(GMAIL_USER),
+        "gmail_user": GMAIL_USER[:5] + "***" if GMAIL_USER else "NOT SET",
+        "gmail_pass_set": bool(GMAIL_APP_PASSWORD),
+        "gmail_pass_len": len(GMAIL_APP_PASSWORD) if GMAIL_APP_PASSWORD else 0
+    }
+
 @app.route('/debug')
 def debug():
     return jsonify({
