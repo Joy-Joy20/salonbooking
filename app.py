@@ -71,6 +71,34 @@ SERVICES = [
 ]
 
 
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+GMAIL_USER = os.environ.get('GMAIL_USER', '')
+GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', '')
+
+def send_email(to, subject, html_body):
+    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
+        print("=== EMAIL NOT SENT: GMAIL_USER or GMAIL_APP_PASSWORD not set ===")
+        return False
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f'Salon Booking <{GMAIL_USER}>'
+        msg['To'] = to
+        msg.attach(MIMEText(html_body, 'html'))
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.sendmail(GMAIL_USER, to, msg.as_string())
+        print(f"=== EMAIL SENT to {to} ===")
+        return True
+    except Exception as e:
+        print(f"=== EMAIL ERROR: {str(e)} ===")
+        return False
+
 def get_supabase():
     url = os.environ.get('SUPABASE_URL')
     key = os.environ.get('SUPABASE_KEY')
@@ -200,6 +228,8 @@ def login():
             if result.data:
                 user = result.data[0]
                 if check_password(password, user.get('password', '')):
+                    if not user.get('is_verified', True):
+                        return render_template('login.html', error='Please verify your email first. Check your inbox.')
                     session['user'] = username
                     session['user_id'] = user.get('id')
                     session['user_email'] = user.get('email', '')
@@ -239,13 +269,19 @@ def signup():
                 elif db.table('users').select('id').eq('email', email).execute().data:
                     error = 'Email already registered.'
                 else:
+                    token = secrets.token_urlsafe(32)
                     db.table('users').insert({
                         'username': username,
                         'email': email,
                         'password': hash_password(password),
-                        'role': 'user'
+                        'role': 'user',
+                        'is_verified': False,
+                        'verification_token': token
                     }).execute()
-                    success = True
+                    verify_link = url_for('verify_email', token=token, _external=True)
+                    html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p>Hi <strong>' + username + '</strong>! Please verify your email.</p><div style="text-align:center;margin:1.5rem 0;"><a href="' + verify_link + '" style="background:#e91e8c;color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;">Verify Email</a></div></div>'
+                    send_email(email, 'Verify your Salon Booking account', html)
+                    return redirect(url_for('email_verification_page', email=email))
             except Exception as e:
                 error = f'Signup failed: {str(e)}'
     return render_template('signup.html', error=error, success=success)
@@ -759,6 +795,47 @@ def admin_delete_service(service_id):
     except Exception as e:
         flash(f'Delete failed: {str(e)}', 'error')
     return redirect(url_for('admin_services_page'))
+
+
+@app.route('/verify-email/<token>')
+def verify_email(token):
+    try:
+        db = get_supabase()
+        result = db.table('users').select('*').eq('verification_token', token).execute()
+        if not result.data:
+            return render_template('verified.html', error='Invalid or expired link.')
+        db.table('users').update({'is_verified': True, 'verification_token': ''}).eq('verification_token', token).execute()
+        return render_template('verified.html')
+    except Exception as e:
+        return render_template('verified.html', error=str(e))
+
+
+@app.route('/email-verification')
+def email_verification_page():
+    email = request.args.get('email', '')
+    return render_template('email_verification.html', email=email)
+
+
+@app.route('/resend-verification', methods=['POST'])
+def resend_verification():
+    email = request.form.get('email', '').strip().lower()
+    try:
+        db = get_supabase()
+        result = db.table('users').select('*').eq('email', email).execute()
+        if result.data:
+            user = result.data[0]
+            if user.get('is_verified'):
+                flash('Email already verified. Please login.', 'success')
+                return redirect(url_for('login'))
+            token = secrets.token_urlsafe(32)
+            db.table('users').update({'verification_token': token}).eq('email', email).execute()
+            verify_link = url_for('verify_email', token=token, _external=True)
+            username = user.get('username', '')
+            html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p>Hi <strong>' + username + '</strong>! Click below to verify your email.</p><div style="text-align:center;margin:1.5rem 0;"><a href="' + verify_link + '" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;">Verify Email</a></div></div>'
+            send_email(email, 'Verify your Salon Booking account', html)
+    except Exception as e:
+        print('Resend error:', str(e))
+    return redirect(url_for('email_verification_page', email=email))
 
 @app.route('/debug')
 def debug():

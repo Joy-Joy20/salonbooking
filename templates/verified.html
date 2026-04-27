@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; border-radius:24px; padding:40px 32px; max-width:440px; width:100%; text-align:center; box-shadow:0 8px 40px rgba(233,30,140,0.12); border:1px solid #fce4f0;">
+
+        <div style="font-size:56px; margin-bottom:16px;">🎉</div>
+        <h1 style="font-size:22px; font-weight:700; color:#1a1a2e; margin-bottom:8px;">Email Verified!</h1>
+        <p style="font-size:14px; color:#888; margin-bottom:24px; line-height:1.6;">
+            Your account has been successfully verified.<br>You can now log in.
+        </p>
+
+        <a href="/login" style="display:block; width:100%; padding:13px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:white; border-radius:999px; text-decoration:none; font-size:14px; font-weight:700; box-shadow:0 4px 14px rgba(233,30,140,0.3);">
+            Go to Login
+        </a>
+    </div>
+</div>
+{% endblock %}
