@@ -3,45 +3,72 @@
 {% block content %}
 
 <!-- WELCOME BANNER -->
-<div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); padding:40px 30px; text-align:center; color:white;">
-    <h1 style="font-size:1.8rem; font-weight:700; margin-bottom:6px;">Welcome back, {{ username }}! 👋</h1>
-    <p style="font-size:15px; opacity:0.9;">Manage your appointments and account from here.</p>
+<div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); padding:48px 30px; text-align:center; color:white; margin:-30px -30px 0;">
+    <div style="width:72px; height:72px; background:rgba(255,255,255,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; margin:0 auto 14px;">
+        {{ username[0]|upper }}
+    </div>
+    <h1 style="font-size:1.6rem; font-weight:700; margin-bottom:6px;">Welcome back, {{ username }}! 👋</h1>
+    <p style="font-size:14px; opacity:0.9;">Here's an overview of your salon activity.</p>
 </div>
 
 <div style="max-width:1100px; margin:0 auto; padding:30px 20px;">
 
+    <!-- FLASH MESSAGES -->
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+            background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+
     <!-- STATS CARDS -->
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:30px;">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:28px;">
         <div style="background:white; border-radius:14px; padding:20px 24px; box-shadow:0 2px 10px rgba(233,30,140,0.08); border-left:4px solid #FF1493; display:flex; align-items:center; gap:16px;">
             <span style="font-size:2rem;">📅</span>
             <div>
-                <div style="font-size:26px; font-weight:700; color:#FF1493;">{{ total_bookings }}</div>
-                <div style="font-size:13px; color:#888;">Total Bookings</div>
+                <div style="font-size:28px; font-weight:700; color:#FF1493; line-height:1;">{{ total_bookings }}</div>
+                <div style="font-size:13px; color:#888; margin-top:2px;">Total Bookings</div>
             </div>
         </div>
         <div style="background:white; border-radius:14px; padding:20px 24px; box-shadow:0 2px 10px rgba(233,30,140,0.08); border-left:4px solid #FFA500; display:flex; align-items:center; gap:16px;">
             <span style="font-size:2rem;">⏳</span>
             <div>
-                <div style="font-size:26px; font-weight:700; color:#FFA500;">{{ pending_bookings }}</div>
-                <div style="font-size:13px; color:#888;">Pending</div>
+                <div style="font-size:28px; font-weight:700; color:#FFA500; line-height:1;">{{ pending_bookings }}</div>
+                <div style="font-size:13px; color:#888; margin-top:2px;">Pending</div>
             </div>
         </div>
         <div style="background:white; border-radius:14px; padding:20px 24px; box-shadow:0 2px 10px rgba(233,30,140,0.08); border-left:4px solid #27AE60; display:flex; align-items:center; gap:16px;">
             <span style="font-size:2rem;">✅</span>
             <div>
-                <div style="font-size:26px; font-weight:700; color:#27AE60;">{{ completed_bookings }}</div>
-                <div style="font-size:13px; color:#888;">Completed</div>
+                <div style="font-size:28px; font-weight:700; color:#27AE60; line-height:1;">{{ completed_bookings }}</div>
+                <div style="font-size:13px; color:#888; margin-top:2px;">Completed</div>
             </div>
         </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
+    <div style="display:grid; grid-template-columns:1fr 320px; gap:24px;">
 
-        <!-- RECENT BOOKINGS -->
+        <!-- LEFT COLUMN -->
         <div>
+
+            <!-- UPCOMING APPOINTMENT -->
+            {% if upcoming_booking %}
+            <div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); border-radius:14px; padding:22px 24px; color:white; margin-bottom:24px;">
+                <p style="font-size:11px; opacity:0.85; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">🔔 Next Appointment</p>
+                <h3 style="font-size:18px; font-weight:700; margin-bottom:10px;">{{ upcoming_booking.service_name or upcoming_booking.service }}</h3>
+                <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                    <span style="font-size:13px; opacity:0.9;">📅 {{ upcoming_booking.appointment_date or upcoming_booking.date }}</span>
+                    <span style="font-size:13px; opacity:0.9;">⏰ {{ upcoming_booking.appointment_time or upcoming_booking.time }}</span>
+                    <span style="font-size:13px; opacity:0.9;">✂️ {{ upcoming_booking.stylist or 'Any Available' }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- RECENT BOOKINGS -->
             <div style="background:white; border-radius:14px; box-shadow:0 2px 10px rgba(233,30,140,0.08); overflow:hidden; margin-bottom:24px;">
-                <div style="padding:20px 24px 16px; display:flex; justify-content:space-between; align-items:center;">
-                    <h2 style="font-size:16px; font-weight:700; color:#1a1a2e;">Recent Bookings</h2>
+                <div style="padding:18px 24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #fce4f0;">
+                    <h2 style="font-size:15px; font-weight:700; color:#1a1a2e;">Recent Bookings</h2>
                     <a href="/bookings" style="font-size:13px; color:#FF1493; text-decoration:none; font-weight:600;">View All →</a>
                 </div>
                 {% if recent_bookings %}
@@ -50,6 +77,7 @@
                         <tr style="background:#fdf0f6;">
                             <th style="padding:10px 16px; text-align:left; font-size:12px; color:#888; font-weight:600;">Service</th>
                             <th style="padding:10px 16px; text-align:left; font-size:12px; color:#888; font-weight:600;">Date</th>
+                            <th style="padding:10px 16px; text-align:left; font-size:12px; color:#888; font-weight:600;">Stylist</th>
                             <th style="padding:10px 16px; text-align:left; font-size:12px; color:#888; font-weight:600;">Status</th>
                         </tr>
                     </thead>
@@ -58,11 +86,13 @@
                         <tr style="border-top:1px solid #fce4f0;">
                             <td style="padding:12px 16px; font-size:13px; font-weight:600; color:#1a1a2e;">{{ b.service_name or b.service or '—' }}</td>
                             <td style="padding:12px 16px; font-size:13px; color:#555;">{{ b.appointment_date or b.date or '—' }}</td>
+                            <td style="padding:12px 16px; font-size:13px; color:#555;">{{ b.stylist or 'Any' }}</td>
                             <td style="padding:12px 16px;">
                                 <span style="padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700;
-                                    {% if (b.status or 'pending')|lower == 'pending' %}background:#fff3cd; color:#856404;
-                                    {% elif (b.status or '')|lower == 'confirmed' %}background:#d1fae5; color:#065f46;
-                                    {% elif (b.status or '')|lower == 'completed' %}background:#dbeafe; color:#1e40af;
+                                    {% set st = (b.status or 'pending')|lower %}
+                                    {% if st == 'pending' %}background:#fff3cd; color:#856404;
+                                    {% elif st == 'confirmed' %}background:#d1fae5; color:#065f46;
+                                    {% elif st == 'completed' %}background:#dbeafe; color:#1e40af;
                                     {% else %}background:#fee2e2; color:#991b1b;{% endif %}">
                                     {{ (b.status or 'Pending')|capitalize }}
                                 </span>
@@ -72,8 +102,9 @@
                     </tbody>
                 </table>
                 {% else %}
-                <div style="padding:32px; text-align:center; color:#999;">
-                    <p style="font-size:15px; margin-bottom:12px;">No bookings yet</p>
+                <div style="padding:40px; text-align:center; color:#999;">
+                    <p style="font-size:32px; margin-bottom:10px;">📭</p>
+                    <p style="font-size:14px; margin-bottom:16px;">No bookings yet</p>
                     <a href="/services" style="background:#FF1493; color:white; padding:10px 24px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600;">Book a Service</a>
                 </div>
                 {% endif %}
@@ -81,30 +112,30 @@
 
             <!-- QUICK ACTIONS -->
             <div style="background:white; border-radius:14px; padding:20px 24px; box-shadow:0 2px 10px rgba(233,30,140,0.08);">
-                <h2 style="font-size:16px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Quick Actions</h2>
+                <h2 style="font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Quick Actions</h2>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                    <a href="/services" style="display:flex; align-items:center; gap:10px; padding:14px; background:#fdf0f6; border-radius:10px; text-decoration:none; border:1.5px solid #fce4f0; transition:all 0.2s;">
+                    <a href="/services" style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fdf0f6; border-radius:12px; text-decoration:none; border:1.5px solid #fce4f0;">
                         <span style="font-size:22px;">✂️</span>
                         <div>
                             <div style="font-size:13px; font-weight:700; color:#1a1a2e;">Book Service</div>
                             <div style="font-size:11px; color:#888;">Browse & book</div>
                         </div>
                     </a>
-                    <a href="/bookings" style="display:flex; align-items:center; gap:10px; padding:14px; background:#fdf0f6; border-radius:10px; text-decoration:none; border:1.5px solid #fce4f0; transition:all 0.2s;">
+                    <a href="/bookings" style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fdf0f6; border-radius:12px; text-decoration:none; border:1.5px solid #fce4f0;">
                         <span style="font-size:22px;">📋</span>
                         <div>
                             <div style="font-size:13px; font-weight:700; color:#1a1a2e;">My Bookings</div>
                             <div style="font-size:11px; color:#888;">View all</div>
                         </div>
                     </a>
-                    <a href="/profile" style="display:flex; align-items:center; gap:10px; padding:14px; background:#fdf0f6; border-radius:10px; text-decoration:none; border:1.5px solid #fce4f0; transition:all 0.2s;">
+                    <a href="/profile" style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fdf0f6; border-radius:12px; text-decoration:none; border:1.5px solid #fce4f0;">
                         <span style="font-size:22px;">👤</span>
                         <div>
                             <div style="font-size:13px; font-weight:700; color:#1a1a2e;">My Profile</div>
                             <div style="font-size:11px; color:#888;">Edit info</div>
                         </div>
                     </a>
-                    <a href="/contact" style="display:flex; align-items:center; gap:10px; padding:14px; background:#fdf0f6; border-radius:10px; text-decoration:none; border:1.5px solid #fce4f0; transition:all 0.2s;">
+                    <a href="/contact" style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fdf0f6; border-radius:12px; text-decoration:none; border:1.5px solid #fce4f0;">
                         <span style="font-size:22px;">💬</span>
                         <div>
                             <div style="font-size:13px; font-weight:700; color:#1a1a2e;">Contact Us</div>
@@ -127,31 +158,44 @@
                 <a href="/profile" style="display:block; background:#FF1493; color:white; padding:10px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600;">Edit Profile</a>
             </div>
 
-            <!-- UPCOMING BOOKING -->
-            {% if upcoming_booking %}
-            <div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); border-radius:14px; padding:20px; color:white;">
-                <p style="font-size:12px; opacity:0.85; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Next Appointment</p>
-                <h3 style="font-size:16px; font-weight:700; margin-bottom:8px;">{{ upcoming_booking.service_name or upcoming_booking.service }}</h3>
-                <p style="font-size:13px; opacity:0.9; margin-bottom:4px;">📅 {{ upcoming_booking.appointment_date or upcoming_booking.date }}</p>
-                <p style="font-size:13px; opacity:0.9; margin-bottom:4px;">⏰ {{ upcoming_booking.appointment_time or upcoming_booking.time }}</p>
-                <p style="font-size:13px; opacity:0.9;">✂️ {{ upcoming_booking.stylist or 'Any Available' }}</p>
+            <!-- SERVICES CATEGORIES -->
+            <div style="background:white; border-radius:14px; padding:20px 24px; box-shadow:0 2px 10px rgba(233,30,140,0.08);">
+                <h2 style="font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Our Services</h2>
+                <a href="/services#hair" style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #fce4f0; text-decoration:none;">
+                    <span style="font-size:20px;">✂️</span>
+                    <div>
+                        <div style="font-size:13px; font-weight:600; color:#1a1a2e;">Hair Services</div>
+                        <div style="font-size:11px; color:#888;">From ₱150</div>
+                    </div>
+                    <span style="margin-left:auto; color:#FF1493; font-size:14px;">→</span>
+                </a>
+                <a href="/services#nails" style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #fce4f0; text-decoration:none;">
+                    <span style="font-size:20px;">💅</span>
+                    <div>
+                        <div style="font-size:13px; font-weight:600; color:#1a1a2e;">Nail Services</div>
+                        <div style="font-size:11px; color:#888;">From ₱100</div>
+                    </div>
+                    <span style="margin-left:auto; color:#FF1493; font-size:14px;">→</span>
+                </a>
+                <a href="/services#spa" style="display:flex; align-items:center; gap:12px; padding:12px 0; text-decoration:none;">
+                    <span style="font-size:20px;">🌿</span>
+                    <div>
+                        <div style="font-size:13px; font-weight:600; color:#1a1a2e;">Spa & Wellness</div>
+                        <div style="font-size:11px; color:#888;">From ₱150</div>
+                    </div>
+                    <span style="margin-left:auto; color:#FF1493; font-size:14px;">→</span>
+                </a>
             </div>
-            {% else %}
-            <div style="background:white; border-radius:14px; padding:20px; box-shadow:0 2px 10px rgba(233,30,140,0.08); text-align:center;">
-                <p style="font-size:13px; color:#888; margin-bottom:12px;">No upcoming appointments</p>
-                <a href="/services" style="background:#FF1493; color:white; padding:10px 20px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600;">Book Now</a>
-            </div>
-            {% endif %}
         </div>
 
     </div>
 </div>
 
 <style>
-@media (max-width: 768px) {
-    div[style*="grid-template-columns:2fr 1fr"] { grid-template-columns: 1fr !important; }
-    div[style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
-    div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+@media (max-width:768px) {
+    div[style*="grid-template-columns:1fr 320px"] { grid-template-columns:1fr !important; }
+    div[style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns:1fr !important; }
+    div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
 }
 </style>
 
