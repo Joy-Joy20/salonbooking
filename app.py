@@ -270,18 +270,17 @@ def signup():
                 elif db.table('users').select('id').eq('email', email).execute().data:
                     error = 'Email already registered.'
                 else:
-                    token = secrets.token_urlsafe(32)
+                    code = str(secrets.randbelow(900000) + 100000)
                     db.table('users').insert({
                         'username': username,
                         'email': email,
                         'password': hash_password(password),
                         'role': 'user',
                         'is_verified': False,
-                        'verification_token': token
+                        'verification_token': code
                     }).execute()
-                    verify_link = url_for('verify_email', token=token, _external=True)
-                    html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p>Hi <strong>' + username + '</strong>! Please verify your email.</p><div style="text-align:center;margin:1.5rem 0;"><a href="' + verify_link + '" style="background:#e91e8c;color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;">Verify Email</a></div></div>'
-                    send_email(email, 'Verify your Salon Booking account', html)
+                    html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! Use the code below to verify your email:</p><div style="text-align:center;margin:1.5rem 0;"><div style="font-size:36px;font-weight:700;letter-spacing:10px;color:#e91e8c;background:#fdf0f6;padding:20px;border-radius:12px;display:inline-block;">' + code + '</div></div><p style="color:#888;font-size:12px;text-align:center;">This code expires in 30 minutes. Do not share it with anyone.</p></div>'
+                    send_email(email, 'Your Salon Booking verification code', html)
                     return redirect(url_for('email_verification_page', email=email))
             except Exception as e:
                 error = f'Signup failed: {str(e)}'
@@ -798,17 +797,19 @@ def admin_delete_service(service_id):
     return redirect(url_for('admin_services_page'))
 
 
-@app.route('/verify-email/<token>')
-def verify_email(token):
+@app.route('/verify-email', methods=['POST'])
+def verify_email():
+    email = request.form.get('email', '').strip().lower()
+    code = request.form.get('code', '').strip()
     try:
         db = get_supabase()
-        result = db.table('users').select('*').eq('verification_token', token).execute()
+        result = db.table('users').select('*').eq('email', email).eq('verification_token', code).execute()
         if not result.data:
-            return render_template('verified.html', error='Invalid or expired link.')
-        db.table('users').update({'is_verified': True, 'verification_token': ''}).eq('verification_token', token).execute()
+            return render_template('email_verification.html', email=email, error='Invalid or expired code. Please try again.')
+        db.table('users').update({'is_verified': True, 'verification_token': ''}).eq('email', email).execute()
         return render_template('verified.html')
     except Exception as e:
-        return render_template('verified.html', error=str(e))
+        return render_template('email_verification.html', email=email, error=str(e))
 
 
 @app.route('/email-verification')
@@ -828,12 +829,11 @@ def resend_verification():
             if user.get('is_verified'):
                 flash('Email already verified. Please login.', 'success')
                 return redirect(url_for('login'))
-            token = secrets.token_urlsafe(32)
-            db.table('users').update({'verification_token': token}).eq('email', email).execute()
-            verify_link = url_for('verify_email', token=token, _external=True)
+            code = str(secrets.randbelow(900000) + 100000)
+            db.table('users').update({'verification_token': code}).eq('email', email).execute()
             username = user.get('username', '')
-            html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p>Hi <strong>' + username + '</strong>! Click below to verify your email.</p><div style="text-align:center;margin:1.5rem 0;"><a href="' + verify_link + '" style="background:linear-gradient(135deg,#e91e8c,#ff6eb4);color:#fff;padding:12px 32px;border-radius:999px;text-decoration:none;font-weight:700;">Verify Email</a></div></div>'
-            send_email(email, 'Verify your Salon Booking account', html)
+            html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! Your new verification code:</p><div style="text-align:center;margin:1.5rem 0;"><div style="font-size:36px;font-weight:700;letter-spacing:10px;color:#e91e8c;background:#fdf0f6;padding:20px;border-radius:12px;display:inline-block;">' + code + '</div></div><p style="color:#888;font-size:12px;text-align:center;">Expires in 30 minutes.</p></div>'
+            send_email(email, 'Your new verification code', html)
     except Exception as e:
         print('Resend error:', str(e))
     return redirect(url_for('email_verification_page', email=email))

@@ -5,29 +5,44 @@
     <div style="background:white; border-radius:24px; padding:40px 32px; max-width:440px; width:100%; text-align:center; box-shadow:0 8px 40px rgba(233,30,140,0.12); border:1px solid #fce4f0;">
 
         <div style="font-size:56px; margin-bottom:16px;">📧</div>
-        <h1 style="font-size:22px; font-weight:700; color:#1a1a2e; margin-bottom:8px;">Check Your Email</h1>
-        <p style="font-size:14px; color:#888; margin-bottom:24px; line-height:1.6;">
-            We sent a verification link to<br>
-            <strong style="color:#e91e8c;">{{ email }}</strong>
+        <h1 style="font-size:22px; font-weight:700; color:#1a1a2e; margin-bottom:8px;">Verify Your Email</h1>
+        <p style="font-size:14px; color:#888; margin-bottom:6px; line-height:1.6;">
+            We sent a 6-digit verification code to
         </p>
+        <p style="font-size:15px; font-weight:700; color:#e91e8c; margin-bottom:24px;">{{ email }}</p>
 
-        <div style="background:#fdf0f6; border-radius:12px; padding:16px; margin-bottom:24px; text-align:left;">
-            <p style="font-size:13px; color:#555; margin-bottom:8px; font-weight:600;">📌 Next steps:</p>
-            <p style="font-size:13px; color:#555; margin-bottom:4px;">1. Open your email inbox</p>
-            <p style="font-size:13px; color:#555; margin-bottom:4px;">2. Click the verification link</p>
-            <p style="font-size:13px; color:#555;">3. You'll be redirected to login</p>
+        {% if error %}
+        <div style="background:#fee2e2; color:#991b1b; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:16px;">
+            {{ error }}
         </div>
+        {% endif %}
 
-        <p style="font-size:13px; color:#aaa; margin-bottom:16px;">Didn't receive the email?</p>
-
-        <form method="POST" action="/resend-verification">
+        <form method="POST" action="/verify-email">
             <input type="hidden" name="email" value="{{ email }}">
-            <button type="submit" style="width:100%; padding:12px; background:white; color:#e91e8c; border:2px solid #e91e8c; border-radius:999px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; margin-bottom:12px;">
-                Resend Verification Email
+
+            <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:8px; text-align:left;">Enter 6-Digit Code</label>
+            <input type="text" name="code" maxlength="6" placeholder="_ _ _ _ _ _" required
+                style="width:100%; padding:16px; border-radius:12px; border:2px solid #f0b8d8; font-size:28px; font-weight:700; letter-spacing:12px; text-align:center; outline:none; box-sizing:border-box; font-family:'Poppins',sans-serif; color:#e91e8c;"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+
+            <button type="submit"
+                style="width:100%; padding:13px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:white; border:none; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; margin-top:16px; font-family:'Poppins',sans-serif; box-shadow:0 4px 14px rgba(233,30,140,0.3);">
+                Verify Email ✅
             </button>
         </form>
 
-        <a href="/login" style="font-size:13px; color:#aaa; text-decoration:none;">← Back to Login</a>
+        <div style="margin-top:20px; padding-top:20px; border-top:1px solid #fce4f0;">
+            <p style="font-size:13px; color:#aaa; margin-bottom:12px;">Didn't receive the code?</p>
+            <form method="POST" action="/resend-verification">
+                <input type="hidden" name="email" value="{{ email }}">
+                <button type="submit"
+                    style="background:white; color:#e91e8c; border:2px solid #e91e8c; padding:10px 24px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif;">
+                    Resend Code
+                </button>
+            </form>
+        </div>
+
+        <a href="/login" style="display:block; margin-top:16px; font-size:13px; color:#aaa; text-decoration:none;">← Back to Login</a>
     </div>
 </div>
 {% endblock %}
