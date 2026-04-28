@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width:600px; margin:40px auto; padding:0 20px;">
+<div style="max-width:900px; margin:40px auto; padding:0 20px;">
 
     {% with msgs = get_flashed_messages(with_categories=true) %}
         {% for cat, msg in msgs %}
@@ -11,68 +11,58 @@
         {% endfor %}
     {% endwith %}
 
-    <div style="background:white; border-radius:20px; padding:36px; box-shadow:0 4px 20px rgba(233,30,140,0.10); border:1.5px solid #fce4f0;">
+    <div style="background:white; border-radius:20px; padding:40px; box-shadow:0 4px 20px rgba(233,30,140,0.10); border:1.5px solid #fce4f0;">
 
-        <!-- AVATAR SECTION -->
-        <div style="text-align:center; margin-bottom:28px;">
-            <div style="position:relative; display:inline-block;">
-                {% if current_user and current_user.avatar %}
-                <img id="avatar-preview" src="{{ current_user.avatar }}" alt="Profile"
-                    style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #e91e8c; box-shadow:0 4px 14px rgba(233,30,140,0.2);">
-                {% else %}
-                <div id="avatar-preview-placeholder" style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg,#e91e8c,#ff6eb4); display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:700; color:white; border:3px solid #e91e8c; box-shadow:0 4px 14px rgba(233,30,140,0.2); margin:0 auto;">
-                    {{ username[0]|upper if username else 'U' }}
-                </div>
-                <img id="avatar-preview" src="" alt="Profile"
-                    style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #e91e8c; box-shadow:0 4px 14px rgba(233,30,140,0.2); display:none;">
-                {% endif %}
-                <!-- UPLOAD BUTTON OVERLAY -->
-                <label for="avatar-input" style="position:absolute; bottom:0; right:0; width:30px; height:30px; background:#e91e8c; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
-                    <i class="fa fa-camera" style="color:white; font-size:12px;"></i>
-                </label>
+        <!-- AVATAR DISPLAY ONLY -->
+        <div style="text-align:center; margin-bottom:32px;">
+            {% if current_user and current_user.avatar %}
+            <img src="{{ current_user.avatar }}" alt="Profile"
+                style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #e91e8c; box-shadow:0 4px 14px rgba(233,30,140,0.2);">
+            {% else %}
+            <div style="width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#e91e8c,#ff6eb4); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:white; border:3px solid #e91e8c; box-shadow:0 4px 14px rgba(233,30,140,0.2); margin:0 auto;">
+                {{ username[0]|upper if username else 'U' }}
             </div>
-            <p style="font-size:12px; color:#aaa; margin-top:10px;">Click the camera icon to change photo</p>
+            {% endif %}
+            <h2 style="font-size:20px; font-weight:700; color:#1a1a2e; margin:12px 0 4px;">{{ username }}</h2>
+            <span style="font-size:13px; color:#aaa;">{{ current_user.email if current_user else '' }}</span>
         </div>
 
-        <h2 style="font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:24px; text-align:center;">Edit Profile</h2>
+        <h3 style="font-size:16px; font-weight:700; color:#1a1a2e; margin-bottom:20px; padding-bottom:12px; border-bottom:1.5px solid #fce4f0;">Edit Profile</h3>
 
-        <form method="POST" action="/profile" enctype="multipart/form-data" id="profile-form">
-            <input type="file" id="avatar-input" name="avatar" accept="image/*" style="display:none;" onchange="previewAvatar(this)">
-
-            <div style="margin-bottom:16px;">
-                <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Username</label>
-                <input type="text" name="name" value="{{ current_user.username if current_user else username }}" required
-                    style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
-                    onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
+        <form method="POST" action="/profile" id="profile-form">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Username</label>
+                    <input type="text" name="name" value="{{ current_user.username if current_user else username }}" required
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
+                        onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Email</label>
+                    <input type="email" name="email" value="{{ current_user.email if current_user else '' }}" required
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
+                        onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Phone Number</label>
+                    <input type="tel" name="phone" value="{{ current_user.phone if current_user else '' }}" placeholder="e.g. 09123456789"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
+                        onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Gender</label>
+                    <select name="gender"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; background:white;"
+                        onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
+                        <option value="">-- Select Gender --</option>
+                        <option value="Female" {% if current_user and current_user.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Male" {% if current_user and current_user.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Prefer not to say" {% if current_user and current_user.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                    </select>
+                </div>
             </div>
 
-            <div style="margin-bottom:16px;">
-                <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Email</label>
-                <input type="email" name="email" value="{{ current_user.email if current_user else '' }}" required
-                    style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
-                    onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
-            </div>
-
-            <div style="margin-bottom:16px;">
-                <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Phone Number</label>
-                <input type="tel" name="phone" value="{{ current_user.phone if current_user else '' }}" placeholder="e.g. 09123456789"
-                    style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box;"
-                    onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
-            </div>
-
-            <div style="margin-bottom:24px;">
-                <label style="font-size:12px; font-weight:600; color:#555; display:block; margin-bottom:6px;">Gender</label>
-                <select name="gender"
-                    style="width:100%; padding:12px 16px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:14px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; background:white;"
-                    onfocus="this.style.borderColor='#e91e8c'" onblur="this.style.borderColor='#f0b8d8'">
-                    <option value="">-- Select Gender --</option>
-                    <option value="Female" {% if current_user and current_user.gender == 'Female' %}selected{% endif %}>Female</option>
-                    <option value="Male" {% if current_user and current_user.gender == 'Male' %}selected{% endif %}>Male</option>
-                    <option value="Prefer not to say" {% if current_user and current_user.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
-                </select>
-            </div>
-
-            <button type="submit" style="width:100%; padding:13px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:white; border:none; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 14px rgba(233,30,140,0.3);">
+            <button type="submit" style="width:100%; padding:13px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:white; border:none; border-radius:999px; font-size:14px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 4px 14px rgba(233,30,140,0.3); margin-top:8px;">
                 Save Changes
             </button>
         </form>
@@ -80,19 +70,9 @@
     </div>
 </div>
 
-<script>
-function previewAvatar(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var preview = document.getElementById('avatar-preview');
-            var placeholder = document.getElementById('avatar-preview-placeholder');
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            if (placeholder) placeholder.style.display = 'none';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
+<style>
+@media (max-width: 600px) {
+    div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
 }
-</script>
+</style>
 {% endblock %}
