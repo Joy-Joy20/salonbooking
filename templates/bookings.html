@@ -53,9 +53,15 @@
                 </td>
                 <td>
                     {% if b.payment_screenshot %}
-                    <a href="{{ b.payment_screenshot }}" target="_blank">
-                        <img src="{{ b.payment_screenshot }}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:2px solid #e91e8c; cursor:pointer;" title="Click to view full size">
+                    <a href="{{ b.payment_screenshot }}" target="_blank" style="display:block; text-align:center;">
+                        <img src="{{ b.payment_screenshot }}" 
+                            style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:2px solid #e91e8c; cursor:pointer; display:block; margin:0 auto 4px;"
+                            title="Click to view full size"
+                            onerror="this.style.display='none'">
+                        <span style="font-size:10px; color:#007bff;">View</span>
                     </a>
+                    {% elif b.payment_method == 'GCash' %}
+                    <span style="color:#FFA500; font-size:11px; font-weight:600;">⏳ Pending</span>
                     {% else %}
                     <span style="color:#aaa; font-size:12px;">—</span>
                     {% endif %}
