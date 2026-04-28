@@ -1,0 +1,57 @@
+{% extends 'admin_base.html' %}
+{% block page_title %}Edit Service{% endblock %}
+{% block content %}
+<div class="edit-page">
+    <div class="edit-page-header">
+        <h1>✏️ Edit Service</h1>
+        <a href="/admin/services" class="btn-back">← Back to Services</a>
+    </div>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in msgs %}
+        <div style="padding:12px 20px; border-radius:10px; margin-bottom:16px; font-weight:600;
+            background:{% if cat == 'success' %}#d1fae5{% else %}#fee2e2{% endif %};
+            color:{% if cat == 'success' %}#065f46{% else %}#991b1b{% endif %};">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if service %}
+    <div class="edit-card">
+        <form action="/admin/services/edit/{{ service.id }}" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Service Name</label>
+                    <input type="text" name="name" value="{{ service.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="Hair Services" {% if service.category == 'Hair Services' %}selected{% endif %}>✂️ Hair Services</option>
+                        <option value="Nail Services" {% if service.category == 'Nail Services' %}selected{% endif %}>💅 Nail Services</option>
+                        <option value="Spa & Wellness" {% if service.category == 'Spa & Wellness' %}selected{% endif %}>🌿 Spa & Wellness</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <input type="text" name="duration" value="{{ service.duration or '' }}" placeholder="e.g. 30 mins">
+                </div>
+                <div class="form-group">
+                    <label>Price (₱)</label>
+                    <input type="number" name="price" value="{{ service.price }}" required>
+                </div>
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <input type="text" name="description" value="{{ service.description or '' }}" placeholder="Short description">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-form-save">💾 Save Changes</button>
+                <a href="/admin/services" class="btn-form-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <p style="color:#999;">Service not found.</p>
+    {% endif %}
+</div>
+{% endblock %}

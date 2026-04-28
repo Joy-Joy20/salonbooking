@@ -75,6 +75,7 @@
                 <td style="color:#FF1493; font-weight:700;">₱{{ "{:,}".format(s.price) }}</td>
                 <td style="color:#888; font-size:12px;">{{ s.description or '—' }}</td>
                 <td style="display:flex; gap:6px;">
+                    <a href="/admin/services/edit/{{ s.id }}" class="btn-edit">✏️ Edit</a>
                     <a href="/admin/services/delete/{{ s.id }}" class="btn-delete" onclick="return confirm('Delete this service?')">Delete</a>
                 </td>
             </tr>

@@ -873,6 +873,38 @@ def debug_email():
         "gmail_pass_len": len(GMAIL_APP_PASSWORD) if GMAIL_APP_PASSWORD else 0
     }
 
+
+@app.route('/admin/services/edit/<service_id>', methods=['GET', 'POST'])
+@admin_required
+def admin_edit_service(service_id):
+    try:
+        db = get_supabase()
+        if request.method == 'POST':
+            category = request.form.get('category', '')
+            if 'Hair' in category:
+                category_key = 'hair'
+            elif 'Nail' in category:
+                category_key = 'nails'
+            else:
+                category_key = 'spa'
+            db.table('services').update({
+                'name': request.form.get('name'),
+                'category': category,
+                'category_key': category_key,
+                'description': request.form.get('description', ''),
+                'duration': request.form.get('duration', ''),
+                'price': int(request.form.get('price', 0))
+            }).eq('id', service_id).execute()
+            flash('Service updated successfully!', 'success')
+            return redirect(url_for('admin_services_page'))
+        result = db.table('services').select('*').eq('id', service_id).execute()
+        service = result.data[0] if result.data else None
+        return render_template('admin_edit_service.html',
+            service=service, unread_count=get_unread_count())
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'error')
+        return redirect(url_for('admin_services_page'))
+
 @app.route('/debug')
 def debug():
     return jsonify({
