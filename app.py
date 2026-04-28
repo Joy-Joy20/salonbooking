@@ -317,7 +317,9 @@ def profile():
             return render_template('profile.html', current_user=current_user, username=current_username)
         try:
             db = get_supabase()
-            update_data = {'username': name, 'email': email}
+            phone = request.form.get('phone', '').strip()
+            gender = request.form.get('gender', '').strip()
+            update_data = {'username': name, 'email': email, 'phone': phone, 'gender': gender}
             # Handle avatar upload
             avatar_file = request.files.get('avatar')
             if avatar_file and avatar_file.filename:
