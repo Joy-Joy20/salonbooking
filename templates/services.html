@@ -1,427 +1,1255 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-<!-- CAROUSEL -->
-<section class="hero-carousel" aria-label="Services highlights">
-    <div class="hero-carousel-track" id="svc-carousel-track">
-        <article class="hero-slide is-active" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">✂️ Hair Services</span>
-                <h1>Look Your Best Every Day</h1>
-                <p>Haircut, Color, Rebonding, Keratin Treatment &amp; more — starting at ₱150</p>
-                <a class="btn hero-btn" href="#hair">See Hair Services</a>
-            </div>
-        </article>
-        <article class="hero-slide" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
-            <div class="hero-slide-overlay" style="background:rgba(124,58,237,0.55);"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">💅 Nail Services</span>
-                <h1>Beautiful Nails, Every Time</h1>
-                <p>Manicure, Pedicure, Nail Art, Gel Polish &amp; more — starting at ₱100</p>
-                <a class="btn hero-btn" href="#nails">See Nail Services</a>
-            </div>
-        </article>
-        <article class="hero-slide" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
-            <div class="hero-slide-overlay" style="background:rgba(190,24,93,0.55);"></div>
-            <div class="hero-slide-content">
-                <span class="hero-kicker">🌿 Spa &amp; Wellness</span>
-                <h1>Relax, Refresh, Rejuvenate</h1>
-                <p>Massage, Make-up, Facial, Shaving &amp; more — starting at ₱150</p>
-                <a class="btn hero-btn" href="#spa">See Spa Services</a>
-            </div>
-        </article>
-    </div>
-    <button class="hero-control hero-control-prev" onclick="moveSvcSlide(-1)">&#10094;</button>
-    <button class="hero-control hero-control-next" onclick="moveSvcSlide(1)">&#10095;</button>
-    <div class="hero-dots" id="svc-dots">
-        <button class="hero-dot is-active" onclick="goToSvcSlide(0)"></button>
-        <button class="hero-dot" onclick="goToSvcSlide(1)"></button>
-        <button class="hero-dot" onclick="goToSvcSlide(2)"></button>
-    </div>
-</section>
-
-<div style="max-width:1200px; margin:0 auto; padding:40px 30px;">
-
-    <div style="text-align:center; margin-bottom:40px;">
-        <span style="background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Services</span>
-        <h1 style="font-size:2rem; font-weight:700; color:#1a1a1a; margin:16px 0 8px;">All Available Services</h1>
-        <p style="color:#888; font-size:15px;">Click any service card to book your appointment.</p>
-    </div>
-
-    <!-- HAIR SERVICES -->
-    <div style="margin-bottom:48px;" id="hair">
-        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">✂️ Hair Services</h2>
-        <div class="svc-grid">
-            {% set hair_services = [
-                {"name": "Haircut - Children", "img": "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop", "description": "Clean and cute cut for kids below 12 years old. Includes wash and blow dry.", "duration": "30 mins", "price": 150},
-                {"name": "Haircut - Men", "img": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=250&fit=crop", "description": "Classic and modern cuts for men. Includes wash, cut, and basic styling.", "duration": "30 mins", "price": 200},
-                {"name": "Haircut - Women", "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop", "description": "Stylish cuts tailored for women. Includes wash, cut, blow dry, and basic styling.", "duration": "45 mins", "price": 300},
-                {"name": "Hair Color - Full", "img": "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&h=250&fit=crop", "description": "Full hair coloring service from root to tip. Includes toning and conditioning treatment.", "duration": "2 hrs", "price": 500},
-                {"name": "Highlights / Balayage", "img": "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=250&fit=crop", "description": "Dimensional color technique for a natural sun-kissed look. Customized to your hair type.", "duration": "3 hrs", "price": 1200},
-                {"name": "Rebonding", "img": "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=250&fit=crop", "description": "Permanent hair straightening treatment for smooth, frizz-free, and silky straight hair.", "duration": "4 hrs", "price": 1800},
-                {"name": "Keratin Treatment", "img": "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?w=400&h=250&fit=crop", "description": "Protein-based treatment that eliminates frizz and leaves hair smooth, shiny, and manageable.", "duration": "3 hrs", "price": 1500},
-                {"name": "Hot Oil Treatment", "img": "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&h=250&fit=crop", "description": "Deep nourishing hot oil treatment that restores moisture and shine to dry, damaged hair.", "duration": "45 mins", "price": 250},
-                {"name": "Deep Conditioning", "img": "https://images.unsplash.com/photo-1582095133179-bfd08e2fb6b8?w=400&h=250&fit=crop", "description": "Intensive moisture repair mask for severely damaged or chemically treated hair.", "duration": "1 hr", "price": 400}
-            ] %}
-            {% for item in hair_services %}
-            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
-                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
-                <div style="flex:1;">
-                    <h4 class="svc-item-name">{{ item.name }}</h4>
-                    <p class="svc-item-desc">{{ item.description }}</p>
-                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
-                    <span class="svc-click-hint">Tap to Book →</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- NAIL SERVICES -->
-    <div style="margin-bottom:48px;" id="nails">
-        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">💅 Nail Services</h2>
-        <div class="svc-grid">
-            {% set nail_services = [
-                {"name": "Manicure - Classic", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Complete hand care including nail shaping, cuticle treatment, hand massage, and polish application.", "duration": "30 mins", "price": 150},
-                {"name": "Pedicure - Classic", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop", "description": "Complete foot care including foot soak, nail shaping, cuticle treatment, foot scrub, and polish.", "duration": "45 mins", "price": 180},
-                {"name": "Gel Polish - Hands", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Long-lasting gel color for hands that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 300},
-                {"name": "Gel Polish - Feet", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop", "description": "Long-lasting gel color for feet that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 350},
-                {"name": "Nail Art", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Creative and custom nail art designs. From simple patterns to intricate artwork on any nail shape.", "duration": "1.5 hrs", "price": 400},
-                {"name": "Nail Extension", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Acrylic or gel nail extensions to achieve your desired length and shape.", "duration": "2 hrs", "price": 600},
-                {"name": "Nail Repair", "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=250&fit=crop", "description": "Quick fix for broken, cracked, or damaged nails. Restores nail to its original look.", "duration": "20 mins", "price": 100}
-            ] %}
-            {% for item in nail_services %}
-            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
-                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
-                <div style="flex:1;">
-                    <h4 class="svc-item-name">{{ item.name }}</h4>
-                    <p class="svc-item-desc">{{ item.description }}</p>
-                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
-                    <span class="svc-click-hint">Tap to Book →</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- SPA & WELLNESS -->
-    <div style="margin-bottom:48px;" id="spa">
-        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">🌿 Spa & Wellness</h2>
-        <div class="svc-grid">
-            {% set spa_services = [
-                {"name": "Swedish Massage", "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop", "description": "Full body relaxation massage using gentle Swedish techniques to relieve stress and improve circulation.", "duration": "60 mins", "price": 450},
-                {"name": "Deep Tissue Massage", "img": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=250&fit=crop", "description": "Targets deep muscle layers to release chronic tension, knots, and pain. Ideal for active individuals.", "duration": "60 mins", "price": 550},
-                {"name": "Foot Massage", "img": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=400&h=250&fit=crop", "description": "Soothing reflexology foot massage that relieves tiredness, improves blood flow, and promotes relaxation.", "duration": "45 mins", "price": 300},
-                {"name": "Full Body Massage", "img": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=250&fit=crop", "description": "Complete head-to-toe relaxation massage combining Swedish and pressure point techniques.", "duration": "90 mins", "price": 750},
-                {"name": "Make-up - Everyday", "img": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=250&fit=crop", "description": "Fresh and natural everyday makeup look. Perfect for work, school, or casual outings.", "duration": "1 hr", "price": 500},
-                {"name": "Make-up - Special Occasion", "img": "https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=400&h=250&fit=crop", "description": "Glamorous makeup look for parties, events, debuts, and special celebrations.", "duration": "1.5 hrs", "price": 800},
-                {"name": "Bridal Make-up", "img": "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=250&fit=crop", "description": "Full glam bridal makeup for your wedding day. Includes trial consultation and long-lasting finish.", "duration": "2 hrs", "price": 1500},
-                {"name": "Face Shave", "img": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=250&fit=crop", "description": "Clean and smooth professional face shave for men. Includes hot towel treatment and aftershave.", "duration": "20 mins", "price": 150},
-                {"name": "Beard Trim & Shaping", "img": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&h=250&fit=crop", "description": "Neat and precisely shaped beard grooming. Includes trimming, edging, and beard conditioning.", "duration": "30 mins", "price": 200}
-            ] %}
-            {% for item in spa_services %}
-            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
-                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
-                <div style="flex:1;">
-                    <h4 class="svc-item-name">{{ item.name }}</h4>
-                    <p class="svc-item-desc">{{ item.description }}</p>
-                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
-                    <span class="svc-click-hint">Tap to Book →</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-</div>
-
-<!-- BOOKING MODAL -->
-<div class="modal-overlay" id="svc-modal-overlay" onclick="closeSvcModalOutside(event)">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeSvcModal()">&times;</button>
-        <div style="text-align:center; margin-bottom:18px;">
-            <span style="background:#fce4f0; color:#e91e8c; font-size:11px; font-weight:700; padding:5px 14px; border-radius:999px; text-transform:uppercase; letter-spacing:1px;">Quick Booking</span>
-            <h3 style="font-size:1.2rem; font-weight:700; color:#1a1a1a; margin:10px 0 0;">Book Appointment</h3>
-        </div>
-
-        <div style="background:#fdf0f6; border-radius:12px; padding:12px 16px; margin-bottom:16px; border:1px solid #fce4f0;">
-            <span style="font-size:11px; color:#aaa; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; display:block;">Selected Service</span>
-            <strong id="svc-modal-name" style="display:block; font-size:15px; color:#e91e8c; margin-top:2px;"></strong>
-            <span id="svc-modal-meta" style="font-size:12px; color:#aaa;"></span>
-        </div>
-
-        <div id="svc-modal-login" style="display:none; text-align:center; padding:16px 0;">
-            <p style="color:#555; font-size:14px; margin-bottom:16px;">Please log in first to book an appointment.</p>
-            <a href="/login" class="modal-confirm" style="text-decoration:none; display:inline-block; padding:12px 32px;">Go to Login</a>
-        </div>
-
-        <form id="svc-modal-form" method="POST" action="/book" enctype="multipart/form-data" style="display:none;">
-            <input type="hidden" name="service_name" id="svc-modal-input">
-
-            <!-- STEP 1: BOOKING DETAILS -->
-            <div id="svc-step-1">
-                <!-- SERVICE TYPE -->
-                <label class="modal-label">Service Type</label>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-                    <label class="pay-opt pay-opt-active" id="type-salon-label">
-                        <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="switchServiceType('Salon')">
-                        <span>&#127968;</span> Salon Visit
-                    </label>
-                    <label class="pay-opt" id="type-home-label">
-                        <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="switchServiceType('Home')">
-                        <span>&#128663;</span> Home Service
-                    </label>
-                </div>
-                <div id="home-address-wrap" style="display:none;">
-                    <label class="modal-label">Your Address</label>
-                    <input type="text" name="address" id="svc-address" placeholder="Enter your full address" class="modal-input">
-                </div>
-                <label class="modal-label">Preferred Date</label>
-                <input type="date" name="appointment_date" id="svc-modal-date" required class="modal-input">
-
-                <label class="modal-label">Preferred Time</label>
-                <select name="appointment_time" id="svc-modal-time" class="modal-input" required>
-                    <option value="">Select time</option>
-                    <option value="08:00">8:00 AM</option>
-                    <option value="08:30">8:30 AM</option>
-                    <option value="09:00">9:00 AM</option>
-                    <option value="09:30">9:30 AM</option>
-                    <option value="10:00">10:00 AM</option>
-                    <option value="10:30">10:30 AM</option>
-                    <option value="11:00">11:00 AM</option>
-                    <option value="11:30">11:30 AM</option>
-                    <option value="12:00">12:00 PM</option>
-                    <option value="13:00">1:00 PM</option>
-                    <option value="13:30">1:30 PM</option>
-                    <option value="14:00">2:00 PM</option>
-                    <option value="14:30">2:30 PM</option>
-                    <option value="15:00">3:00 PM</option>
-                    <option value="15:30">3:30 PM</option>
-                    <option value="16:00">4:00 PM</option>
-                    <option value="17:00">5:00 PM</option>
-                    <option value="18:00">6:00 PM</option>
-                    <option value="19:00">7:00 PM</option>
-                </select>
-
-                <label class="modal-label">Stylist</label>
-                <select name="stylist" class="modal-input">
-                    <option value="Any Available">Any Available</option>
-                    {% for s in stylists %}
-                    <option value="{{ s.name }}">{{ s.name }}{% if s.specialty %} — {{ s.specialty }}{% endif %}</option>
-                    {% endfor %}
-                </select>
-
-                <label class="modal-label">Notes (optional)</label>
-                <textarea name="notes" placeholder="Any special requests?" class="modal-input" style="height:70px; resize:none;"></textarea>
-
-                <div style="display:flex; gap:10px; margin-top:16px;">
-                    <button type="button" class="modal-cancel" onclick="closeSvcModal()">Cancel</button>
-                    <button type="button" class="modal-confirm" onclick="goToPayment()">Next: Payment →</button>
-                </div>
-            </div>
-
-            <!-- STEP 2: PAYMENT METHOD -->
-            <div id="svc-step-2" style="display:none;">
-                <p style="font-size:13px; font-weight:600; color:#444; margin-bottom:12px;">Choose your payment method:</p>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
-                    <label class="pay-opt pay-opt-active" id="pay-cash-label">
-                        <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="switchPayment('Cash')">
-                        <span style="font-size:18px;">&#128181;</span> Cash
-                    </label>
-                    <label class="pay-opt" id="pay-gcash-label">
-                        <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="switchPayment('GCash')">
-                        <span style="font-size:18px;">&#128241;</span> GCash
-                    </label>
-                </div>
-
-                <!-- CASH INFO -->
-                <div id="pay-cash-info" style="background:#fff9fb; border:1.5px solid #f0b8d8; border-radius:12px; padding:12px 16px; font-size:13px; color:#666; line-height:1.7;">
-                    &#128181; <strong>Pay in cash</strong> upon arrival at the salon.<br>
-                    Please be on time for your appointment. &#128522;
-                </div>
-
-                <!-- GCASH INFO -->
-                <div id="pay-gcash-info" style="display:none; background:#fff; border:2px solid #007bff; border-radius:14px; padding:1rem; text-align:center;">
-                    <p style="font-size:14px; font-weight:700; color:#007bff; margin-bottom:8px;">&#128241; GCash Payment</p>
-                    <img src="/static/images/gcash-qr.png" alt="GCash QR"
-                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GCash+09123456789'"
-                        style="width:140px; height:140px; border-radius:10px; border:1px solid #dce8ff; padding:6px; object-fit:contain; display:block; margin:0 auto 8px;">
-                    <p style="font-size:16px; font-weight:700; color:#007bff; letter-spacing:1px;">0912 345 6789</p>
-                    <p style="font-size:12px; color:#555;">Account: <strong>Salon Booking</strong></p>
-                    <div style="background:#f0f7ff; border-radius:10px; padding:10px; font-size:11px; color:#444; text-align:left; line-height:1.8; margin-top:10px;">
-                        1. Open GCash app<br>
-                        2. Tap <strong>Pay QR</strong> &amp; scan above<br>
-                        3. Enter exact amount<br>
-                        4. Take screenshot &amp; enter reference below
-                    </div>
-                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="modal-input" style="margin-top:10px;">
-
-                    <!-- SCREENSHOT UPLOAD -->
-                    <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer; text-align:center;" onclick="document.getElementById('gcash-upload-input').click()">
-                        <div id="gcash-upload-prompt">
-                            <p style="font-size:22px; margin-bottom:4px;">&#128228;</p>
-                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
-                            <p style="font-size:11px; color:#888;">Tap to upload your payment screenshot</p>
-                        </div>
-                        <div id="gcash-upload-preview" style="display:none;">
-                            <img id="gcash-preview-img" src="" alt="preview" style="width:100%; max-height:160px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
-                            <p style="font-size:11px; color:#007bff; font-weight:600;">&#10003; Screenshot selected! Tap to change.</p>
-                        </div>
-                        <input id="gcash-upload-input" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewGcashScreenshot(this)">
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:10px; margin-top:16px;">
-                    <button type="button" class="modal-cancel" onclick="backToDetails()">← Back</button>
-                    <button type="submit" class="modal-confirm">✅ Confirm Booking</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<style>
-.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-.svc-item-card { background:#fff; border:1.5px solid #fce4f0; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(233,30,140,0.07); transition:all 0.3s; display:flex; flex-direction:column; cursor:pointer; }
-.svc-item-card:hover { transform:translateY(-5px); box-shadow:0 12px 28px rgba(233,30,140,0.18); border-color:#e91e8c; }
-.svc-img { width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
-.svc-item-name { font-size:15px; font-weight:700; color:#1a1a1a; margin:0 0 6px; }
-.svc-item-desc { font-size:13px; color:#777; margin:0 0 8px; line-height:1.6; }
-.svc-item-duration { font-size:12px; color:#aaa; font-weight:500; }
-.svc-item-price { font-size:20px; font-weight:700; color:#e91e8c; }
-.svc-click-hint { font-size:12px; color:#e91e8c; font-weight:600; }
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:20px; }
-.modal-overlay.open { display:flex; }
-.modal-box { background:#fff; border-radius:24px; padding:28px; width:100%; max-width:460px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 20px 60px rgba(233,30,140,0.2); border:1px solid #fce4f0; animation:modalIn 0.25s ease; }
-@keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
-.modal-close { position:absolute; top:14px; right:18px; background:none; border:none; font-size:24px; cursor:pointer; color:#bbb; }
-.modal-close:hover { color:#e91e8c; }
-.modal-label { font-size:12px; font-weight:600; color:#555; display:block; margin:10px 0 4px; }
-.modal-input { width:100%; padding:10px 14px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; transition:border 0.2s; }
-.modal-input:focus { border-color:#e91e8c; box-shadow:0 0 0 3px rgba(233,30,140,0.08); }
-.modal-cancel { flex:1; padding:11px; background:#fff; color:#e91e8c; border:2px solid #e91e8c; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; }
-.modal-cancel:hover { background:#fce4f0; }
-.modal-confirm { flex:2; padding:11px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:#fff; border:none; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
-.pay-opt { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; border-radius:12px; border:2px solid #f0b8d8; cursor:pointer; font-size:13px; font-weight:600; background:#fff; color:#555; transition:all 0.2s; }
-.pay-opt-active { border-color:#e91e8c; background:#fce4f0; color:#e91e8c; }
-@media (max-width:900px) { .svc-grid { grid-template-columns:repeat(2,1fr); } }
-@media (max-width:600px) { .svc-grid { grid-template-columns:1fr; } }
-</style>
-
-<script>
-var isLoggedIn = {{ 'true' if session.get('user') else 'false' }};
-
-function openSvcModal(name, price, duration) {
-    document.getElementById('svc-modal-name').textContent = name;
-    document.getElementById('svc-modal-meta').textContent = '⏱ ' + duration + '  •  ₱' + price.toLocaleString();
-    document.getElementById('svc-modal-input').value = name;
-    var today = new Date().toISOString().split('T')[0];
-    document.getElementById('svc-modal-date').setAttribute('min', today);
-    if (isLoggedIn) {
-        document.getElementById('svc-modal-form').style.display = 'block';
-        document.getElementById('svc-modal-login').style.display = 'none';
-        document.getElementById('svc-step-1').style.display = 'block';
-        document.getElementById('svc-step-2').style.display = 'none';
-    } else {
-        document.getElementById('svc-modal-form').style.display = 'none';
-        document.getElementById('svc-modal-login').style.display = 'block';
-    }
-    document.getElementById('svc-modal-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-function closeSvcModal() {
-    document.getElementById('svc-modal-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-}
-function closeSvcModalOutside(e) {
-    if (e.target === document.getElementById('svc-modal-overlay')) closeSvcModal();
-}
-
-function switchServiceType(type) {
-    var salonLabel = document.getElementById('type-salon-label');
-    var homeLabel = document.getElementById('type-home-label');
-    var addressWrap = document.getElementById('home-address-wrap');
-    salonLabel.className = 'pay-opt';
-    homeLabel.className = 'pay-opt';
-    if (type === 'Salon') {
-        salonLabel.className = 'pay-opt pay-opt-active';
-        addressWrap.style.display = 'none';
-    } else {
-        homeLabel.className = 'pay-opt pay-opt-active';
-        addressWrap.style.display = 'block';
-    }
-}
-
-function goToPayment() {
-    var date = document.getElementById('svc-modal-date').value;
-    var time = document.getElementById('svc-modal-time').value;
-    var serviceType = document.querySelector('input[name="service_type"]:checked').value;
-    var address = document.getElementById('svc-address').value;
-    if (!date) { alert('Please select a date.'); return; }
-    if (!time) { alert('Please select a time.'); return; }
-    if (serviceType === 'Home Service' && !address.trim()) { alert('Please enter your address for Home Service.'); return; }
-    document.getElementById('svc-step-1').style.display = 'none';
-    document.getElementById('svc-step-2').style.display = 'block';
-}
-function backToDetails() {
-    document.getElementById('svc-step-2').style.display = 'none';
-    document.getElementById('svc-step-1').style.display = 'block';
-}
-function previewGcashScreenshot(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('gcash-preview-img').src = e.target.result;
-            document.getElementById('gcash-upload-prompt').style.display = 'none';
-            document.getElementById('gcash-upload-preview').style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-function switchPayment(method) {
-    var cashLabel = document.getElementById('pay-cash-label');
-    var gcashLabel = document.getElementById('pay-gcash-label');
-    cashLabel.className = 'pay-opt';
-    gcashLabel.className = 'pay-opt';
-    if (method === 'Cash') {
-        cashLabel.className = 'pay-opt pay-opt-active';
-        document.getElementById('pay-cash-info').style.display = 'block';
-        document.getElementById('pay-gcash-info').style.display = 'none';
-    } else {
-        gcashLabel.className = 'pay-opt pay-opt-gcash';
-        document.getElementById('pay-cash-info').style.display = 'none';
-        document.getElementById('pay-gcash-info').style.display = 'block';
-    }
-}
-
-var svcSlideIndex = 0;
-var svcSlides = document.querySelectorAll('.hero-carousel .hero-slide');
-var svcDots = document.querySelectorAll('#svc-dots .hero-dot');
-var svcTimer = null;
-function showSvcSlide(n) {
-    if (n >= svcSlides.length) svcSlideIndex = 0;
-    else if (n < 0) svcSlideIndex = svcSlides.length - 1;
-    else svcSlideIndex = n;
-    document.getElementById('svc-carousel-track').style.transform = 'translateX(-' + (svcSlideIndex * 100) + '%)';
-    svcDots.forEach(function(d,i){ d.classList.toggle('is-active', i === svcSlideIndex); });
-}
-function moveSvcSlide(dir) { showSvcSlide(svcSlideIndex + dir); resetSvcAuto(); }
-function goToSvcSlide(n) { showSvcSlide(n); resetSvcAuto(); }
-function resetSvcAuto() { clearInterval(svcTimer); svcTimer = setInterval(function(){ showSvcSlide(svcSlideIndex + 1); }, 4000); }
-resetSvcAuto();
-</script>
-
-{% endblock %}
+{% extends 'base.html' %}
+
+
+
+
+
+{% block content %}
+
+
+
+
+
+<!-- CAROUSEL -->
+
+
+<section class="hero-carousel" aria-label="Services highlights">
+
+
+    <div class="hero-carousel-track" id="svc-carousel-track">
+
+
+        <article class="hero-slide is-active" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
+
+
+            <div class="hero-slide-overlay"></div>
+
+
+            <div class="hero-slide-content">
+
+
+                <span class="hero-kicker">✂️ Hair Services</span>
+
+
+                <h1>Look Your Best Every Day</h1>
+
+
+                <p>Haircut, Color, Rebonding, Keratin Treatment &amp; more — starting at ₱150</p>
+
+
+                <a class="btn hero-btn" href="#hair">See Hair Services</a>
+
+
+            </div>
+
+
+        </article>
+
+
+        <article class="hero-slide" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
+
+
+            <div class="hero-slide-overlay" style="background:rgba(124,58,237,0.55);"></div>
+
+
+            <div class="hero-slide-content">
+
+
+                <span class="hero-kicker">💅 Nail Services</span>
+
+
+                <h1>Beautiful Nails, Every Time</h1>
+
+
+                <p>Manicure, Pedicure, Nail Art, Gel Polish &amp; more — starting at ₱100</p>
+
+
+                <a class="btn hero-btn" href="#nails">See Nail Services</a>
+
+
+            </div>
+
+
+        </article>
+
+
+        <article class="hero-slide" style="background:url('/static/images/bg.jpg') center/cover no-repeat;">
+
+
+            <div class="hero-slide-overlay" style="background:rgba(190,24,93,0.55);"></div>
+
+
+            <div class="hero-slide-content">
+
+
+                <span class="hero-kicker">🌿 Spa &amp; Wellness</span>
+
+
+                <h1>Relax, Refresh, Rejuvenate</h1>
+
+
+                <p>Massage, Make-up, Facial, Shaving &amp; more — starting at ₱150</p>
+
+
+                <a class="btn hero-btn" href="#spa">See Spa Services</a>
+
+
+            </div>
+
+
+        </article>
+
+
+    </div>
+
+
+    <button class="hero-control hero-control-prev" onclick="moveSvcSlide(-1)">&#10094;</button>
+
+
+    <button class="hero-control hero-control-next" onclick="moveSvcSlide(1)">&#10095;</button>
+
+
+    <div class="hero-dots" id="svc-dots">
+
+
+        <button class="hero-dot is-active" onclick="goToSvcSlide(0)"></button>
+
+
+        <button class="hero-dot" onclick="goToSvcSlide(1)"></button>
+
+
+        <button class="hero-dot" onclick="goToSvcSlide(2)"></button>
+
+
+    </div>
+
+
+</section>
+
+
+
+
+
+<div style="max-width:1200px; margin:0 auto; padding:40px 30px;">
+
+
+
+
+
+    <div style="text-align:center; margin-bottom:40px;">
+
+
+        <span style="background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Services</span>
+
+
+        <h1 style="font-size:2rem; font-weight:700; color:#1a1a1a; margin:16px 0 8px;">All Available Services</h1>
+
+
+        <p style="color:#888; font-size:15px;">Click any service card to book your appointment.</p>
+
+
+    </div>
+
+
+
+
+
+    <!-- HAIR SERVICES -->
+
+
+    <div style="margin-bottom:48px;" id="hair">
+
+
+        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">✂️ Hair Services</h2>
+
+
+        <div class="svc-grid">
+
+
+            {% set hair_services = [
+
+
+                {"name": "Haircut - Children", "img": "/static/images/haircut-children.jpg", "description": "Clean and cute cut for kids below 12 years old. Includes wash and blow dry.", "duration": "30 mins", "price": 150},
+
+
+                {"name": "Haircut - Men", "img": "/static/images/haircut-men.jpg", "description": "Classic and modern cuts for men. Includes wash, cut, and basic styling.", "duration": "30 mins", "price": 200},
+
+
+                {"name": "Haircut - Women", "img": "/static/images/haircut-women.jpg", "description": "Stylish cuts tailored for women. Includes wash, cut, blow dry, and basic styling.", "duration": "45 mins", "price": 300},
+
+
+                {"name": "Hair Color - Full", "img": "/static/images/hair-color.jpg", "description": "Full hair coloring service from root to tip. Includes toning and conditioning treatment.", "duration": "2 hrs", "price": 500},
+
+
+                {"name": "Highlights / Balayage", "img": "/static/images/highlights.jpg", "description": "Dimensional color technique for a natural sun-kissed look. Customized to your hair type.", "duration": "3 hrs", "price": 1200},
+
+
+                {"name": "Rebonding", "img": "/static/images/rebonding.jpg", "description": "Permanent hair straightening treatment for smooth, frizz-free, and silky straight hair.", "duration": "4 hrs", "price": 1800},
+
+
+                {"name": "Keratin Treatment", "img": "/static/images/keratin.jpg", "description": "Protein-based treatment that eliminates frizz and leaves hair smooth, shiny, and manageable.", "duration": "3 hrs", "price": 1500},
+
+
+                {"name": "Hot Oil Treatment", "img": "/static/images/hot-oil.jpg", "description": "Deep nourishing hot oil treatment that restores moisture and shine to dry, damaged hair.", "duration": "45 mins", "price": 250},
+
+
+                {"name": "Deep Conditioning", "img": "/static/images/deep-conditioning.jpg", "description": "Intensive moisture repair mask for severely damaged or chemically treated hair.", "duration": "1 hr", "price": 400}
+
+
+            ] %}
+
+
+            {% for item in hair_services %}
+
+
+            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
+
+
+                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
+
+
+                <div style="flex:1;">
+
+
+                    <h4 class="svc-item-name">{{ item.name }}</h4>
+
+
+                    <p class="svc-item-desc">{{ item.description }}</p>
+
+
+                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
+
+
+                </div>
+
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+
+
+                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
+
+
+                    <span class="svc-click-hint">Tap to Book →</span>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- NAIL SERVICES -->
+
+
+    <div style="margin-bottom:48px;" id="nails">
+
+
+        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">💅 Nail Services</h2>
+
+
+        <div class="svc-grid">
+
+
+            {% set nail_services = [
+
+
+                {"name": "Manicure - Classic", "img": "/static/images/nail-repair.jpg", "description": "Complete hand care including nail shaping, cuticle treatment, hand massage, and polish application.", "duration": "30 mins", "price": 150},
+
+
+                {"name": "Pedicure - Classic", "img": "/static/images/foot-massage.jpg", "description": "Complete foot care including foot soak, nail shaping, cuticle treatment, foot scrub, and polish.", "duration": "45 mins", "price": 180},
+
+
+                {"name": "Gel Polish - Hands", "img": "/static/images/nail-repair.jpg", "description": "Long-lasting gel color for hands that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 300},
+
+
+                {"name": "Gel Polish - Feet", "img": "/static/images/foot-massage.jpg", "description": "Long-lasting gel color for feet that stays chip-free for up to 3 weeks.", "duration": "1 hr", "price": 350},
+
+
+                {"name": "Nail Art", "img": "/static/images/nail-repair.jpg", "description": "Creative and custom nail art designs. From simple patterns to intricate artwork on any nail shape.", "duration": "1.5 hrs", "price": 400},
+
+
+                {"name": "Nail Extension", "img": "/static/images/nail-repair.jpg", "description": "Acrylic or gel nail extensions to achieve your desired length and shape.", "duration": "2 hrs", "price": 600},
+
+
+                {"name": "Nail Repair", "img": "/static/images/nail-repair.jpg", "description": "Quick fix for broken, cracked, or damaged nails. Restores nail to its original look.", "duration": "20 mins", "price": 100}
+
+
+            ] %}
+
+
+            {% for item in nail_services %}
+
+
+            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
+
+
+                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
+
+
+                <div style="flex:1;">
+
+
+                    <h4 class="svc-item-name">{{ item.name }}</h4>
+
+
+                    <p class="svc-item-desc">{{ item.description }}</p>
+
+
+                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
+
+
+                </div>
+
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+
+
+                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
+
+
+                    <span class="svc-click-hint">Tap to Book →</span>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- SPA & WELLNESS -->
+
+
+    <div style="margin-bottom:48px;" id="spa">
+
+
+        <h2 style="font-size:1.4rem; font-weight:700; color:#1a1a1a; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #fce4f0;">🌿 Spa & Wellness</h2>
+
+
+        <div class="svc-grid">
+
+
+            {% set spa_services = [
+
+
+                {"name": "Swedish Massage", "img": "/static/images/bg.jpg", "description": "Full body relaxation massage using gentle Swedish techniques to relieve stress and improve circulation.", "duration": "60 mins", "price": 450},
+
+
+                {"name": "Deep Tissue Massage", "img": "/static/images/bg.jpg", "description": "Targets deep muscle layers to release chronic tension, knots, and pain. Ideal for active individuals.", "duration": "60 mins", "price": 550},
+
+
+                {"name": "Foot Massage", "img": "/static/images/foot-massage.jpg", "description": "Soothing reflexology foot massage that relieves tiredness, improves blood flow, and promotes relaxation.", "duration": "45 mins", "price": 300},
+
+
+                {"name": "Full Body Massage", "img": "/static/images/bg.jpg", "description": "Complete head-to-toe relaxation massage combining Swedish and pressure point techniques.", "duration": "90 mins", "price": 750},
+
+
+                {"name": "Make-up - Everyday", "img": "/static/images/bg.jpg", "description": "Fresh and natural everyday makeup look. Perfect for work, school, or casual outings.", "duration": "1 hr", "price": 500},
+
+
+                {"name": "Make-up - Special Occasion", "img": "/static/images/makeup-special.jpg", "description": "Glamorous makeup look for parties, events, debuts, and special celebrations.", "duration": "1.5 hrs", "price": 800},
+
+
+                {"name": "Bridal Make-up", "img": "/static/images/bridal-makeup.jpg", "description": "Full glam bridal makeup for your wedding day. Includes trial consultation and long-lasting finish.", "duration": "2 hrs", "price": 1500},
+
+
+                {"name": "Face Shave", "img": "/static/images/haircut-men.jpg", "description": "Clean and smooth professional face shave for men. Includes hot towel treatment and aftershave.", "duration": "20 mins", "price": 150},
+
+
+                {"name": "Beard Trim & Shaping", "img": "/static/images/bg.jpg", "description": "Neat and precisely shaped beard grooming. Includes trimming, edging, and beard conditioning.", "duration": "30 mins", "price": 200}
+
+
+            ] %}
+
+
+            {% for item in spa_services %}
+
+
+            <div class="svc-item-card" onclick="openSvcModal('{{ item.name }}', {{ item.price }}, '{{ item.duration }}')">
+
+
+                <img src="{{ item.img }}" alt="{{ item.name }}" class="svc-img">
+
+
+                <div style="flex:1;">
+
+
+                    <h4 class="svc-item-name">{{ item.name }}</h4>
+
+
+                    <p class="svc-item-desc">{{ item.description }}</p>
+
+
+                    <span class="svc-item-duration">⏱ {{ item.duration }}</span>
+
+
+                </div>
+
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+
+
+                    <span class="svc-item-price">₱{{ "{:,}".format(item.price) }}</span>
+
+
+                    <span class="svc-click-hint">Tap to Book →</span>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+</div>
+
+
+
+
+
+<!-- BOOKING MODAL -->
+
+
+<div class="modal-overlay" id="svc-modal-overlay" onclick="closeSvcModalOutside(event)">
+
+
+    <div class="modal-box">
+
+
+        <button class="modal-close" onclick="closeSvcModal()">&times;</button>
+
+
+        <div style="text-align:center; margin-bottom:18px;">
+
+
+            <span style="background:#fce4f0; color:#e91e8c; font-size:11px; font-weight:700; padding:5px 14px; border-radius:999px; text-transform:uppercase; letter-spacing:1px;">Quick Booking</span>
+
+
+            <h3 style="font-size:1.2rem; font-weight:700; color:#1a1a1a; margin:10px 0 0;">Book Appointment</h3>
+
+
+        </div>
+
+
+
+
+
+        <div style="background:#fdf0f6; border-radius:12px; padding:12px 16px; margin-bottom:16px; border:1px solid #fce4f0;">
+
+
+            <span style="font-size:11px; color:#aaa; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; display:block;">Selected Service</span>
+
+
+            <strong id="svc-modal-name" style="display:block; font-size:15px; color:#e91e8c; margin-top:2px;"></strong>
+
+
+            <span id="svc-modal-meta" style="font-size:12px; color:#aaa;"></span>
+
+
+        </div>
+
+
+
+
+
+        <div id="svc-modal-login" style="display:none; text-align:center; padding:16px 0;">
+
+
+            <p style="color:#555; font-size:14px; margin-bottom:16px;">Please log in first to book an appointment.</p>
+
+
+            <a href="/login" class="modal-confirm" style="text-decoration:none; display:inline-block; padding:12px 32px;">Go to Login</a>
+
+
+        </div>
+
+
+
+
+
+        <form id="svc-modal-form" method="POST" action="/book" enctype="multipart/form-data" style="display:none;">
+
+
+            <input type="hidden" name="service_name" id="svc-modal-input">
+
+
+
+
+
+            <!-- STEP 1: BOOKING DETAILS -->
+
+
+            <div id="svc-step-1">
+
+
+                <!-- SERVICE TYPE -->
+
+
+                <label class="modal-label">Service Type</label>
+
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+
+
+                    <label class="pay-opt pay-opt-active" id="type-salon-label">
+
+
+                        <input type="radio" name="service_type" value="Salon Visit" checked style="accent-color:#e91e8c;" onchange="switchServiceType('Salon')">
+
+
+                        <span>&#127968;</span> Salon Visit
+
+
+                    </label>
+
+
+                    <label class="pay-opt" id="type-home-label">
+
+
+                        <input type="radio" name="service_type" value="Home Service" style="accent-color:#e91e8c;" onchange="switchServiceType('Home')">
+
+
+                        <span>&#128663;</span> Home Service
+
+
+                    </label>
+
+
+                </div>
+
+
+                <div id="home-address-wrap" style="display:none;">
+
+
+                    <label class="modal-label">Your Address</label>
+
+
+                    <input type="text" name="address" id="svc-address" placeholder="Enter your full address" class="modal-input">
+
+
+                </div>
+
+
+                <label class="modal-label">Preferred Date</label>
+
+
+                <input type="date" name="appointment_date" id="svc-modal-date" required class="modal-input">
+
+
+
+
+
+                <label class="modal-label">Preferred Time</label>
+
+
+                <select name="appointment_time" id="svc-modal-time" class="modal-input" required>
+
+
+                    <option value="">Select time</option>
+
+
+                    <option value="08:00">8:00 AM</option>
+
+
+                    <option value="08:30">8:30 AM</option>
+
+
+                    <option value="09:00">9:00 AM</option>
+
+
+                    <option value="09:30">9:30 AM</option>
+
+
+                    <option value="10:00">10:00 AM</option>
+
+
+                    <option value="10:30">10:30 AM</option>
+
+
+                    <option value="11:00">11:00 AM</option>
+
+
+                    <option value="11:30">11:30 AM</option>
+
+
+                    <option value="12:00">12:00 PM</option>
+
+
+                    <option value="13:00">1:00 PM</option>
+
+
+                    <option value="13:30">1:30 PM</option>
+
+
+                    <option value="14:00">2:00 PM</option>
+
+
+                    <option value="14:30">2:30 PM</option>
+
+
+                    <option value="15:00">3:00 PM</option>
+
+
+                    <option value="15:30">3:30 PM</option>
+
+
+                    <option value="16:00">4:00 PM</option>
+
+
+                    <option value="17:00">5:00 PM</option>
+
+
+                    <option value="18:00">6:00 PM</option>
+
+
+                    <option value="19:00">7:00 PM</option>
+
+
+                </select>
+
+
+
+
+
+                <label class="modal-label">Stylist</label>
+
+
+                <select name="stylist" class="modal-input">
+
+
+                    <option value="Any Available">Any Available</option>
+
+
+                    {% for s in stylists %}
+
+
+                    <option value="{{ s.name }}">{{ s.name }}{% if s.specialty %} — {{ s.specialty }}{% endif %}</option>
+
+
+                    {% endfor %}
+
+
+                </select>
+
+
+
+
+
+                <label class="modal-label">Notes (optional)</label>
+
+
+                <textarea name="notes" placeholder="Any special requests?" class="modal-input" style="height:70px; resize:none;"></textarea>
+
+
+
+
+
+                <div style="display:flex; gap:10px; margin-top:16px;">
+
+
+                    <button type="button" class="modal-cancel" onclick="closeSvcModal()">Cancel</button>
+
+
+                    <button type="button" class="modal-confirm" onclick="goToPayment()">Next: Payment →</button>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <!-- STEP 2: PAYMENT METHOD -->
+
+
+            <div id="svc-step-2" style="display:none;">
+
+
+                <p style="font-size:13px; font-weight:600; color:#444; margin-bottom:12px;">Choose your payment method:</p>
+
+
+
+
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+
+
+                    <label class="pay-opt pay-opt-active" id="pay-cash-label">
+
+
+                        <input type="radio" name="payment_method" value="Cash" checked style="accent-color:#e91e8c;" onchange="switchPayment('Cash')">
+
+
+                        <span style="font-size:18px;">&#128181;</span> Cash
+
+
+                    </label>
+
+
+                    <label class="pay-opt" id="pay-gcash-label">
+
+
+                        <input type="radio" name="payment_method" value="GCash" style="accent-color:#007bff;" onchange="switchPayment('GCash')">
+
+
+                        <span style="font-size:18px;">&#128241;</span> GCash
+
+
+                    </label>
+
+
+                </div>
+
+
+
+
+
+                <!-- CASH INFO -->
+
+
+                <div id="pay-cash-info" style="background:#fff9fb; border:1.5px solid #f0b8d8; border-radius:12px; padding:12px 16px; font-size:13px; color:#666; line-height:1.7;">
+
+
+                    &#128181; <strong>Pay in cash</strong> upon arrival at the salon.<br>
+
+
+                    Please be on time for your appointment. &#128522;
+
+
+                </div>
+
+
+
+
+
+                <!-- GCASH INFO -->
+
+
+                <div id="pay-gcash-info" style="display:none; background:#fff; border:2px solid #007bff; border-radius:14px; padding:1rem; text-align:center;">
+
+
+                    <p style="font-size:14px; font-weight:700; color:#007bff; margin-bottom:8px;">&#128241; GCash Payment</p>
+
+
+                    <img src="/static/images/gcash-qr.png" alt="GCash QR"
+
+
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GCash+09123456789'"
+
+
+                        style="width:140px; height:140px; border-radius:10px; border:1px solid #dce8ff; padding:6px; object-fit:contain; display:block; margin:0 auto 8px;">
+
+
+                    <p style="font-size:16px; font-weight:700; color:#007bff; letter-spacing:1px;">0912 345 6789</p>
+
+
+                    <p style="font-size:12px; color:#555;">Account: <strong>Salon Booking</strong></p>
+
+
+                    <div style="background:#f0f7ff; border-radius:10px; padding:10px; font-size:11px; color:#444; text-align:left; line-height:1.8; margin-top:10px;">
+
+
+                        1. Open GCash app<br>
+
+
+                        2. Tap <strong>Pay QR</strong> &amp; scan above<br>
+
+
+                        3. Enter exact amount<br>
+
+
+                        4. Take screenshot &amp; enter reference below
+
+
+                    </div>
+
+
+                    <input type="text" name="gcash_ref" placeholder="GCash Reference Number (optional)" class="modal-input" style="margin-top:10px;">
+
+
+
+                    <!-- SCREENSHOT UPLOAD -->
+
+                    <div style="margin-top:12px; border:2px dashed #007bff; border-radius:12px; padding:14px; background:#f8fbff; cursor:pointer; text-align:center;" onclick="document.getElementById('gcash-upload-input').click()">
+
+                        <div id="gcash-upload-prompt">
+
+                            <p style="font-size:22px; margin-bottom:4px;">&#128228;</p>
+
+                            <p style="font-size:13px; font-weight:600; color:#007bff; margin-bottom:2px;">Upload GCash Screenshot</p>
+
+                            <p style="font-size:11px; color:#888;">Tap to upload your payment screenshot</p>
+
+                        </div>
+
+                        <div id="gcash-upload-preview" style="display:none;">
+
+                            <img id="gcash-preview-img" src="" alt="preview" style="width:100%; max-height:160px; object-fit:contain; border-radius:8px; margin-bottom:6px;">
+
+                            <p style="font-size:11px; color:#007bff; font-weight:600;">&#10003; Screenshot selected! Tap to change.</p>
+
+                        </div>
+
+                        <input id="gcash-upload-input" type="file" name="gcash_screenshot" accept="image/*" style="display:none;" onchange="previewGcashScreenshot(this)">
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div style="display:flex; gap:10px; margin-top:16px;">
+
+
+                    <button type="button" class="modal-cancel" onclick="backToDetails()">← Back</button>
+
+
+                    <button type="submit" class="modal-confirm">✅ Confirm Booking</button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<style>
+
+
+.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+
+.svc-item-card { background:#fff; border:1.5px solid #fce4f0; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(233,30,140,0.07); transition:all 0.3s; display:flex; flex-direction:column; cursor:pointer; }
+
+
+.svc-item-card:hover { transform:translateY(-5px); box-shadow:0 12px 28px rgba(233,30,140,0.18); border-color:#e91e8c; }
+
+
+.svc-img { width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
+
+
+.svc-item-name { font-size:15px; font-weight:700; color:#1a1a1a; margin:0 0 6px; }
+
+
+.svc-item-desc { font-size:13px; color:#777; margin:0 0 8px; line-height:1.6; }
+
+
+.svc-item-duration { font-size:12px; color:#aaa; font-weight:500; }
+
+
+.svc-item-price { font-size:20px; font-weight:700; color:#e91e8c; }
+
+
+.svc-click-hint { font-size:12px; color:#e91e8c; font-weight:600; }
+
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+
+
+.modal-overlay.open { display:flex; }
+
+
+.modal-box { background:#fff; border-radius:24px; padding:28px; width:100%; max-width:460px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 20px 60px rgba(233,30,140,0.2); border:1px solid #fce4f0; animation:modalIn 0.25s ease; }
+
+
+@keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+
+
+.modal-close { position:absolute; top:14px; right:18px; background:none; border:none; font-size:24px; cursor:pointer; color:#bbb; }
+
+
+.modal-close:hover { color:#e91e8c; }
+
+
+.modal-label { font-size:12px; font-weight:600; color:#555; display:block; margin:10px 0 4px; }
+
+
+.modal-input { width:100%; padding:10px 14px; border-radius:10px; border:1.5px solid #f0b8d8; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; transition:border 0.2s; }
+
+
+.modal-input:focus { border-color:#e91e8c; box-shadow:0 0 0 3px rgba(233,30,140,0.08); }
+
+
+.modal-cancel { flex:1; padding:11px; background:#fff; color:#e91e8c; border:2px solid #e91e8c; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; }
+
+
+.modal-cancel:hover { background:#fce4f0; }
+
+
+.modal-confirm { flex:2; padding:11px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); color:#fff; border:none; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
+
+
+.pay-opt { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; border-radius:12px; border:2px solid #f0b8d8; cursor:pointer; font-size:13px; font-weight:600; background:#fff; color:#555; transition:all 0.2s; }
+
+
+.pay-opt-active { border-color:#e91e8c; background:#fce4f0; color:#e91e8c; }
+
+
+@media (max-width:900px) { .svc-grid { grid-template-columns:repeat(2,1fr); } }
+
+
+@media (max-width:600px) { .svc-grid { grid-template-columns:1fr; } }
+
+
+</style>
+
+
+
+
+
+<script>
+
+
+var isLoggedIn = {{ 'true' if session.get('user') else 'false' }};
+
+
+
+
+
+function openSvcModal(name, price, duration) {
+
+
+    document.getElementById('svc-modal-name').textContent = name;
+
+
+    document.getElementById('svc-modal-meta').textContent = '⏱ ' + duration + '  •  ₱' + price.toLocaleString();
+
+
+    document.getElementById('svc-modal-input').value = name;
+
+
+    var today = new Date().toISOString().split('T')[0];
+
+
+    document.getElementById('svc-modal-date').setAttribute('min', today);
+
+
+    if (isLoggedIn) {
+
+
+        document.getElementById('svc-modal-form').style.display = 'block';
+
+
+        document.getElementById('svc-modal-login').style.display = 'none';
+
+
+        document.getElementById('svc-step-1').style.display = 'block';
+
+
+        document.getElementById('svc-step-2').style.display = 'none';
+
+
+    } else {
+
+
+        document.getElementById('svc-modal-form').style.display = 'none';
+
+
+        document.getElementById('svc-modal-login').style.display = 'block';
+
+
+    }
+
+
+    document.getElementById('svc-modal-overlay').classList.add('open');
+
+
+    document.body.style.overflow = 'hidden';
+
+
+}
+
+
+function closeSvcModal() {
+
+
+    document.getElementById('svc-modal-overlay').classList.remove('open');
+
+
+    document.body.style.overflow = '';
+
+
+}
+
+
+function closeSvcModalOutside(e) {
+
+
+    if (e.target === document.getElementById('svc-modal-overlay')) closeSvcModal();
+
+
+}
+
+
+
+
+
+function switchServiceType(type) {
+
+
+    var salonLabel = document.getElementById('type-salon-label');
+
+
+    var homeLabel = document.getElementById('type-home-label');
+
+
+    var addressWrap = document.getElementById('home-address-wrap');
+
+
+    salonLabel.className = 'pay-opt';
+
+
+    homeLabel.className = 'pay-opt';
+
+
+    if (type === 'Salon') {
+
+
+        salonLabel.className = 'pay-opt pay-opt-active';
+
+
+        addressWrap.style.display = 'none';
+
+
+    } else {
+
+
+        homeLabel.className = 'pay-opt pay-opt-active';
+
+
+        addressWrap.style.display = 'block';
+
+
+    }
+
+
+}
+
+
+
+
+
+function goToPayment() {
+
+
+    var date = document.getElementById('svc-modal-date').value;
+
+
+    var time = document.getElementById('svc-modal-time').value;
+
+
+    var serviceType = document.querySelector('input[name="service_type"]:checked').value;
+
+
+    var address = document.getElementById('svc-address').value;
+
+
+    if (!date) { alert('Please select a date.'); return; }
+
+
+    if (!time) { alert('Please select a time.'); return; }
+
+
+    if (serviceType === 'Home Service' && !address.trim()) { alert('Please enter your address for Home Service.'); return; }
+
+
+    document.getElementById('svc-step-1').style.display = 'none';
+
+
+    document.getElementById('svc-step-2').style.display = 'block';
+
+
+}
+
+
+function backToDetails() {
+
+
+    document.getElementById('svc-step-2').style.display = 'none';
+
+
+    document.getElementById('svc-step-1').style.display = 'block';
+
+
+}
+
+
+function previewGcashScreenshot(input) {
+
+    if (input.files && input.files[0]) {
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            document.getElementById('gcash-preview-img').src = e.target.result;
+
+            document.getElementById('gcash-upload-prompt').style.display = 'none';
+
+            document.getElementById('gcash-upload-preview').style.display = 'block';
+
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+    }
+
+}
+
+
+
+function switchPayment(method) {
+
+
+    var cashLabel = document.getElementById('pay-cash-label');
+
+
+    var gcashLabel = document.getElementById('pay-gcash-label');
+
+
+    cashLabel.className = 'pay-opt';
+
+
+    gcashLabel.className = 'pay-opt';
+
+
+    if (method === 'Cash') {
+
+
+        cashLabel.className = 'pay-opt pay-opt-active';
+
+
+        document.getElementById('pay-cash-info').style.display = 'block';
+
+
+        document.getElementById('pay-gcash-info').style.display = 'none';
+
+
+    } else {
+
+
+        gcashLabel.className = 'pay-opt pay-opt-gcash';
+
+
+        document.getElementById('pay-cash-info').style.display = 'none';
+
+
+        document.getElementById('pay-gcash-info').style.display = 'block';
+
+
+    }
+
+
+}
+
+
+
+
+
+var svcSlideIndex = 0;
+
+
+var svcSlides = document.querySelectorAll('.hero-carousel .hero-slide');
+
+
+var svcDots = document.querySelectorAll('#svc-dots .hero-dot');
+
+
+var svcTimer = null;
+
+
+function showSvcSlide(n) {
+
+
+    if (n >= svcSlides.length) svcSlideIndex = 0;
+
+
+    else if (n < 0) svcSlideIndex = svcSlides.length - 1;
+
+
+    else svcSlideIndex = n;
+
+
+    document.getElementById('svc-carousel-track').style.transform = 'translateX(-' + (svcSlideIndex * 100) + '%)';
+
+
+    svcDots.forEach(function(d,i){ d.classList.toggle('is-active', i === svcSlideIndex); });
+
+
+}
+
+
+function moveSvcSlide(dir) { showSvcSlide(svcSlideIndex + dir); resetSvcAuto(); }
+
+
+function goToSvcSlide(n) { showSvcSlide(n); resetSvcAuto(); }
+
+
+function resetSvcAuto() { clearInterval(svcTimer); svcTimer = setInterval(function(){ showSvcSlide(svcSlideIndex + 1); }, 4000); }
+
+
+resetSvcAuto();
+
+
+</script>
+
+
+
+
+
+{% endblock %}
+
+
