@@ -1,45 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Our Stylists ✂️</h1>
-<p>Meet our team of professional stylists ready to serve you.</p>
+<div style="max-width:1100px; margin:0 auto; padding:40px 30px;">
+    <div style="text-align:center; margin-bottom:40px;">
+        <span style="background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Team</span>
+        <h1 style="font-size:2rem; font-weight:700; color:#1a1a2e; margin:16px 0 8px;">Meet Our Stylists ✂️</h1>
+        <p style="color:#888; font-size:15px;">Professional and passionate — ready to make you look and feel your best.</p>
+    </div>
 
-<div class="stylist-grid">
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=47" alt="Anna Cruz">
-        <h3>Anna Cruz</h3>
-        <p class="specialty">✂️ Haircut & Styling</p>
-        <p>5 years of experience in modern and classic haircuts.</p>
-    </div>
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=32" alt="Maria Santos">
-        <h3>Maria Santos</h3>
-        <p class="specialty">💄 Makeup Artist</p>
-        <p>Specializes in bridal and event makeup looks.</p>
-    </div>
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=15" alt="Jose Reyes">
-        <h3>Jose Reyes</h3>
-        <p class="specialty">🪒 Shaving & Grooming</p>
-        <p>Expert in men's grooming and beard styling.</p>
-    </div>
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=44" alt="Liza Gomez">
-        <h3>Liza Gomez</h3>
-        <p class="specialty">🎨 Hair Coloring</p>
-        <p>Creative colorist with expertise in balayage and highlights.</p>
-    </div>
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=26" alt="Carlo Bautista">
-        <h3>Carlo Bautista</h3>
-        <p class="specialty">🍼 Hair Treatment</p>
-        <p>Specializes in keratin and deep conditioning treatments.</p>
-    </div>
-    <div class="stylist-card">
-        <img src="https://i.pravatar.cc/150?img=9" alt="Rosa Dela Cruz">
-        <h3>Rosa Dela Cruz</h3>
-        <p class="specialty">💆 Massage Therapist</p>
-        <p>Licensed therapist with 7 years of relaxation massage experience.</p>
+    <div class="stylist-grid">
+        {% if stylists %}
+            {% for s in stylists %}
+            <div class="stylist-card">
+                <img src="{{ s.photo or '/static/images/bg.jpg' }}" alt="{{ s.name }}"
+                    onerror="this.src='/static/images/bg.jpg'">
+                <h3>{{ s.name }}</h3>
+                <p class="specialty">{{ s.specialty }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="stylist-card">
+                <img src="/static/images/joy.jpg" alt="Joy">
+                <h3>Joy</h3>
+                <p class="specialty">Salon Owner &amp; Senior Stylist</p>
+            </div>
+            <div class="stylist-card">
+                <img src="/static/images/jenny.jpg" alt="Jenny">
+                <h3>Jenny</h3>
+                <p class="specialty">Hair Color Specialist</p>
+            </div>
+            <div class="stylist-card">
+                <img src="/static/images/charis.jpg" alt="Charis">
+                <h3>Charis</h3>
+                <p class="specialty">Nail Artist</p>
+            </div>
+            <div class="stylist-card">
+                <img src="/static/images/jilly.jpg" alt="Jilly">
+                <h3>Jilly</h3>
+                <p class="specialty">Makeup Artist</p>
+            </div>
+            <div class="stylist-card">
+                <img src="/static/images/mae pearl.jpg" alt="Mae Pearl">
+                <h3>Mae Pearl</h3>
+                <p class="specialty">Spa &amp; Wellness</p>
+            </div>
+            <div class="stylist-card">
+                <img src="/static/images/denziel.jpg" alt="Denziel">
+                <h3>Denziel</h3>
+                <p class="specialty">Barber &amp; Grooming</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
