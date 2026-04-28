@@ -291,33 +291,233 @@ function toggleMobileNav() {
 
 {% block content %}{% endblock %}
 
-<footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h3>Salon Booking</h3>
-            <p>Your trusted partner for beauty and wellness services.</p>
+<footer class="pro-footer">
+    <div class="pro-footer-top">
+        <!-- BRAND -->
+        <div class="pro-footer-brand">
+            <div class="pro-footer-logo">
+                <span style="font-size:28px;">💇</span>
+                <div>
+                    <span class="pro-footer-logo-name">Salon Booking</span>
+                    <span class="pro-footer-logo-tag">Beauty &amp; Wellness</span>
+                </div>
+            </div>
+            <p>Your trusted partner for beauty and wellness services. Book your appointment easily and treat yourself to the best.</p>
+            <div class="pro-footer-socials">
+                <a href="#" title="Facebook"><i class="fa fa-facebook-f"></i></a>
+                <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+                <a href="#" title="TikTok"><i class="fa fa-tiktok"></i></a>
+            </div>
         </div>
-        <div class="footer-section">
-            <h3>Quick Links</h3>
+
+        <!-- QUICK LINKS -->
+        <div class="pro-footer-col">
+            <h4>Quick Links</h4>
             <ul>
-                <li><a href="/">Landing Page</a></li>
-                <li><a href="/bookings">My Bookings</a></li>
-                <li><a href="/profile">Profile</a></li>
-                <li><a href="/stylist">Stylists</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/stylist">Our Stylists</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
             </ul>
         </div>
-        <div class="footer-section">
-            <h3>Contact Us</h3>
-            <p>123 Salon Street, Cebu City</p>
-            <p>+63 912 345 6789</p>
-            <p>salonbooking@email.com</p>
-            <p>Mon-Sat, 8:00 AM - 7:00 PM</p>
+
+        <!-- SERVICES -->
+        <div class="pro-footer-col">
+            <h4>Our Services</h4>
+            <ul>
+                <li><a href="/services#hair">✂️ Hair Services</a></li>
+                <li><a href="/services#nails">💅 Nail Services</a></li>
+                <li><a href="/services#spa">🌿 Spa &amp; Wellness</a></li>
+                <li><a href="/bookings">📅 My Bookings</a></li>
+            </ul>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="pro-footer-col">
+            <h4>Contact Us</h4>
+            <ul class="pro-footer-contact">
+                <li><i class="fa fa-map-marker-alt"></i> 123 Salon Street, Cebu City</li>
+                <li><i class="fa fa-phone"></i> +63 912 345 6789</li>
+                <li><i class="fa fa-envelope"></i> salonbooking@email.com</li>
+                <li><i class="fa fa-clock"></i> Mon-Sat, 8:00 AM - 7:00 PM</li>
+            </ul>
         </div>
     </div>
-    <div class="footer-bottom">
-        <p>© 2025 Salon Booking. All rights reserved.</p>
+
+    <div class="pro-footer-bottom">
+        <p>&copy; 2025 Salon Booking. All rights reserved.</p>
+        <div class="pro-footer-bottom-links">
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href="/services">Services</a>
+        </div>
     </div>
 </footer>
+
+<style>
+.pro-footer {
+    background: #1a1a2e;
+    color: rgba(255,255,255,0.8);
+    margin-top: auto;
+}
+
+.pro-footer-top {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    padding: 56px 48px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pro-footer-brand p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+    margin: 14px 0 20px;
+    max-width: 280px;
+}
+
+.pro-footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pro-footer-logo-name {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #FF1493;
+    line-height: 1.1;
+}
+
+.pro-footer-logo-tag {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pro-footer-socials {
+    display: flex;
+    gap: 10px;
+}
+
+.pro-footer-socials a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.pro-footer-socials a:hover {
+    background: #FF1493;
+    border-color: #FF1493;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.pro-footer-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.pro-footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pro-footer-col ul li a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.pro-footer-col ul li a:hover {
+    color: #FF1493;
+}
+
+.pro-footer-contact {
+    gap: 12px !important;
+}
+
+.pro-footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+}
+
+.pro-footer-contact li i {
+    color: #FF1493;
+    margin-top: 2px;
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.pro-footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pro-footer-bottom p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    margin: 0;
+}
+
+.pro-footer-bottom-links {
+    display: flex;
+    gap: 20px;
+}
+
+.pro-footer-bottom-links a {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.pro-footer-bottom-links a:hover { color: #FF1493; }
+
+@media (max-width: 900px) {
+    .pro-footer-top { grid-template-columns: 1fr 1fr; padding: 40px 24px 30px; gap: 28px; }
+    .pro-footer-bottom { padding: 16px 24px; flex-direction: column; gap: 10px; text-align: center; }
+}
+
+@media (max-width: 600px) {
+    .pro-footer-top { grid-template-columns: 1fr; }
+}
+</style>
 
 </body>
 </html>
