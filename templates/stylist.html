@@ -1,55 +1,192 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width:1100px; margin:0 auto; padding:40px 30px;">
-    <div style="text-align:center; margin-bottom:40px;">
-        <span style="background:#fce4f0; color:#e91e8c; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Team</span>
-        <h1 style="font-size:2rem; font-weight:700; color:#1a1a2e; margin:16px 0 8px;">Meet Our Stylists ✂️</h1>
-        <p style="color:#888; font-size:15px;">Professional and passionate — ready to make you look and feel your best.</p>
-    </div>
 
-    <div class="stylist-grid">
+<!-- HERO BANNER -->
+<div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); padding:60px 30px; text-align:center; color:white;">
+    <span style="background:rgba(255,255,255,0.2); color:white; font-size:12px; font-weight:700; padding:6px 16px; border-radius:999px; letter-spacing:1px; text-transform:uppercase;">Our Team</span>
+    <h1 style="font-size:2.2rem; font-weight:800; margin:16px 0 8px;">Meet Our Stylists ✂️</h1>
+    <p style="font-size:15px; opacity:0.9; max-width:500px; margin:0 auto;">Professional, passionate, and dedicated to making you look and feel your absolute best.</p>
+</div>
+
+<div style="max-width:1100px; margin:0 auto; padding:50px 30px;">
+
+    <div class="stylist-grid-new">
+
         {% if stylists %}
-            {% for s in stylists %}
-            <div class="stylist-card">
+        {% for s in stylists %}
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="{{ s.photo or '/static/images/bg.jpg' }}" alt="{{ s.name }}"
                     onerror="this.src='/static/images/bg.jpg'">
+            </div>
+            <div class="stylist-info">
                 <h3>{{ s.name }}</h3>
-                <p class="specialty">{{ s.specialty }}</p>
+                <span class="stylist-role">{{ s.specialty }}</span>
+                <p class="stylist-desc">{{ s.description or 'Dedicated professional committed to delivering exceptional salon services with care and expertise.' }}</p>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
+
         {% else %}
-            <div class="stylist-card">
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/joy.jpg" alt="Joy">
+            </div>
+            <div class="stylist-info">
                 <h3>Joy</h3>
-                <p class="specialty">Salon Owner &amp; Senior Stylist</p>
+                <span class="stylist-role">Salon Owner &amp; Senior Stylist</span>
+                <p class="stylist-desc">With years of experience in the beauty industry, Joy leads the team with passion and expertise in all hair services.</p>
             </div>
-            <div class="stylist-card">
+        </div>
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/jenny.jpg" alt="Jenny">
+            </div>
+            <div class="stylist-info">
                 <h3>Jenny</h3>
-                <p class="specialty">Hair Color Specialist</p>
+                <span class="stylist-role">Hair Color Specialist</span>
+                <p class="stylist-desc">Jenny specializes in vibrant hair coloring, balayage, and highlights — transforming looks with creative color techniques.</p>
             </div>
-            <div class="stylist-card">
+        </div>
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/charis.jpg" alt="Charis">
+            </div>
+            <div class="stylist-info">
                 <h3>Charis</h3>
-                <p class="specialty">Nail Artist</p>
+                <span class="stylist-role">Nail Artist</span>
+                <p class="stylist-desc">Charis creates stunning nail art designs and provides top-quality manicure and pedicure services with attention to detail.</p>
             </div>
-            <div class="stylist-card">
+        </div>
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/jilly.jpg" alt="Jilly">
+            </div>
+            <div class="stylist-info">
                 <h3>Jilly</h3>
-                <p class="specialty">Makeup Artist</p>
+                <span class="stylist-role">Makeup Artist</span>
+                <p class="stylist-desc">Jilly is an expert in everyday, special occasion, and bridal makeup — enhancing natural beauty for every event.</p>
             </div>
-            <div class="stylist-card">
+        </div>
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/mae pearl.jpg" alt="Mae Pearl">
+            </div>
+            <div class="stylist-info">
                 <h3>Mae Pearl</h3>
-                <p class="specialty">Spa &amp; Wellness</p>
+                <span class="stylist-role">Spa &amp; Wellness Therapist</span>
+                <p class="stylist-desc">Mae Pearl provides relaxing massage therapies and spa treatments designed to rejuvenate the body and calm the mind.</p>
             </div>
-            <div class="stylist-card">
+        </div>
+
+        <div class="stylist-card-new">
+            <div class="stylist-img-wrap">
                 <img src="/static/images/denziel.jpg" alt="Denziel">
-                <h3>Denziel</h3>
-                <p class="specialty">Barber &amp; Grooming</p>
             </div>
+            <div class="stylist-info">
+                <h3>Denziel</h3>
+                <span class="stylist-role">Barber &amp; Grooming Expert</span>
+                <p class="stylist-desc">Denziel is skilled in precision haircuts, clean shaves, and beard styling — the go-to expert for men's grooming.</p>
+            </div>
+        </div>
+
         {% endif %}
+
     </div>
 </div>
+
+<style>
+.stylist-grid-new {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.stylist-card-new {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(233,30,140,0.10);
+    border: 1.5px solid #fce4f0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.stylist-card-new:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(233,30,140,0.18);
+    border-color: #e91e8c;
+}
+
+.stylist-img-wrap {
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+    background: #fce4f0;
+}
+
+.stylist-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.4s ease;
+}
+
+.stylist-card-new:hover .stylist-img-wrap img {
+    transform: scale(1.05);
+}
+
+.stylist-info {
+    padding: 20px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.stylist-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 6px;
+}
+
+.stylist-role {
+    display: inline-block;
+    background: #fce4f0;
+    color: #e91e8c;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+
+.stylist-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+}
+
+@media (max-width: 900px) {
+    .stylist-grid-new { grid-template-columns: repeat(2, 1fr); }
+    .stylist-img-wrap { height: 220px; }
+}
+
+@media (max-width: 600px) {
+    .stylist-grid-new { grid-template-columns: 1fr; }
+    .stylist-img-wrap { height: 240px; }
+}
+</style>
+
 {% endblock %}
