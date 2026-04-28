@@ -500,11 +500,12 @@ tr:hover {
 }
 
 .stylist-card img {
-    width: 80px;
-    height: 80px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #ff69b4;
+    border: 4px solid #ff69b4;
+    box-shadow: 0 4px 16px rgba(255,20,147,0.2);
 }
 
 .stylist-card h3 {
