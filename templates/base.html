@@ -39,7 +39,11 @@
     <div class="pro-nav-right">
         {% if session.get('user') %}
             <div class="pro-user-info">
+                {% if session.get('user_avatar') %}
+                <img src="{{ session['user_avatar'] }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid #fce4f0;">
+                {% else %}
                 <div class="pro-user-avatar">{{ session['user'][0]|upper }}</div>
+                {% endif %}
                 <span class="pro-user-name">{{ session['user'] }}</span>
             </div>
             <a href="/dashboard" class="pro-nav-btn pro-nav-btn-outline" title="Dashboard"><i class="fa fa-th-large"></i></a>

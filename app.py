@@ -320,7 +320,26 @@ def profile():
             return render_template('profile.html', current_user=current_user, username=current_username)
         try:
             db = get_supabase()
-            db.table('users').update({'username': name, 'email': email}).eq('username', current_username).execute()
+            update_data = {'username': name, 'email': email}
+            # Handle avatar upload
+            avatar_file = request.files.get('avatar')
+            if avatar_file and avatar_file.filename:
+                try:
+                    file_bytes = avatar_file.read()
+                    file_ext = avatar_file.filename.rsplit('.', 1)[-1].lower() if '.' in avatar_file.filename else 'jpg'
+                    file_name = f"avatar_{current_username}_{uuid.uuid4().hex[:8]}.{file_ext}"
+                    db.storage.from_('avatars').upload(
+                        path=file_name,
+                        file=file_bytes,
+                        file_options={"content-type": avatar_file.content_type or "image/jpeg", "upsert": "true"}
+                    )
+                    avatar_url = db.storage.from_('avatars').get_public_url(file_name)
+                    update_data['avatar'] = avatar_url
+                    session['user_avatar'] = avatar_url
+                    print(f"Avatar uploaded: {avatar_url}")
+                except Exception as upload_err:
+                    print(f"Avatar upload error: {str(upload_err)}")
+            db.table('users').update(update_data).eq('username', current_username).execute()
             session['user'] = name
             flash('Profile updated successfully.', 'success')
             return redirect(url_for('profile'))
