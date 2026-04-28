@@ -1,18 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>About Us 💇</h1>
-<p>Welcome to Salon Booking System — your trusted partner for beauty and wellness services.</p>
-<p>We offer a wide range of salon services including haircut, hair coloring, makeup, massage, and more. Our team of professional stylists is dedicated to making you look and feel your best.</p>
 
-<h3>Our Mission</h3>
-<p>To provide top-quality salon services in a comfortable and welcoming environment.</p>
+<!-- HERO BANNER -->
+<div style="position:relative; background:url('/static/images/bg.jpg') center/cover no-repeat; min-height:280px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.45);"></div>
+    <div style="position:relative; z-index:1; text-align:center; padding:60px 30px; max-width:700px;">
+        <span style="display:inline-block; background:rgba(255,255,255,0.15); color:white; font-size:12px; font-weight:700; padding:6px 18px; border-radius:999px; letter-spacing:2px; text-transform:uppercase; border:1px solid rgba(255,255,255,0.3); margin-bottom:18px;">About Us</span>
+        <h1 style="font-size:2.8rem; font-weight:800; color:white; margin:0 0 14px; text-shadow:0 3px 12px rgba(0,0,0,0.3); line-height:1.1;">Our Story</h1>
+        <p style="font-size:16px; color:rgba(255,255,255,0.88); margin:0; line-height:1.6;">Your trusted partner for beauty and wellness services.</p>
+    </div>
+</div>
 
-<h3>Why Choose Us?</h3>
-<ul>
-    <li>Experienced and professional stylists</li>
-    <li>Easy online booking</li>
-    <li>Affordable prices</li>
-    <li>Clean and relaxing atmosphere</li>
-</ul>
+<div style="max-width:1100px; margin:0 auto; padding:60px 30px;">
+
+    <!-- INTRO -->
+    <div style="text-align:center; max-width:700px; margin:0 auto 60px;">
+        <h2 style="font-size:1.8rem; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Welcome to Salon Booking</h2>
+        <p style="font-size:15px; color:#666; line-height:1.8;">We offer a wide range of salon services including haircut, hair coloring, makeup, massage, and more. Our team of professional stylists is dedicated to making you look and feel your absolute best.</p>
+    </div>
+
+    <!-- STATS -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:60px;">
+        <div style="background:white; border-radius:16px; padding:28px 20px; text-align:center; box-shadow:0 4px 20px rgba(233,30,140,0.08); border-bottom:3px solid #FF1493;">
+            <div style="font-size:2.2rem; font-weight:800; color:#FF1493; line-height:1;">6+</div>
+            <div style="font-size:13px; color:#888; margin-top:6px; font-weight:500;">Expert Stylists</div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:28px 20px; text-align:center; box-shadow:0 4px 20px rgba(233,30,140,0.08); border-bottom:3px solid #FF1493;">
+            <div style="font-size:2.2rem; font-weight:800; color:#FF1493; line-height:1;">25+</div>
+            <div style="font-size:13px; color:#888; margin-top:6px; font-weight:500;">Services Available</div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:28px 20px; text-align:center; box-shadow:0 4px 20px rgba(233,30,140,0.08); border-bottom:3px solid #FF1493;">
+            <div style="font-size:2.2rem; font-weight:800; color:#FF1493; line-height:1;">500+</div>
+            <div style="font-size:13px; color:#888; margin-top:6px; font-weight:500;">Happy Clients</div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:28px 20px; text-align:center; box-shadow:0 4px 20px rgba(233,30,140,0.08); border-bottom:3px solid #FF1493;">
+            <div style="font-size:2.2rem; font-weight:800; color:#FF1493; line-height:1;">5★</div>
+            <div style="font-size:13px; color:#888; margin-top:6px; font-weight:500;">Average Rating</div>
+        </div>
+    </div>
+
+    <!-- MISSION & VISION -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:60px;">
+        <div style="background:white; border-radius:20px; padding:36px; box-shadow:0 4px 20px rgba(233,30,140,0.08); border:1.5px solid #fce4f0;">
+            <div style="width:52px; height:52px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:20px;">🎯</div>
+            <h3 style="font-size:1.2rem; font-weight:700; color:#1a1a2e; margin-bottom:12px;">Our Mission</h3>
+            <p style="font-size:14px; color:#666; line-height:1.8; margin:0;">To provide top-quality salon services in a comfortable and welcoming environment — where every client leaves feeling confident, refreshed, and beautiful.</p>
+        </div>
+        <div style="background:white; border-radius:20px; padding:36px; box-shadow:0 4px 20px rgba(233,30,140,0.08); border:1.5px solid #fce4f0;">
+            <div style="width:52px; height:52px; background:linear-gradient(135deg,#e91e8c,#ff6eb4); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:20px;">✨</div>
+            <h3 style="font-size:1.2rem; font-weight:700; color:#1a1a2e; margin-bottom:12px;">Our Vision</h3>
+            <p style="font-size:14px; color:#666; line-height:1.8; margin:0;">To be the most trusted and beloved salon in the community — known for exceptional service, skilled professionals, and a warm, inclusive atmosphere for everyone.</p>
+        </div>
+    </div>
+
+    <!-- WHY CHOOSE US -->
+    <div style="background:white; border-radius:20px; padding:40px; box-shadow:0 4px 20px rgba(233,30,140,0.08); border:1.5px solid #fce4f0; margin-bottom:60px;">
+        <h2 style="font-size:1.5rem; font-weight:700; color:#1a1a2e; text-align:center; margin-bottom:32px;">Why Choose Us?</h2>
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:20px;">
+            {% for item in [
+                ('💆', 'Expert Stylists', 'Our team is trained, certified, and passionate about delivering the best results for every client.'),
+                ('📱', 'Easy Online Booking', 'Book your appointment anytime, anywhere — fast, simple, and hassle-free through our platform.'),
+                ('💰', 'Affordable Prices', 'Premium salon services at prices that fit your budget. Quality beauty care should be accessible to all.'),
+                ('🌸', 'Relaxing Atmosphere', 'Step into a clean, cozy, and welcoming space designed to make you feel at ease from the moment you arrive.')
+            ] %}
+            <div style="display:flex; gap:16px; align-items:flex-start; padding:20px; background:#fdf0f6; border-radius:14px;">
+                <span style="font-size:28px; flex-shrink:0;">{{ item[0] }}</span>
+                <div>
+                    <h4 style="font-size:14px; font-weight:700; color:#1a1a2e; margin:0 0 6px;">{{ item[1] }}</h4>
+                    <p style="font-size:13px; color:#777; line-height:1.6; margin:0;">{{ item[2] }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:linear-gradient(135deg,#e91e8c,#ff6eb4); border-radius:20px; padding:48px 40px; text-align:center; color:white;">
+        <h2 style="font-size:1.8rem; font-weight:800; margin:0 0 12px;">Ready to Look Your Best?</h2>
+        <p style="font-size:15px; opacity:0.9; margin:0 0 28px; line-height:1.6;">Book your appointment today and experience the difference.</p>
+        <a href="/services" style="display:inline-block; background:white; color:#e91e8c; padding:14px 40px; border-radius:999px; font-size:15px; font-weight:700; text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:all 0.2s;">Browse Services</a>
+    </div>
+
+</div>
+
+<style>
+@media (max-width: 768px) {
+    div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
+    div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:repeat(2,1fr)"] { grid-template-columns: 1fr !important; }
+}
+</style>
+
 {% endblock %}
