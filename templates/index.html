@@ -2,53 +2,58 @@
 
 {% block content %}
 
-<section class="hero-section" aria-label="Salon highlights">
-
-    <!-- FIXED BACKGROUND - never changes -->
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-
-    <!-- TEXT SLIDES ONLY -->
-    <div class="hero-content">
-
-        <div class="text-slide is-active">
-            <span class="hero-kicker">✂️ Hair Services</span>
-            <h1>Look Your Best Every Day</h1>
-            <p>Haircut, Color, Rebonding, Keratin Treatment &amp; more &mdash; starting at ₱150</p>
-            <div class="hero-actions">
-                <a class="btn hero-btn" href="/services#hair">See Hair Services</a>
-                <a class="btn hero-btn hero-btn-secondary" href="/stylist">Meet Our Stylists</a>
+<section class="hero-carousel" aria-label="Salon highlights">
+    <div class="hero-carousel-track" id="hero-carousel-track">
+        <article class="hero-slide is-active">
+            <div class="hero-slide-bg hero-slide-bg-one"></div>
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">Beauty and Wellness</span>
+                <h1>Welcome to Salon Booking</h1>
+                <p>Book your appointment easily and treat yourself to polished looks, relaxing care, and confidence-boosting services.</p>
+                <div class="hero-actions">
+                    <a class="btn hero-btn" href="#our-services">Explore Services</a>
+                    <a class="btn hero-btn hero-btn-secondary" href="/stylist">Meet Our Stylists</a>
+                </div>
             </div>
-        </div>
+        </article>
 
-        <div class="text-slide">
-            <span class="hero-kicker">💅 Nail Services</span>
-            <h1>Nails That Speak for You</h1>
-            <p>Manicure, Pedicure, Nail Art, Gel Polish &amp; more &mdash; starting at ₱100</p>
-            <div class="hero-actions">
-                <a class="btn hero-btn" href="/services#nails">See Nail Services</a>
-                <a class="btn hero-btn hero-btn-secondary" href="/contact">Ask Us First</a>
+        <article class="hero-slide">
+            <div class="hero-slide-bg hero-slide-bg-two"></div>
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">Signature Services</span>
+                <h1>Hair, Nails, and Spa in One Place</h1>
+                <p>Browse every treatment, choose your stylist, and book from a smoother experience built right into the landing page.</p>
+                <div class="hero-actions">
+                    <a class="btn hero-btn" href="#our-services">Choose a Service</a>
+                    <a class="btn hero-btn hero-btn-secondary" href="/contact">Ask Us First</a>
+                </div>
             </div>
-        </div>
+        </article>
 
-        <div class="text-slide">
-            <span class="hero-kicker">🌿 Spa &amp; Wellness</span>
-            <h1>Relax. Refresh. Rejuvenate.</h1>
-            <p>Massage, Facial, Make-up, Spa Treatments &amp; more &mdash; starting at ₱150</p>
-            <div class="hero-actions">
-                <a class="btn hero-btn" href="/services#spa">See Spa Services</a>
-                <a class="btn hero-btn hero-btn-secondary" href="/bookings">View My Bookings</a>
+        <article class="hero-slide">
+            <div class="hero-slide-bg hero-slide-bg-three"></div>
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+                <span class="hero-kicker">Easy Booking Flow</span>
+                <h1>Reserve Fast With Less Steps</h1>
+                <p>Tap a service card, confirm your stylist and schedule, and save your booking instantly with your account details already prepared.</p>
+                <div class="hero-actions">
+                    <a class="btn hero-btn" href="#our-services">Book From Services</a>
+                    <a class="btn hero-btn hero-btn-secondary" href="/bookings">View My Bookings</a>
+                </div>
             </div>
-        </div>
+        </article>
+    </div>
 
-        <button class="hero-control hero-control-prev" type="button" onclick="moveHeroSlide(-1)">&#10094;</button>
-        <button class="hero-control hero-control-next" type="button" onclick="moveHeroSlide(1)">&#10095;</button>
+    <button class="hero-control hero-control-prev" type="button" aria-label="Previous slide" onclick="moveHeroSlide(-1)">&#10094;</button>
+    <button class="hero-control hero-control-next" type="button" aria-label="Next slide" onclick="moveHeroSlide(1)">&#10095;</button>
 
-        <div class="hero-dots" id="hero-dots">
-            <button class="hero-dot is-active" type="button" onclick="goToHeroSlide(0)"></button>
-            <button class="hero-dot" type="button" onclick="goToHeroSlide(1)"></button>
-            <button class="hero-dot" type="button" onclick="goToHeroSlide(2)"></button>
-        </div>
+    <div class="hero-dots" id="hero-dots">
+        <button class="hero-dot is-active" type="button" aria-label="Go to slide 1" onclick="goToHeroSlide(0)"></button>
+        <button class="hero-dot" type="button" aria-label="Go to slide 2" onclick="goToHeroSlide(1)"></button>
+        <button class="hero-dot" type="button" aria-label="Go to slide 3" onclick="goToHeroSlide(2)"></button>
     </div>
 </section>
 
@@ -164,21 +169,27 @@
 
 <script>
 var heroSlideIndex = 0;
-var textSlides = document.querySelectorAll('.text-slide');
+var heroSlides = document.querySelectorAll('.hero-slide');
 var heroDots = document.querySelectorAll('.hero-dot');
 var heroInterval = null;
+var bookingModalBackdrop = document.getElementById('booking-modal-backdrop');
+var bookingSelectedName = document.getElementById('booking-selected-name');
+var bookingSelectedPrice = document.getElementById('booking-selected-price');
+var bookingServiceInput = document.getElementById('booking-service');
 
 function showHeroSlide(index) {
-    if (!textSlides.length) return;
-    if (index < 0) heroSlideIndex = textSlides.length - 1;
-    else if (index >= textSlides.length) heroSlideIndex = 0;
-    else heroSlideIndex = index;
-    textSlides.forEach(function(s, i) {
-        s.classList.toggle('is-active', i === heroSlideIndex);
-    });
-    heroDots.forEach(function(d, i) {
-        d.classList.toggle('is-active', i === heroSlideIndex);
-    });
+    if (!heroSlides.length) return;
+    if (index < 0) {
+        heroSlideIndex = heroSlides.length - 1;
+    } else if (index >= heroSlides.length) {
+        heroSlideIndex = 0;
+    } else {
+        heroSlideIndex = index;
+    }
+    for (var i = 0; i < heroSlides.length; i++) {
+        heroSlides[i].classList.toggle('is-active', i === heroSlideIndex);
+        heroDots[i].classList.toggle('is-active', i === heroSlideIndex);
+    }
 }
 
 function moveHeroSlide(step) {
@@ -194,7 +205,7 @@ function goToHeroSlide(index) {
 function startHeroAutoplay() {
     heroInterval = window.setInterval(function() {
         showHeroSlide(heroSlideIndex + 1);
-    }, 4000);
+    }, 5000);
 }
 
 function resetHeroAutoplay() {
@@ -234,80 +245,6 @@ startHeroAutoplay();
 </script>
 
 <style>
-/* HERO SECTION - fixed bg, text-only slides */
-.hero-section {
-    position: relative;
-    width: 100%;
-    height: 520px;
-    overflow: hidden;
-}
-.hero-bg {
-    position: absolute;
-    inset: 0;
-    background: url('/static/images/bg.jpg') center/cover no-repeat;
-    z-index: 1;
-}
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.35);
-    z-index: 2;
-}
-.hero-content {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-}
-.text-slide {
-    position: absolute;
-    text-align: center;
-    padding: 0 40px;
-    max-width: 800px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    pointer-events: none;
-}
-.text-slide.is-active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-.hero-kicker {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255,255,255,0.4);
-}
-.text-slide h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    color: white;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-    margin: 0 0 16px;
-    line-height: 1.1;
-}
-.text-slide p {
-    font-size: 17px;
-    color: rgba(255,255,255,0.9);
-    margin: 0 0 28px;
-    line-height: 1.5;
-}
-@media (max-width: 768px) {
-    .hero-section { height: 420px; }
-    .text-slide h1 { font-size: 2rem; }
-    .text-slide p { font-size: 14px; }
-}
-
 .landing-cat-card {
     background: #fff;
     border: 1.5px solid #fce4f0;
