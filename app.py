@@ -449,6 +449,14 @@ def book():
                 raise Exception("Insert returned no data - check Supabase table and RLS")
 
             if request.is_json:
+            # Send booking confirmation email
+            try:
+                user_email = session.get('user_email', '')
+                if user_email and service:
+                    html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p style="color:#333;font-size:14px;">Hi <strong>' + session.get('user','') + '</strong>! Your booking has been submitted.</p><div style="background:#fdf0f6;border-radius:12px;padding:16px;margin:16px 0;"><p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ' + str(service) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ' + str(date) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ' + str(time) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Stylist:</strong> ' + str(stylist) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Payment:</strong> ' + str(payment_method) + '</p></div><p style="color:#888;font-size:12px;text-align:center;">We will confirm your appointment shortly. Thank you!</p></div>'
+                    send_email(user_email, 'Booking Confirmed! Salon Booking', html)
+            except Exception as email_err:
+                print(f'Booking email error: {str(email_err)}')
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
             flash('Booking submitted successfully! \u2705', 'success')
             return redirect(url_for('bookings_page'))
@@ -656,11 +664,37 @@ def admin_reply_message(message_id):
     try:
         reply = request.form.get('reply', '').strip()
         db = get_supabase()
+        # Get message details for email
+        msg_result = db.table('messages').select('*').eq('id', message_id).execute()
+        msg_data = msg_result.data[0] if msg_result.data else {}
         db.table('messages').update({
             'reply': reply,
             'status': 'replied',
             'replied_at': datetime.utcnow().isoformat()
         }).eq('id', message_id).execute()
+        # Send reply email to user
+        try:
+            sender_email = msg_data.get('sender_email', '')
+            sender_name = msg_data.get('sender_username', 'User')
+            original_msg = msg_data.get('message', '')
+            if sender_email:
+                html = f'''<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">
+                  <h2 style="color:#e91e8c;text-align:center;">\U0001f380 Salon Booking</h2>
+                  <p style="color:#333;font-size:14px;">Hi <strong>{sender_name}</strong>! The salon has replied to your message.</p>
+                  <div style="background:#fdf0f6;border-radius:12px;padding:16px;margin:16px 0;border:1px solid #fce4f0;">
+                    <p style="font-size:12px;color:#aaa;margin-bottom:6px;">Your message:</p>
+                    <p style="font-size:14px;color:#555;margin:0;">{original_msg}</p>
+                  </div>
+                  <div style="background:#d1fae5;border-radius:12px;padding:16px;margin:16px 0;">
+                    <p style="font-size:12px;color:#065f46;margin-bottom:6px;font-weight:700;">Admin Reply:</p>
+                    <p style="font-size:14px;color:#065f46;margin:0;">{reply}</p>
+                  </div>
+                  <p style="color:#888;font-size:12px;text-align:center;">Thank you for contacting us!</p>
+                </div>'''
+                send_email(sender_email, 'Reply from Salon Booking \U0001f4ac', html)
+                print(f"Reply email sent to {sender_email}")
+        except Exception as email_err:
+            print(f"Reply email error: {str(email_err)}")
         flash('Reply sent!', 'success')
     except Exception as e:
         flash(f'Reply failed: {str(e)}', 'error')
