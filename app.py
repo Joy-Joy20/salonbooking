@@ -234,6 +234,7 @@ def login():
                     session['user'] = username
                     session['user_id'] = user.get('id')
                     session['user_email'] = user.get('email', '')
+                    session['user_avatar'] = user.get('avatar', '')
                     session['role'] = user.get('role', 'user')
                     session['is_admin'] = session['role'] == 'admin'
                     if session['is_admin']:
@@ -308,10 +309,6 @@ def profile():
     except Exception as e:
         flash(f'Unable to load profile: {str(e)}', 'error')
 
-    if not current_user:
-        flash('Profile not found.', 'error')
-        return render_template('profile.html', current_user=None, username=current_username)
-
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip().lower()
@@ -339,12 +336,19 @@ def profile():
                     print(f"Avatar uploaded: {avatar_url}")
                 except Exception as upload_err:
                     print(f"Avatar upload error: {str(upload_err)}")
-            db.table('users').update(update_data).eq('username', current_username).execute()
+            if current_user:
+                db.table('users').update(update_data).eq('username', current_username).execute()
+            else:
+                # Create profile if not exists
+                update_data['username'] = name
+                update_data['role'] = 'user'
+                db.table('users').insert(update_data).execute()
             session['user'] = name
-            flash('Profile updated successfully.', 'success')
+            flash('Profile saved successfully! ✅', 'success')
             return redirect(url_for('profile'))
         except Exception as e:
-            flash(f'Update failed: {str(e)}', 'error')
+            print(f"Profile save error: {str(e)}")
+            flash(f'Save failed: {str(e)}', 'error')
 
     return render_template('profile.html', current_user=current_user, username=session.get('user', ''))
 
