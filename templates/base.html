@@ -8,36 +8,286 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-logo" href="/">Salon Booking</a>
+<nav class="pro-nav">
+    <!-- LOGO -->
+    <a class="pro-nav-logo" href="/">
+        <span class="pro-logo-icon">💇</span>
+        <div>
+            <span class="pro-logo-name">Salon Booking</span>
+            <span class="pro-logo-tagline">Beauty &amp; Wellness</span>
+        </div>
+    </a>
 
-    <div class="nav-links">
+    <!-- CENTER LINKS -->
+    <div class="pro-nav-links">
         {% if session.get('is_admin') %}
-            <a href="/admin/dashboard">Dashboard</a>
-            <a href="/admin/bookings">Bookings</a>
-            <a href="/admin/services">Services</a>
-            <a href="/admin/stylists">Stylists</a>
-            <a href="/admin/users">Users</a>
+            <a href="/admin/dashboard" class="pro-nav-link"><i class="fa fa-chart-bar"></i> Dashboard</a>
+            <a href="/admin/bookings" class="pro-nav-link"><i class="fa fa-calendar-check"></i> Bookings</a>
+            <a href="/admin/services" class="pro-nav-link"><i class="fa fa-spa"></i> Services</a>
+            <a href="/admin/stylists" class="pro-nav-link"><i class="fa fa-cut"></i> Stylists</a>
+            <a href="/admin/users" class="pro-nav-link"><i class="fa fa-users"></i> Users</a>
         {% else %}
-            <a href="/dashboard">Dashboard</a>
-            <a href="/services">Services</a>
-            <a href="/bookings">My Bookings</a>
-            <a href="/about">About Us</a>
-            <a href="/contact">Contact Us</a>
-            <a href="/stylist">Stylists</a>
+            <a href="/" class="pro-nav-link">Home</a>
+            <a href="/services" class="pro-nav-link">Services</a>
+            <a href="/stylist" class="pro-nav-link">Stylists</a>
+            <a href="/about" class="pro-nav-link">About</a>
+            <a href="/contact" class="pro-nav-link">Contact</a>
         {% endif %}
     </div>
 
-    <div class="nav-right">
+    <!-- RIGHT SIDE -->
+    <div class="pro-nav-right">
         {% if session.get('user') %}
-            <span>{{ session['user'] }}</span>
-            <a href="/profile" title="Profile" style="color:white; font-size:18px;"><i class="fa fa-user-circle"></i></a>
-            <a href="/logout">Logout</a>
+            <div class="pro-user-info">
+                <div class="pro-user-avatar">{{ session['user'][0]|upper }}</div>
+                <span class="pro-user-name">{{ session['user'] }}</span>
+            </div>
+            <a href="/dashboard" class="pro-nav-btn pro-nav-btn-outline" title="Dashboard"><i class="fa fa-th-large"></i></a>
+            <a href="/bookings" class="pro-nav-btn pro-nav-btn-outline" title="My Bookings"><i class="fa fa-calendar"></i></a>
+            <a href="/profile" class="pro-nav-btn pro-nav-btn-outline" title="Profile"><i class="fa fa-user-circle"></i></a>
+            <a href="/logout" class="pro-nav-btn pro-nav-btn-solid">Logout</a>
         {% else %}
-            <a href="/login"><i class="fa fa-user"></i> Login</a>
+            <a href="/login" class="pro-nav-btn pro-nav-btn-outline">Login</a>
+            <a href="/signup" class="pro-nav-btn pro-nav-btn-solid">Sign Up</a>
         {% endif %}
     </div>
+
+    <!-- MOBILE HAMBURGER -->
+    <button class="pro-hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="pro-mobile-nav" id="pro-mobile-nav">
+    {% if session.get('is_admin') %}
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/bookings">Bookings</a>
+        <a href="/admin/services">Services</a>
+        <a href="/admin/stylists">Stylists</a>
+        <a href="/admin/users">Users</a>
+    {% else %}
+        <a href="/">Home</a>
+        <a href="/services">Services</a>
+        <a href="/stylist">Stylists</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/bookings">My Bookings</a>
+    {% endif %}
+    {% if session.get('user') %}
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+    {% endif %}
+</div>
+
+<style>
+/* PRO NAVBAR */
+.pro-nav {
+    background: white;
+    border-bottom: 1px solid #fce4f0;
+    padding: 0 32px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 16px rgba(233,30,140,0.08);
+}
+
+.pro-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.pro-logo-icon { font-size: 26px; }
+
+.pro-logo-name {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #e91e8c;
+    line-height: 1.1;
+    font-family: 'Poppins', sans-serif;
+}
+
+.pro-logo-tagline {
+    display: block;
+    font-size: 10px;
+    color: #aaa;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.pro-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pro-nav-link {
+    color: #444;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
+}
+
+.pro-nav-link:hover {
+    background: #fdf0f6;
+    color: #e91e8c;
+}
+
+.pro-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.pro-user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 4px;
+}
+
+.pro-user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg,#e91e8c,#ff6eb4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pro-user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pro-nav-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
+}
+
+.pro-nav-btn-outline {
+    color: #e91e8c;
+    border: 1.5px solid #fce4f0;
+    background: white;
+}
+
+.pro-nav-btn-outline:hover {
+    background: #fdf0f6;
+    border-color: #e91e8c;
+}
+
+.pro-nav-btn-solid {
+    background: linear-gradient(135deg,#e91e8c,#ff6eb4);
+    color: white;
+    border: none;
+    box-shadow: 0 3px 10px rgba(233,30,140,0.25);
+}
+
+.pro-nav-btn-solid:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(233,30,140,0.35);
+}
+
+.pro-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    margin: 0;
+    box-shadow: none;
+}
+
+.pro-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #e91e8c;
+    border-radius: 2px;
+    transition: all 0.2s;
+}
+
+.pro-mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: white;
+    border-bottom: 1px solid #fce4f0;
+    padding: 12px 20px;
+    box-shadow: 0 4px 16px rgba(233,30,140,0.08);
+}
+
+.pro-mobile-nav.open { display: flex; }
+
+.pro-mobile-nav a {
+    color: #444;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 8px;
+    border-bottom: 1px solid #fce4f0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.pro-mobile-nav a:last-child { border-bottom: none; }
+.pro-mobile-nav a:hover { color: #e91e8c; }
+
+@media (max-width: 900px) {
+    .pro-nav-links { display: none; }
+    .pro-user-name { display: none; }
+    .pro-hamburger { display: flex; }
+    .pro-nav { padding: 0 20px; }
+}
+
+@media (max-width: 600px) {
+    .pro-user-info { display: none; }
+    .pro-nav-btn-outline[href='/dashboard'],
+    .pro-nav-btn-outline[href='/bookings'],
+    .pro-nav-btn-outline[href='/profile'] { display: none; }
+}
+</style>
+
+<script>
+function toggleMobileNav() {
+    document.getElementById('pro-mobile-nav').classList.toggle('open');
+}
+</script>
 
 {% block content %}{% endblock %}
 
