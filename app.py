@@ -112,20 +112,8 @@ def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-def check_password(input_password, hashed_password):
-    if hashed_password.startswith('$2b$') or hashed_password.startswith('$2a$'):
-        try:
-            import bcrypt
-            return bcrypt.checkpw(input_password.encode(), hashed_password.encode())
-        except Exception:
-            return False
-    # Check SHA256 hash
-    if hash_password(input_password) == hashed_password:
-        return True
-    # Fallback: plain text (old accounts)
-    if input_password == hashed_password:
-        return True
-    return False
+def check_password(input_password, stored_password):
+    return input_password == stored_password
 
 
 
@@ -237,14 +225,6 @@ def login():
                 if check_password(password, user.get('password', '')):
                     if not user.get('is_verified', True):
                         return render_template('login.html', error='Please verify your email first. Check your inbox.')
-                    # Auto-upgrade plain text password to hash
-                    stored_pw = user.get('password', '')
-                    if len(stored_pw) < 60:
-                        try:
-                            db.table('users').update({'password': hash_password(password)}).eq('username', username).execute()
-                            print(f"Password auto-upgraded for {username}")
-                        except Exception as upgrade_err:
-                            print(f"Password upgrade error: {upgrade_err}")
                     session['user'] = username
                     session['user_id'] = user.get('id')
                     session['user_email'] = user.get('email', '')
@@ -289,7 +269,7 @@ def signup():
                     db.table('users').insert({
                         'username': username,
                         'email': email,
-                        'password': hash_password(password),
+                        'password': password,
                         'role': 'user',
                         'is_verified': False,
                         'verification_token': code
