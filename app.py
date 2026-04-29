@@ -424,7 +424,8 @@ def book():
                 except Exception as upload_err:
                     print(f"Screenshot upload error: {str(upload_err)}")
 
-            booking_data = {
+            db = get_supabase()
+            result = db.table('bookings').insert({
                 'username': user,
                 'booked_by': user,
                 'service_name': service,
@@ -439,26 +440,34 @@ def book():
                 'payment_status': 'under_review' if screenshot_url else 'unpaid',
                 'status': 'pending',
                 'created_at': datetime.utcnow().isoformat()
-            }
-            print(f"=== INSERTING: {booking_data} ===")
-            db = get_supabase()
-            result = db.table('bookings').insert(booking_data).execute()
-            print(f"=== RESULT: {result.data} ===")
+            }).execute()
 
-            if not result.data:
-                raise Exception("Insert returned no data - check Supabase table and RLS")
+            print(f"Booking saved: {result.data}")
 
-            if request.is_json:
-            # Send booking confirmation email
+            # Send confirmation email
             try:
                 user_email = session.get('user_email', '')
                 if user_email and service:
-                    html = '<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;"><h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2><p style="color:#333;font-size:14px;">Hi <strong>' + session.get('user','') + '</strong>! Your booking has been submitted.</p><div style="background:#fdf0f6;border-radius:12px;padding:16px;margin:16px 0;"><p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ' + str(service) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ' + str(date) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ' + str(time) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Stylist:</strong> ' + str(stylist) + '</p><p style="margin:4px 0;font-size:14px;"><strong>Payment:</strong> ' + str(payment_method) + '</p></div><p style="color:#888;font-size:12px;text-align:center;">We will confirm your appointment shortly. Thank you!</p></div>'
+                    html = ('<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;'
+                            'padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">'
+                            '<h2 style="color:#e91e8c;text-align:center;">Salon Booking</h2>'
+                            '<p style="color:#333;font-size:14px;">Hi <strong>' + str(user) + '</strong>! '
+                            'Your booking has been submitted.</p>'
+                            '<div style="background:#fdf0f6;border-radius:12px;padding:16px;margin:16px 0;">'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ' + str(service) + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ' + str(date) + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ' + str(time) + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Stylist:</strong> ' + str(stylist) + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Payment:</strong> ' + str(payment_method) + '</p>'
+                            '</div><p style="color:#888;font-size:12px;text-align:center;">'
+                            'We will confirm your appointment shortly. Thank you!</p></div>')
                     send_email(user_email, 'Booking Confirmed! Salon Booking', html)
             except Exception as email_err:
-                print(f'Booking email error: {str(email_err)}')
+                print(f"Booking email error: {str(email_err)}")
+
+            if request.is_json:
                 return jsonify({'success': True, 'message': 'Booking confirmed!'})
-            flash('Booking submitted successfully! \u2705', 'success')
+            flash('Booking submitted successfully! ✅', 'success')
             return redirect(url_for('bookings_page'))
 
         except Exception as e:
@@ -467,8 +476,8 @@ def book():
                 return jsonify({'success': False, 'message': str(e)}), 500
             flash(f'Booking failed: {str(e)}', 'error')
             return redirect(url_for('index'))
-
     return redirect(url_for('index'))
+
 
 
 @app.route('/bookings')
