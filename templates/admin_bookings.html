@@ -2,6 +2,13 @@
 {% block page_title %}Manage Bookings{% endblock %}
 
 {% block content %}
+<style>
+.pay-badge { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; }
+.pay-unpaid { background:#FEE2E2; color:#991B1B; }
+.pay-under_review { background:#FEF3C7; color:#92400E; }
+.pay-paid { background:#D1FAE5; color:#065F46; }
+.pay-rejected { background:#FEE2E2; color:#991B1B; }
+</style>
 <div class="admin-table-wrap">
     <h2 style="padding:20px 24px 16px;">All Bookings</h2>
     {% if bookings %}
@@ -38,9 +45,31 @@
                 </td>
                 <td>
                     {% if b.get('payment_screenshot') %}
-                    <a href="{{ b.payment_screenshot }}" target="_blank">
-                        <img src="{{ b.payment_screenshot }}" style="width:40px; height:40px; object-fit:cover; border-radius:6px; border:2px solid #FF1493;">
-                    </a>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                        <a href="{{ b.payment_screenshot }}" target="_blank">
+                            <img src="{{ b.payment_screenshot }}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; border:2px solid #FF1493;">
+                        </a>
+                        <span class="pay-badge pay-{{ b.get('payment_status') or 'unpaid' }}">
+                            {{ (b.get('payment_status') or 'unpaid')|upper|replace('_',' ') }}
+                        </span>
+                        {% if b.get('payment_status') == 'under_review' %}
+                        <div style="display:flex; gap:4px; flex-direction:column; width:100%;">
+                            <form action="/admin/bookings/verify-payment/{{ b.id }}" method="POST">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="text" name="note" placeholder="Note (optional)" style="width:100%; padding:3px 6px; border:1px solid #ddd; border-radius:6px; font-size:11px; margin-bottom:3px; box-sizing:border-box;">
+                                <button type="submit" style="width:100%; background:#27AE60; color:white; border:none; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" onclick="return confirm('Approve this payment?')">✅ Approve</button>
+                            </form>
+                            <form action="/admin/bookings/verify-payment/{{ b.id }}" method="POST">
+                                <input type="hidden" name="action" value="reject">
+                                <input type="text" name="note" placeholder="Reason for rejection" style="width:100%; padding:3px 6px; border:1px solid #ddd; border-radius:6px; font-size:11px; margin-bottom:3px; box-sizing:border-box;">
+                                <button type="submit" style="width:100%; background:#E74C3C; color:white; border:none; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" onclick="return confirm('Reject this payment?')">❌ Reject</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        {% if b.get('admin_payment_note') %}
+                        <small style="color:#888; font-size:10px; text-align:center; max-width:120px;">{{ b.admin_payment_note }}</small>
+                        {% endif %}
+                    </div>
                     {% else %}
                     <span style="color:#aaa;">—</span>
                     {% endif %}

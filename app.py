@@ -516,6 +516,7 @@ def admin_dashboard():
         print('Dashboard error:', str(e))
     pending = [b for b in bookings if b.get('status') == 'pending']
     recent = sorted(bookings, key=lambda x: x.get('created_at', ''), reverse=True)[:10]
+    under_review = len([b for b in bookings if b.get('payment_status') == 'under_review'])
     return render_template('admin_dashboard.html',
         total_bookings=len(bookings),
         pending_bookings=len(pending),
@@ -523,6 +524,7 @@ def admin_dashboard():
         total_stylists=len(stylists),
         recent_bookings=recent,
         services=SERVICES,
+        under_review_payments=under_review,
         unread_count=get_unread_count()
     )
 
@@ -1030,6 +1032,71 @@ def reset_password(token):
         print(f"Reset password error: {str(e)}")
         error = f'Error: {str(e)}'
     return render_template('reset_password.html', token=token, error=error, success=success)
+
+
+@app.route('/admin/bookings/verify-payment/<booking_id>', methods=['POST'])
+@admin_required
+def admin_verify_payment(booking_id):
+    try:
+        action = request.form.get('action')
+        note = request.form.get('note', '').strip()
+        db = get_supabase()
+        booking_result = db.table('bookings').select('*').eq('id', booking_id).execute()
+        booking = booking_result.data[0] if booking_result.data else {}
+        username = booking.get('username', '')
+        service = booking.get('service_name', '')
+        date = booking.get('appointment_date', '')
+        time = booking.get('appointment_time', '')
+
+        if action == 'approve':
+            db.table('bookings').update({
+                'payment_status': 'paid',
+                'status': 'confirmed',
+                'admin_payment_note': note or 'Payment verified and approved.'
+            }).eq('id', booking_id).execute()
+            try:
+                user_result = db.table('users').select('email').eq('username', username).execute()
+                user_email = user_result.data[0].get('email', '') if user_result.data else ''
+                if user_email:
+                    html = ('<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">'
+                            '<h2 style="color:#27AE60;text-align:center;">\u2705 Payment Approved!</h2>'
+                            '<p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! Your GCash payment has been verified and approved.</p>'
+                            '<div style="background:#d1fae5;border-radius:12px;padding:16px;margin:16px 0;">'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ' + service + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ' + date + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ' + time + '</p>'
+                            '<p style="margin:4px 0;font-size:14px;color:#27AE60;font-weight:700;"><strong>Status:</strong> \u2705 CONFIRMED</p>'
+                            '</div><p style="color:#888;font-size:12px;text-align:center;">See you at your appointment!</p></div>')
+                    send_email(user_email, '\u2705 Payment Approved — Salon Booking', html)
+            except Exception as email_err:
+                print(f"Approval email error: {email_err}")
+            flash('\u2705 Payment APPROVED! Booking confirmed.', 'success')
+
+        elif action == 'reject':
+            db.table('bookings').update({
+                'payment_status': 'rejected',
+                'status': 'pending',
+                'admin_payment_note': note or 'Payment screenshot rejected. Please upload a valid GCash screenshot.'
+            }).eq('id', booking_id).execute()
+            try:
+                user_result = db.table('users').select('email').eq('username', username).execute()
+                user_email = user_result.data[0].get('email', '') if user_result.data else ''
+                if user_email:
+                    html = ('<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">'
+                            '<h2 style="color:#E74C3C;text-align:center;">\u274c Payment Rejected</h2>'
+                            '<p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! Your GCash payment for <strong>' + service + '</strong> was rejected.</p>'
+                            '<div style="background:#fee2e2;border-radius:12px;padding:16px;margin:16px 0;">'
+                            '<p style="font-size:14px;color:#991B1B;margin:0;"><strong>Reason:</strong> ' + (note or 'Invalid or unclear screenshot.') + '</p>'
+                            '</div><p style="color:#555;font-size:14px;text-align:center;">Please re-upload a clear GCash screenshot.</p></div>')
+                    send_email(user_email, '\u274c Payment Rejected — Action Required', html)
+            except Exception as email_err:
+                print(f"Rejection email error: {email_err}")
+            flash('\u274c Payment REJECTED. User notified.', 'warning')
+
+    except Exception as e:
+        print(f"Verify payment error: {str(e)}")
+        flash(f'Error: {str(e)}', 'error')
+    return redirect(url_for('admin_bookings'))
 
 @app.route('/debug')
 def debug():

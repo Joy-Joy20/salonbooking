@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+.pay-badge { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; display:inline-block; margin-top:3px; }
+.pay-unpaid { background:#FEE2E2; color:#991B1B; }
+.pay-under_review { background:#FEF3C7; color:#92400E; }
+.pay-paid { background:#D1FAE5; color:#065F46; }
+.pay-rejected { background:#FEE2E2; color:#991B1B; }
+</style>
 <div style="max-width:1000px; margin:0 auto; padding:40px 30px;">
 
     <h1 style="color:#e91e8c; text-align:center; margin-bottom:8px;">My Bookings</h1>
@@ -53,15 +60,19 @@
                 </td>
                 <td>
                     {% if b.payment_screenshot %}
-                    <a href="{{ b.payment_screenshot }}" target="_blank" style="display:block; text-align:center;">
-                        <img src="{{ b.payment_screenshot }}" 
-                            style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:2px solid #e91e8c; cursor:pointer; display:block; margin:0 auto 4px;"
-                            title="Click to view full size"
-                            onerror="this.style.display='none'">
-                        <span style="font-size:10px; color:#007bff;">View</span>
-                    </a>
-                    {% elif b.payment_method == 'GCash' %}
-                    <span style="color:#aaa; font-size:12px;">—</span>
+                    <div style="text-align:center;">
+                        <a href="{{ b.payment_screenshot }}" target="_blank">
+                            <img src="{{ b.payment_screenshot }}" 
+                                style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:2px solid #e91e8c; cursor:pointer; display:block; margin:0 auto 4px;"
+                                onerror="this.style.display='none'">
+                        </a>
+                        <span class="pay-badge pay-{{ b.payment_status or 'unpaid' }}">
+                            {{ (b.payment_status or 'unpaid')|upper|replace('_',' ') }}
+                        </span>
+                        {% if b.payment_status == 'rejected' and b.admin_payment_note %}
+                        <br><small style="color:#E74C3C; font-size:10px;">⚠️ {{ b.admin_payment_note }}</small>
+                        {% endif %}
+                    </div>
                     {% else %}
                     <span style="color:#aaa; font-size:12px;">—</span>
                     {% endif %}
