@@ -948,6 +948,95 @@ def admin_edit_service(service_id):
         flash(f'Error: {str(e)}', 'error')
         return redirect(url_for('admin_services_page'))
 
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    message = None
+    error = None
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        if not email or '@' not in email:
+            error = 'Please enter a valid email address.'
+        else:
+            try:
+                db = get_supabase()
+                result = db.table('users').select('*').eq('email', email).execute()
+                if result.data:
+                    user = result.data[0]
+                    username = user.get('username', '')
+                    reset_token = secrets.token_urlsafe(32)
+                    db.table('users').update({
+                        'reset_token': reset_token,
+                        'reset_token_expiry': datetime.utcnow().isoformat()
+                    }).eq('email', email).execute()
+                    reset_link = url_for('reset_password', token=reset_token, _external=True)
+                    html = ('<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;'
+                            'padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">'
+                            '<h2 style="color:#e91e8c;text-align:center;">\U0001f510 Password Reset</h2>'
+                            '<p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! '
+                            'Click the button below to reset your password.</p>'
+                            '<div style="text-align:center;margin:24px 0;">'
+                            '<a href="' + reset_link + '" style="background:#FF1493;color:white;'
+                            'padding:14px 32px;border-radius:25px;text-decoration:none;'
+                            'font-weight:700;font-size:15px;display:inline-block;">Reset My Password</a>'
+                            '</div>'
+                            '<p style="color:#888;font-size:12px;text-align:center;">'
+                            'This link expires in 30 minutes. If you did not request this, ignore this email.</p>'
+                            '</div>')
+                    send_email(email, '\U0001f510 Reset Your Password — Salon Booking', html)
+                    print(f"Password reset email sent to {email}")
+                message = 'If this email is registered, you will receive a reset link shortly. Check your inbox! \U0001f4e7'
+            except Exception as e:
+                print(f"Forgot password error: {str(e)}")
+                error = f'Something went wrong: {str(e)}'
+    return render_template('forgot_password.html', message=message, error=error)
+
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    error = None
+    success = False
+    user = None
+    try:
+        db = get_supabase()
+        result = db.table('users').select('*').eq('reset_token', token).execute()
+        if not result.data:
+            return render_template('reset_password.html',
+                error='Invalid or expired reset link. Please request a new one.', token=None)
+        user = result.data[0]
+        if request.method == 'POST':
+            password = request.form.get('password', '')
+            confirm = request.form.get('confirm_password', '')
+            if len(password) < 6:
+                error = 'Password must be at least 6 characters.'
+            elif password != confirm:
+                error = 'Passwords do not match.'
+            else:
+                db.table('users').update({
+                    'password': hash_password(password),
+                    'reset_token': '',
+                    'reset_token_expiry': ''
+                }).eq('reset_token', token).execute()
+                try:
+                    user_email = user.get('email', '')
+                    username = user.get('username', '')
+                    if user_email:
+                        html = ('<div style="font-family:Poppins,sans-serif;max-width:480px;margin:0 auto;'
+                                'padding:2rem;background:#fff;border-radius:16px;border:1px solid #fce4f0;">'
+                                '<h2 style="color:#e91e8c;text-align:center;">\u2705 Password Changed</h2>'
+                                '<p style="color:#333;font-size:14px;">Hi <strong>' + username + '</strong>! '
+                                'Your password has been successfully changed.</p>'
+                                '<p style="color:#888;font-size:12px;text-align:center;">'
+                                'If you did not make this change, contact us immediately.</p></div>')
+                        send_email(user_email, '\u2705 Password Changed Successfully', html)
+                except Exception as email_err:
+                    print(f"Confirm email error: {email_err}")
+                success = True
+    except Exception as e:
+        print(f"Reset password error: {str(e)}")
+        error = f'Error: {str(e)}'
+    return render_template('reset_password.html', token=token, error=error, success=success)
+
 @app.route('/debug')
 def debug():
     return jsonify({
