@@ -1007,7 +1007,7 @@ def reset_password(token):
                 error = 'Passwords do not match.'
             else:
                 db.table('users').update({
-                    'password': hash_password(password),
+                    'password': password,
                     'reset_token': '',
                     'reset_token_expiry': ''
                 }).eq('reset_token', token).execute()
